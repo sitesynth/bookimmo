@@ -8656,7 +8656,7 @@
         <!-- End of headEnd -->
     </head>
     <body>
-        <script src="/_local/cdn.framerauth.com/packages/sdk/live/latest/framerauth.js" site-id="5e1c16dff2bf220aea395f31e8b05fafa19fd87d825d6681e11d9e6c3476c87f"></script>
+        <!-- Framer Auth disabled in local export to avoid external runtime failures -->
         <!-- Start of bodyStart -->
         <!-- Snippet: legacy-bodyStart -->
 
@@ -8666,7 +8666,6 @@
 
         <div
             id="main"
-            data-framer-hydrate-v2='{"routeId":"augiA20Il","localeId":"default","breakpoints":[{"hash":"72rtr7","mediaQuery":"(min-width: 1200px)"},{"hash":"olbwcu","mediaQuery":"(min-width: 810px) and (max-width: 1199.98px)"},{"hash":"1woyh6i","mediaQuery":"(max-width: 809.98px)"}]}'
             data-framer-ssr-released-at="2026-01-26T13:57:01.933Z"
             data-framer-page-optimized-at="2026-01-28T15:35:25.929Z"
             data-framer-generated-page
@@ -29170,10 +29169,6 @@
         /><link
             rel="modulepreload"
             fetchpriority="low"
-            href="/_local/framerusercontent.com/sites/7i7OT8rEND0rWXuY5IMijW/FramerAuth.glLE0P3z.mjs"
-        /><link
-            rel="modulepreload"
-            fetchpriority="low"
             href="/_local/framerusercontent.com/sites/7i7OT8rEND0rWXuY5IMijW/RlXEIt80w.DIu-zjoO.mjs"
         /><link
             rel="modulepreload"
@@ -29256,6 +29251,14 @@
             fetchpriority="low"
             href="/_local/framerusercontent.com/sites/7i7OT8rEND0rWXuY5IMijW/script_main.BMnVM_eB.mjs"
         />
+        <script>
+            (function () {
+                var main = document.getElementById("main");
+                if (!main) return;
+                main.removeAttribute("data-framer-hydrate-v2");
+                while (main.firstChild) main.removeChild(main.firstChild);
+            })();
+        </script>
         <script
             type="module"
             async
