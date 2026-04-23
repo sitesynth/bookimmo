@@ -23,14 +23,16 @@
     var params = new URLSearchParams();
     params.set("path", path);
     if (query) params.set("query", query);
-    var proxyUrl = DIRECTUS_PROXY + "?" + params.toString();
+    // Force use of bookimmo.vercel.app for API calls regardless of current domain
+    var proxyUrl = "https://bookimmo.vercel.app" + DIRECTUS_PROXY + "?" + params.toString();
     return fetchJson(proxyUrl);
   }
 
   function directusApiPost(path, payload) {
     var params = new URLSearchParams();
     params.set("path", path);
-    var proxyUrl = DIRECTUS_PROXY + "?" + params.toString();
+    // Force use of bookimmo.vercel.app for API calls regardless of current domain
+    var proxyUrl = "https://bookimmo.vercel.app" + DIRECTUS_PROXY + "?" + params.toString();
     var body = JSON.stringify(payload || {});
     var proxyReq = {
       method: "POST",
