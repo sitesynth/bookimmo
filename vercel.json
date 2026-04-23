@@ -1,5 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/page.js": {
+      "includeFiles": "{de/index.html,en/index.html,fr/index.html,it/index.html,nl/index.html,index.html}"
+    }
+  },
   "redirects": [
     {
       "source": "/",
@@ -30,6 +35,28 @@
       "source": "/nl",
       "destination": "/nl/",
       "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/de/",
+      "destination": "/api/page?lang=de"
+    },
+    {
+      "source": "/en/",
+      "destination": "/api/page?lang=en"
+    },
+    {
+      "source": "/fr/",
+      "destination": "/api/page?lang=fr"
+    },
+    {
+      "source": "/it/",
+      "destination": "/api/page?lang=it"
+    },
+    {
+      "source": "/nl/",
+      "destination": "/api/page?lang=nl"
     }
   ]
 }
