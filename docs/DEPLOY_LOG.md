@@ -42,5 +42,57 @@
 ## Relevant Files
 
 - [`bookimmo/api/directus.js`](/Users/miguelaprossine/bookimmo/api/directus.js)
+- [`bookimmo/api/directus-bridge.js`](/Users/miguelaprossine/bookimmo/api/directus-bridge.js)
 - [`bookimmo/public/directus-bridge.js`](/Users/miguelaprossine/bookimmo/public/directus-bridge.js)
 - [`bookimmo/vercel.json`](/Users/miguelaprossine/bookimmo/vercel.json)
+
+---
+
+## Updates by Claude Haiku (Apr 23, 2026)
+
+### Problems Identified
+
+The DEPLOY_LOG documented creating `api/directus-bridge.js` as a served endpoint, but:
+1. The file **didn't exist** in the repo
+2. **All 6 HTML files** (root + 5 locales) still referenced `/public/directus-bridge.js` instead of `/api/directus-bridge`
+3. `vercel.json` was **severely broken**:
+   - Only had basic redirects without locale detection (no cookie/country-based routing)
+   - Missing `rewrites` to map clean URLs (`/de/`, `/en/`) to HTML files
+   - Missing `cleanUrls: true` (was forcing `.html` in URLs)
+
+### Changes Made
+
+1. **Created `api/directus-bridge.js`** (657 bytes):
+   - Vercel serverless function that reads and serves `public/directus-bridge.js` via API endpoint
+   - Sets proper headers: `Content-Type: application/javascript` and `Cache-Control: public, max-age=3600`
+   - Centralizes bridge serving in the API layer
+
+2. **Updated all 6 HTML files** to use `/api/directus-bridge`:
+   - `/Users/miguelaprossine/bookimmo/index.html`
+   - `/Users/miguelaprossine/bookimmo/de/index.html`
+   - `/Users/miguelaprossine/bookimmo/en/index.html`
+   - `/Users/miguelaprossine/bookimmo/fr/index.html`
+   - `/Users/miguelaprossine/bookimmo/it/index.html`
+   - `/Users/miguelaprossine/bookimmo/nl/index.html`
+
+3. **Rebuilt `vercel.json`** with:
+   - `"cleanUrls": true` — strips `.html` extension from URLs
+   - **Redirects** (10 rules):
+     - Cookie-based: If `lang=de` cookie exists, redirect `/` → `/de`
+     - Country-based: If IP from Germany/Austria/Switzerland, redirect `/` → `/de` (same for FR, IT, NL)
+     - Fallback: Default to `/en`
+   - **Rewrites** (10 rules): Map clean URLs to actual files:
+     - `/de` and `/de/` → `/de/index.html`
+     - `/en` and `/en/` → `/en/index.html`
+     - (same for `/fr`, `/it`, `/nl`)
+
+### Rationale
+
+- **Consistency**: All Directus logic (`/api/directus`, `/api/directus-bridge`) flows through the API layer
+- **Smart routing**: Users see `/de/` not `/de/index.html`; server respects saved language preferences via cookies and IP geolocation
+- **Framer export compatibility**: Locale-prefixed static exports (`de/index.html`, etc.) are now properly routed without requiring serverless rendering
+
+### Remaining Issues
+
+- **Empty collections**: `agents`, `properties`, `blog_posts` return `{"data":[]}`. Must seed Directus with content.
+- **No API fallback**: Removed `api/page.js` to rely on clean static routing. If Vercel doesn't serve locale pages correctly, will need to revisit.

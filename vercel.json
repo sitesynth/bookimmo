@@ -1,30 +1,77 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
   "redirects": [
     {
       "source": "/",
-      "destination": "/de/",
+      "has": [{ "type": "cookie", "key": "lang", "value": "de" }],
+      "destination": "/de",
       "permanent": false
     },
     {
-      "source": "/en",
-      "destination": "/en/",
+      "source": "/",
+      "has": [{ "type": "cookie", "key": "lang", "value": "fr" }],
+      "destination": "/fr",
       "permanent": false
     },
     {
-      "source": "/fr",
-      "destination": "/fr/",
+      "source": "/",
+      "has": [{ "type": "cookie", "key": "lang", "value": "it" }],
+      "destination": "/it",
       "permanent": false
     },
     {
-      "source": "/it",
-      "destination": "/it/",
+      "source": "/",
+      "has": [{ "type": "cookie", "key": "lang", "value": "nl" }],
+      "destination": "/nl",
       "permanent": false
     },
     {
-      "source": "/nl",
-      "destination": "/nl/",
+      "source": "/",
+      "has": [{ "type": "cookie", "key": "lang", "value": "en" }],
+      "destination": "/en",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "header", "key": "x-vercel-ip-country", "value": "(DE|AT|CH|LI)" }],
+      "destination": "/de",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "header", "key": "x-vercel-ip-country", "value": "(FR|BE|LU|MC)" }],
+      "destination": "/fr",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "header", "key": "x-vercel-ip-country", "value": "(IT|SM|VA)" }],
+      "destination": "/it",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "header", "key": "x-vercel-ip-country", "value": "(NL)" }],
+      "destination": "/nl",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "destination": "/en",
       "permanent": false
     }
+  ],
+  "rewrites": [
+    { "source": "/de", "destination": "/de/index.html" },
+    { "source": "/de/", "destination": "/de/index.html" },
+    { "source": "/en", "destination": "/en/index.html" },
+    { "source": "/en/", "destination": "/en/index.html" },
+    { "source": "/fr", "destination": "/fr/index.html" },
+    { "source": "/fr/", "destination": "/fr/index.html" },
+    { "source": "/it", "destination": "/it/index.html" },
+    { "source": "/it/", "destination": "/it/index.html" },
+    { "source": "/nl", "destination": "/nl/index.html" },
+    { "source": "/nl/", "destination": "/nl/index.html" }
   ]
 }
