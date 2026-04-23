@@ -60,8 +60,7 @@
     var query =
       "filter[status][_eq]=published" +
       "&sort[]=-is_featured&sort[]=-date_created" +
-      "&limit=24" +
-      "&fields=full_name,role_label,listings_count,avatar";
+      "&limit=24";
 
     return directusApiGet("/items/agents", query)
       .then(function (payload) {
@@ -171,8 +170,7 @@
     var query =
       "filter[status][_eq]=published" +
       "&sort[]=-is_featured&sort[]=-date_created" +
-      "&limit=24" +
-      "&fields=title,city_slug,address,short_description,bedrooms,bathrooms,area_m2,price,currency,cover_image";
+      "&limit=24";
 
     return directusApiGet("/items/properties", query)
       .then(function (payload) {
@@ -198,8 +196,7 @@
     var query =
       "filter[status][_eq]=published" +
       "&sort[]=-published_at&sort[]=-date_created" +
-      "&limit=12" +
-      "&fields=title,slug,excerpt,cover_image,published_at,author_name";
+      "&limit=12";
 
     return directusApiGet("/items/blog_posts", query)
       .then(function (payload) {
