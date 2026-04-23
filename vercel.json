@@ -1,8 +1,96 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "redirects": [
+    {
+      "source": "/",
+      "has": [{ "type": "cookie", "key": "lang", "value": "de" }],
+      "destination": "/de",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "cookie", "key": "lang", "value": "fr" }],
+      "destination": "/fr",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "cookie", "key": "lang", "value": "it" }],
+      "destination": "/it",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "cookie", "key": "lang", "value": "nl" }],
+      "destination": "/nl",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "cookie", "key": "lang", "value": "en" }],
+      "destination": "/en",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "(DE|AT|CH|LI)"
+        }
+      ],
+      "destination": "/de",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "(FR|BE|LU|MC)"
+        }
+      ],
+      "destination": "/fr",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "(IT|SM|VA)"
+        }
+      ],
+      "destination": "/it",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "(NL)"
+        }
+      ],
+      "destination": "/nl",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "destination": "/en",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    { "source": "/:locale(en|de|fr|it|nl)/pages/blog", "destination": "/pages/blog.html" },
+    { "source": "/:locale(en|de|fr|it|nl)/pages/blog.html", "destination": "/pages/blog.html" },
+    { "source": "/:locale(en|de|fr|it|nl)", "destination": "/index.html" },
+    { "source": "/:locale(en|de|fr|it|nl)/:path*", "destination": "/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
