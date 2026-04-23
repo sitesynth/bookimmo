@@ -1,5 +1,6 @@
 (function () {
   var DIRECTUS_BASE = (window.BOOKIMMO_DIRECTUS_URL || "https://cms.book.immo").replace(/\/$/, "");
+  var DIRECTUS_PROXY = "/api/directus";
   var ACTIVE_LOCALE = "en";
   var MESSAGES = {};
 
@@ -11,6 +12,23 @@
     return fetch(url, options).then(function (res) {
       if (!res.ok) throw new Error("HTTP " + res.status + " for " + url);
       return res.json();
+    });
+  }
+
+  function directusApiGet(path, query) {
+    var params = new URLSearchParams();
+    params.set("path", path);
+    if (query) params.set("query", query);
+    return fetchJson(DIRECTUS_PROXY + "?" + params.toString());
+  }
+
+  function directusApiPost(path, payload) {
+    var params = new URLSearchParams();
+    params.set("path", path);
+    return fetchJson(DIRECTUS_PROXY + "?" + params.toString(), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload || {})
     });
   }
 
@@ -31,15 +49,13 @@
   }
 
   function updateAgents() {
-    var url =
-      DIRECTUS_BASE +
-      "/items/agents" +
-      "?filter[status][_eq]=published" +
+    var query =
+      "filter[status][_eq]=published" +
       "&sort[]=-is_featured&sort[]=-date_created" +
       "&limit=24" +
       "&fields=full_name,role_label,listings_count,avatar";
 
-    return fetchJson(url)
+    return directusApiGet("/items/agents", query)
       .then(function (payload) {
         var agents = (payload && payload.data) || [];
         if (!agents.length) return;
@@ -144,15 +160,13 @@
   }
 
   function updateProperties() {
-    var url =
-      DIRECTUS_BASE +
-      "/items/properties" +
-      "?filter[status][_eq]=published" +
+    var query =
+      "filter[status][_eq]=published" +
       "&sort[]=-is_featured&sort[]=-date_created" +
       "&limit=24" +
       "&fields=title,city_slug,address,short_description,bedrooms,bathrooms,area_m2,price,currency,cover_image";
 
-    return fetchJson(url)
+    return directusApiGet("/items/properties", query)
       .then(function (payload) {
         var properties = (payload && payload.data) || [];
         if (!properties.length) return;
@@ -173,15 +187,13 @@
   function updateBlogPosts() {
     var cards = document.querySelectorAll('[data-bookimmo-blog-card], .bookimmo-blog-card');
     if (!cards.length) return Promise.resolve();
-    var url =
-      DIRECTUS_BASE +
-      "/items/blog_posts" +
-      "?filter[status][_eq]=published" +
+    var query =
+      "filter[status][_eq]=published" +
       "&sort[]=-published_at&sort[]=-date_created" +
       "&limit=12" +
       "&fields=title,slug,excerpt,cover_image,published_at,author_name";
 
-    return fetchJson(url)
+    return directusApiGet("/items/blog_posts", query)
       .then(function (payload) {
         var posts = (payload && payload.data) || [];
         if (!posts.length) return;
@@ -411,11 +423,7 @@
   }
 
   function submitLead(payload) {
-    return fetchJson(DIRECTUS_BASE + "/items/leads", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    return directusApiPost("/items/leads", payload);
   }
 
   function wireNewsletterForm() {
