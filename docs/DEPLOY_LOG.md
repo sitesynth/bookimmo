@@ -25,25 +25,22 @@
    - confirmed read access for `agents`, `properties`, and `blog_posts`
    - added a static token for authenticated API access
 5. Fixed the CMS CORS settings on the Directus host.
-6. Found that Vercel still did not serve the static locale pages reliably, so I added an API fallback renderer:
-   - `api/page.js`
-7. Reworked the rendered HTML to avoid the broken Framer Auth include and keep the Directus bridge on the static public path:
+6. Found that Vercel was not serving the static locale pages reliably, so I temporarily added an API fallback renderer and later removed it.
+7. Reworked the HTML to avoid the broken Framer Auth include and keep the Directus bridge on the static public path:
    - removed `/_local/cdn.framerauth.com/.../framerauth.js`
    - kept `/public/directus-bridge.js`
-8. Simplified and then reworked `vercel.json` several times while chasing the `/de/` `404`.
+8. Simplified `vercel.json` back toward static locale pages while chasing the `/de/` `404`.
 
 ## Current State
 
-1. `https://www.book.immo/api/page?lang=de` returns `200`.
-2. `https://www.book.immo/api/directus?...` returns data, but the collections are empty:
+1. `https://www.book.immo/api/directus?...` returns data, but the collections are empty:
    - `agents` => `{"data":[]}`
    - `properties` => `{"data":[]}`
    - `blog_posts` => `{"data":[]}`
-3. The remaining problem is the deployed route handling on Vercel for the locale URLs.
+2. The remaining risk is whether Vercel will serve the static locale URLs directly after the fallback removal.
 
 ## Relevant Files
 
-- [`bookimmo/api/page.js`](/Users/miguelaprossine/bookimmo/api/page.js)
 - [`bookimmo/api/directus.js`](/Users/miguelaprossine/bookimmo/api/directus.js)
 - [`bookimmo/public/directus-bridge.js`](/Users/miguelaprossine/bookimmo/public/directus-bridge.js)
 - [`bookimmo/vercel.json`](/Users/miguelaprossine/bookimmo/vercel.json)

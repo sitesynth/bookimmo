@@ -1,86 +1,30 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "functions": {
-    "api/page.js": {
-      "includeFiles": "{de/index.html,en/index.html,fr/index.html,it/index.html,nl/index.html,index.html}"
-    }
-  },
   "redirects": [
     {
       "source": "/",
-      "destination": "/api/page?lang=de",
-      "permanent": false
-    },
-    {
-      "source": "/de",
-      "destination": "/api/page?lang=de",
+      "destination": "/de/",
       "permanent": false
     },
     {
       "source": "/en",
-      "destination": "/api/page?lang=en",
+      "destination": "/en/",
       "permanent": false
     },
     {
       "source": "/fr",
-      "destination": "/api/page?lang=fr",
+      "destination": "/fr/",
       "permanent": false
     },
     {
       "source": "/it",
-      "destination": "/api/page?lang=it",
+      "destination": "/it/",
       "permanent": false
     },
     {
       "source": "/nl",
-      "destination": "/api/page?lang=nl",
+      "destination": "/nl/",
       "permanent": false
     }
-  ],
-  "rewrites": [
-    { "source": "/de/", "destination": "/api/page?lang=de" },
-    { "source": "/de/index.html", "destination": "/api/page?lang=de" },
-    { "source": "/de/pages/blog", "destination": "/api/page?lang=de&view=blog" },
-    { "source": "/de/pages/blog/", "destination": "/api/page?lang=de&view=blog" },
-    { "source": "/de/pages/blog.html", "destination": "/api/page?lang=de&view=blog" },
-    { "source": "/de/_local/:path*", "destination": "/_local/:path*" },
-    { "source": "/de/public/:path*", "destination": "/public/:path*" },
-    { "source": "/de/assets/:path*", "destination": "/assets/:path*" },
-
-    { "source": "/en/", "destination": "/api/page?lang=en" },
-    { "source": "/en/index.html", "destination": "/api/page?lang=en" },
-    { "source": "/en/pages/blog", "destination": "/api/page?lang=en&view=blog" },
-    { "source": "/en/pages/blog/", "destination": "/api/page?lang=en&view=blog" },
-    { "source": "/en/pages/blog.html", "destination": "/api/page?lang=en&view=blog" },
-    { "source": "/en/_local/:path*", "destination": "/_local/:path*" },
-    { "source": "/en/public/:path*", "destination": "/public/:path*" },
-    { "source": "/en/assets/:path*", "destination": "/assets/:path*" },
-
-    { "source": "/fr/", "destination": "/api/page?lang=fr" },
-    { "source": "/fr/index.html", "destination": "/api/page?lang=fr" },
-    { "source": "/fr/pages/blog", "destination": "/api/page?lang=fr&view=blog" },
-    { "source": "/fr/pages/blog/", "destination": "/api/page?lang=fr&view=blog" },
-    { "source": "/fr/pages/blog.html", "destination": "/api/page?lang=fr&view=blog" },
-    { "source": "/fr/_local/:path*", "destination": "/_local/:path*" },
-    { "source": "/fr/public/:path*", "destination": "/public/:path*" },
-    { "source": "/fr/assets/:path*", "destination": "/assets/:path*" },
-
-    { "source": "/it/", "destination": "/api/page?lang=it" },
-    { "source": "/it/index.html", "destination": "/api/page?lang=it" },
-    { "source": "/it/pages/blog", "destination": "/api/page?lang=it&view=blog" },
-    { "source": "/it/pages/blog/", "destination": "/api/page?lang=it&view=blog" },
-    { "source": "/it/pages/blog.html", "destination": "/api/page?lang=it&view=blog" },
-    { "source": "/it/_local/:path*", "destination": "/_local/:path*" },
-    { "source": "/it/public/:path*", "destination": "/public/:path*" },
-    { "source": "/it/assets/:path*", "destination": "/assets/:path*" },
-
-    { "source": "/nl/", "destination": "/api/page?lang=nl" },
-    { "source": "/nl/index.html", "destination": "/api/page?lang=nl" },
-    { "source": "/nl/pages/blog", "destination": "/api/page?lang=nl&view=blog" },
-    { "source": "/nl/pages/blog/", "destination": "/api/page?lang=nl&view=blog" },
-    { "source": "/nl/pages/blog.html", "destination": "/api/page?lang=nl&view=blog" },
-    { "source": "/nl/_local/:path*", "destination": "/_local/:path*" },
-    { "source": "/nl/public/:path*", "destination": "/public/:path*" },
-    { "source": "/nl/assets/:path*", "destination": "/assets/:path*" }
   ]
 }
