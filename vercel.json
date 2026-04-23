@@ -87,6 +87,11 @@
     }
   ],
   "rewrites": [
+    { "source": "/:locale(en|de|fr|it|nl)/_local/:path*", "destination": "/_local/:path*" },
+    { "source": "/:locale(en|de|fr|it|nl)/public/:path*", "destination": "/public/:path*" },
+    { "source": "/:locale(en|de|fr|it|nl)/assets/:path*", "destination": "/assets/:path*" },
+    { "source": "/:locale(en|de|fr|it|nl)/favicon.ico", "destination": "/favicon.ico" },
+    { "source": "/:locale(en|de|fr|it|nl)/manifest.json", "destination": "/manifest.json" },
     { "source": "/:locale(en|de|fr|it|nl)/pages/blog", "destination": "/pages/blog.html" },
     { "source": "/:locale(en|de|fr|it|nl)/pages/blog.html", "destination": "/pages/blog.html" },
     { "source": "/:locale(en|de|fr|it|nl)", "destination": "/index.html" },
