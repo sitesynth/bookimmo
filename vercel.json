@@ -5,6 +5,31 @@
       "source": "/",
       "destination": "/de/",
       "permanent": false
+    },
+    {
+      "source": "/de",
+      "destination": "/de/",
+      "permanent": false
+    },
+    {
+      "source": "/en",
+      "destination": "/en/",
+      "permanent": false
+    },
+    {
+      "source": "/fr",
+      "destination": "/fr/",
+      "permanent": false
+    },
+    {
+      "source": "/it",
+      "destination": "/it/",
+      "permanent": false
+    },
+    {
+      "source": "/nl",
+      "destination": "/nl/",
+      "permanent": false
     }
   ]
 }
