@@ -61,7 +61,7 @@
   function updateAgents() {
     var query =
       "filter[status][_eq]=published" +
-      "&sort[]=-is_featured&sort[]=-date_created" +
+      "&sort[]=-is_featured" +
       "&limit=24";
 
     return directusApiGet("/items/agents", query)
@@ -171,7 +171,7 @@
   function updateProperties() {
     var query =
       "filter[status][_eq]=published" +
-      "&sort[]=-is_featured&sort[]=-date_created" +
+      "&sort[]=-is_featured" +
       "&limit=24";
 
     return directusApiGet("/items/properties", query)
@@ -197,7 +197,7 @@
     if (!cards.length) return Promise.resolve();
     var query =
       "filter[status][_eq]=published" +
-      "&sort[]=-published_at&sort[]=-date_created" +
+      "&sort[]=-published_at" +
       "&limit=12";
 
     return directusApiGet("/items/blog_posts", query)
