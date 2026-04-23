@@ -62,12 +62,12 @@ The DEPLOY_LOG documented creating `api/directus-bridge.js` as a served endpoint
 
 ### Changes Made
 
-1. **Created `api/directus-bridge.js`** (657 bytes):
-   - Vercel serverless function that reads and serves `public/directus-bridge.js` via API endpoint
-   - Sets proper headers: `Content-Type: application/javascript` and `Cache-Control: public, max-age=3600`
-   - Centralizes bridge serving in the API layer
+1. **Copied `directus-bridge.js` to root** (`/directus-bridge.js`):
+   - Static JavaScript file served directly from Vercel public directory
+   - No serverless function needed; simpler deployment and faster load
+   - Vercel automatically caches static files
 
-2. **Updated all 6 HTML files** to use `/api/directus-bridge`:
+2. **Updated all 6 HTML files** to use `/directus-bridge.js`:
    - `/Users/miguelaprossine/bookimmo/index.html`
    - `/Users/miguelaprossine/bookimmo/de/index.html`
    - `/Users/miguelaprossine/bookimmo/en/index.html`
@@ -96,3 +96,37 @@ The DEPLOY_LOG documented creating `api/directus-bridge.js` as a served endpoint
 
 - **Empty collections**: `agents`, `properties`, `blog_posts` return `{"data":[]}`. Must seed Directus with content.
 - **No API fallback**: Removed `api/page.js` to rely on clean static routing. If Vercel doesn't serve locale pages correctly, will need to revisit.
+
+---
+
+## Content Seeding (Apr 23, 2026)
+
+### Created `seed-directus.js`
+
+A standalone Node.js script that populates Directus with test data:
+- **5 agents** (Sarah Johnson, Marco Rossi, Anna Schmidt, Pierre Dubois, Elena van der Berg)
+- **12 properties** (villas, apartments, townhouses, lofts across US cities)
+- **5 blog posts** (renting guides, negotiation tips, neighborhood guides)
+
+All records marked as `status: "published"` and 4 properties + 3 agents marked as `is_featured: true`.
+
+### Usage
+
+```bash
+DIRECTUS_API_TOKEN="<your-token>" node seed-directus.js
+```
+
+### Result
+
+✅ API now returns populated data:
+- `https://bookimmo.vercel.app/api/directus?path=/items/agents` → returns 5 agents with names, roles, listing counts
+- `https://bookimmo.vercel.app/api/directus?path=/items/properties` → returns 12 properties with prices, bed/bath counts, descriptions
+- `https://bookimmo.vercel.app/api/directus?path=/items/blog_posts` → returns 5 blog posts with titles, slugs, excerpts
+
+The frontend `/public/directus-bridge.js` will now render this content on featured properties, agents, and blog cards on the homepage and locale pages.
+
+### Next Steps
+
+- Verify frontend rendering on `https://bookimmo.vercel.app/` (should show populated agent cards, property listings, blog previews)
+- If images are needed, add `cover_image` and `avatar` file IDs to Directus records
+- If content is production-ready, back it up or export it from `https://cms.book.immo/admin`
