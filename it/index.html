@@ -8670,6 +8670,7 @@
             data-framer-ssr-released-at="2026-01-26T13:57:01.933Z"
             data-framer-page-optimized-at="2026-01-28T15:35:25.929Z"
             data-framer-generated-page
+            style="opacity: 0; transition: opacity 0.3s ease-in-out;"
         >
             <!--$--><style data-framer-html-style>
                 html body {
@@ -29266,6 +29267,15 @@
             fetchpriority="low"
             src="/_local/framerusercontent.com/sites/7i7OT8rEND0rWXuY5IMijW/script_main.BMnVM_eB.mjs"
         ></script>
+        <script>
+            (function () {
+                var main = document.getElementById("main");
+                if (!main) return;
+                requestAnimationFrame(function () {
+                    main.style.opacity = "1";
+                });
+            })();
+        </script>
         <div
             id="svg-templates"
             style="
