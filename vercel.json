@@ -6,25 +6,49 @@
       "source": "/",
       "destination": "/de/index.html",
       "permanent": false,
-      "locale": { "redirect": ["de", "at", "ch"] }
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "(DE|AT|CH)"
+        }
+      ]
     },
     {
       "source": "/",
       "destination": "/fr/index.html",
       "permanent": false,
-      "locale": { "redirect": ["fr", "be"] }
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "(FR|BE)"
+        }
+      ]
     },
     {
       "source": "/",
       "destination": "/it/index.html",
       "permanent": false,
-      "locale": { "redirect": ["it"] }
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "IT"
+        }
+      ]
     },
     {
       "source": "/",
       "destination": "/nl/index.html",
       "permanent": false,
-      "locale": { "redirect": ["nl"] }
+      "has": [
+        {
+          "type": "header",
+          "key": "x-vercel-ip-country",
+          "value": "NL"
+        }
+      ]
     },
     {
       "source": "/",
