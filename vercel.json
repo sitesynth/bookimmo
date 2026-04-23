@@ -3,60 +3,41 @@
   "functions": {
     "api/page.js": {
       "includeFiles": "{de/index.html,en/index.html,fr/index.html,it/index.html,nl/index.html,index.html}"
+    },
+    "api/directus-bridge.js": {
+      "includeFiles": "public/directus-bridge.js"
     }
   },
   "redirects": [
     {
       "source": "/",
-      "destination": "/de/",
+      "destination": "/api/page?lang=de",
       "permanent": false
     },
     {
       "source": "/de",
-      "destination": "/de/",
+      "destination": "/api/page?lang=de",
       "permanent": false
     },
     {
       "source": "/en",
-      "destination": "/en/",
+      "destination": "/api/page?lang=en",
       "permanent": false
     },
     {
       "source": "/fr",
-      "destination": "/fr/",
+      "destination": "/api/page?lang=fr",
       "permanent": false
     },
     {
       "source": "/it",
-      "destination": "/it/",
+      "destination": "/api/page?lang=it",
       "permanent": false
     },
     {
       "source": "/nl",
-      "destination": "/nl/",
+      "destination": "/api/page?lang=nl",
       "permanent": false
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/de/",
-      "destination": "/api/page?lang=de"
-    },
-    {
-      "source": "/en/",
-      "destination": "/api/page?lang=en"
-    },
-    {
-      "source": "/fr/",
-      "destination": "/api/page?lang=fr"
-    },
-    {
-      "source": "/it/",
-      "destination": "/api/page?lang=it"
-    },
-    {
-      "source": "/nl/",
-      "destination": "/api/page?lang=nl"
     }
   ]
 }

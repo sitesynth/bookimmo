@@ -10,10 +10,11 @@ function normalizeLang(raw) {
 
 function localToRemote(html) {
   return html
+    .replaceAll('<script src="/_local/cdn.framerauth.com/packages/sdk/live/latest/framerauth.js"></script>', "")
+    .replaceAll('src="/public/directus-bridge.js"', 'src="/api/directus-bridge.js"')
     .replaceAll("/_local/framerusercontent.com/", "https://framerusercontent.com/")
     .replaceAll("/_local/framer.com/", "https://framer.com/")
-    .replaceAll("/_local/fonts.gstatic.com/", "https://fonts.gstatic.com/")
-    .replaceAll('src="/public/directus-bridge.js"', 'src="/public/directus-bridge.js"');
+    .replaceAll("/_local/fonts.gstatic.com/", "https://fonts.gstatic.com/");
 }
 
 module.exports = async function handler(req, res) {
@@ -30,4 +31,3 @@ module.exports = async function handler(req, res) {
     return res.status(500).send("Failed to render page");
   }
 };
-
