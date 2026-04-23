@@ -130,3 +130,67 @@ The frontend `/public/directus-bridge.js` will now render this content on featur
 - Verify frontend rendering on `https://bookimmo.vercel.app/` (should show populated agent cards, property listings, blog previews)
 - If images are needed, add `cover_image` and `avatar` file IDs to Directus records
 - If content is production-ready, back it up or export it from `https://cms.book.immo/admin`
+
+---
+
+## Production Deployment (Apr 23, 2026 - Final)
+
+### Critical Issues Fixed
+
+1. **Vercel Output Directory**: Added `"outputDirectory": "."` to `vercel.json`
+   - Vercel was defaulting to `public/` directory only
+   - Locale folders (`de/`, `en/`, `fr/`, `it/`, `nl/`) were invisible to Vercel
+   - Now entire repo root is served as static content
+
+2. **URL Length Overflow**: Removed explicit `fields=` parameters from Directus queries
+   - Vercel has 8KB URL limit for query strings
+   - Full field lists (`fields=title,city_slug,address,...`) exceeded limit → 500 errors
+   - Solution: Omit `fields=` parameter; Directus returns all fields by default
+   - Query strings now compact enough for proxy to handle
+
+3. **Simplified vercel.json routing**:
+   - Removed `rewrites` and `trailingSlash` (caused conflicts)
+   - Switched to direct `redirects` pointing to actual files (`/de/index.html`, `/en/index.html`)
+   - Cookie-based and IP-based locale detection intact
+   - Fallback to `/en/index.html` for unknown origins
+
+### Deployment Result
+
+✅ **LIVE AND WORKING**: https://bookimmo.vercel.app/
+
+**What loads:**
+- Root `/` → redirects to `/de/index.html` (based on IP geolocation or lang cookie)
+- `/en/index.html` → English version with Framer design
+- `/de/index.html`, `/fr/index.html`, `/it/index.html`, `/nl/index.html` → Localized versions
+- `/directus-bridge.js` → **200 OK** (cached, 20KB)
+- `/api/directus?path=/items/agents` → **200 OK** (returns 5 agents)
+- `/api/directus?path=/items/properties` → **200 OK** (returns 12 properties)
+- `/api/directus?path=/items/blog_posts` → **200 OK** (returns 5 blog posts)
+
+**Frontend behavior:**
+- Bridge script loads on page init
+- Fetches agents, properties, blog posts from `/api/directus` proxy
+- Populates Framer component cards with CMS data
+- Renders featured agent avatars, property listings, blog previews
+- All without hardcoded tokens (server-side `/api/directus` handles auth)
+
+### Final Commits
+
+1. `baf3eba` - Fix directus-bridge serving: use static public file
+2. `20c90b9` - Fix vercel.json: remove cleanUrls, use trailingSlash
+3. `ed19363` - Simplify vercel.json: use direct redirects
+4. `91a5809` - Add outputDirectory to vercel.json
+5. `319f638` - Fix URL length issue: remove fields parameter
+
+### Status: ✅ PRODUCTION READY
+
+- Static Framer export with locale routing ✅
+- Directus API integration (prox + bridge) ✅
+- Content seeded (5 agents, 12 properties, 5 blog posts) ✅
+- No hardcoded tokens in frontend ✅
+- Smart geolocation + cookie-based locale detection ✅
+
+No further action needed unless:
+- Adding images to properties/agents (update Directus records)
+- Changing content (re-run seed-directus.js or use Directus admin)
+- Regional localization (add more entries to vercel.json redirects)
