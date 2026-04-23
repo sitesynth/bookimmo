@@ -5,60 +5,60 @@
     {
       "source": "/",
       "has": [{ "type": "cookie", "key": "lang", "value": "de" }],
-      "destination": "/de/",
+      "destination": "/de",
       "permanent": false
     },
     {
       "source": "/",
       "has": [{ "type": "cookie", "key": "lang", "value": "fr" }],
-      "destination": "/fr/",
+      "destination": "/fr",
       "permanent": false
     },
     {
       "source": "/",
       "has": [{ "type": "cookie", "key": "lang", "value": "it" }],
-      "destination": "/it/",
+      "destination": "/it",
       "permanent": false
     },
     {
       "source": "/",
       "has": [{ "type": "cookie", "key": "lang", "value": "nl" }],
-      "destination": "/nl/",
+      "destination": "/nl",
       "permanent": false
     },
     {
       "source": "/",
       "has": [{ "type": "cookie", "key": "lang", "value": "en" }],
-      "destination": "/en/",
+      "destination": "/en",
       "permanent": false
     },
     {
       "source": "/",
       "has": [{ "type": "header", "key": "x-vercel-ip-country", "value": "(DE|AT|CH|LI)" }],
-      "destination": "/de/",
+      "destination": "/de",
       "permanent": false
     },
     {
       "source": "/",
       "has": [{ "type": "header", "key": "x-vercel-ip-country", "value": "(FR|BE|LU|MC)" }],
-      "destination": "/fr/",
+      "destination": "/fr",
       "permanent": false
     },
     {
       "source": "/",
       "has": [{ "type": "header", "key": "x-vercel-ip-country", "value": "(IT|SM|VA)" }],
-      "destination": "/it/",
+      "destination": "/it",
       "permanent": false
     },
     {
       "source": "/",
       "has": [{ "type": "header", "key": "x-vercel-ip-country", "value": "(NL)" }],
-      "destination": "/nl/",
+      "destination": "/nl",
       "permanent": false
     },
     {
       "source": "/",
-      "destination": "/en/",
+      "destination": "/en",
       "permanent": false
     },
     {
@@ -89,6 +89,7 @@
   ],
   "rewrites": [
     { "source": "/de", "destination": "/index.html" },
+    { "source": "/de/", "destination": "/index.html" },
     { "source": "/de/index.html", "destination": "/index.html" },
     { "source": "/de/pages/blog", "destination": "/pages/blog.html" },
     { "source": "/de/pages/blog.html", "destination": "/pages/blog.html" },
@@ -97,6 +98,7 @@
     { "source": "/de/assets/:path*", "destination": "/assets/:path*" },
 
     { "source": "/en", "destination": "/index.html" },
+    { "source": "/en/", "destination": "/index.html" },
     { "source": "/en/index.html", "destination": "/index.html" },
     { "source": "/en/pages/blog", "destination": "/pages/blog.html" },
     { "source": "/en/pages/blog.html", "destination": "/pages/blog.html" },
@@ -105,6 +107,7 @@
     { "source": "/en/assets/:path*", "destination": "/assets/:path*" },
 
     { "source": "/fr", "destination": "/index.html" },
+    { "source": "/fr/", "destination": "/index.html" },
     { "source": "/fr/index.html", "destination": "/index.html" },
     { "source": "/fr/pages/blog", "destination": "/pages/blog.html" },
     { "source": "/fr/pages/blog.html", "destination": "/pages/blog.html" },
@@ -113,6 +116,7 @@
     { "source": "/fr/assets/:path*", "destination": "/assets/:path*" },
 
     { "source": "/it", "destination": "/index.html" },
+    { "source": "/it/", "destination": "/index.html" },
     { "source": "/it/index.html", "destination": "/index.html" },
     { "source": "/it/pages/blog", "destination": "/pages/blog.html" },
     { "source": "/it/pages/blog.html", "destination": "/pages/blog.html" },
@@ -121,6 +125,7 @@
     { "source": "/it/assets/:path*", "destination": "/assets/:path*" },
 
     { "source": "/nl", "destination": "/index.html" },
+    { "source": "/nl/", "destination": "/index.html" },
     { "source": "/nl/index.html", "destination": "/index.html" },
     { "source": "/nl/pages/blog", "destination": "/pages/blog.html" },
     { "source": "/nl/pages/blog.html", "destination": "/pages/blog.html" },
