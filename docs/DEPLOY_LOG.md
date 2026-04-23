@@ -27,11 +27,10 @@
 5. Fixed the CMS CORS settings on the Directus host.
 6. Found that Vercel still did not serve the static locale pages reliably, so I added an API fallback renderer:
    - `api/page.js`
-7. Reworked the rendered HTML to avoid the broken Framer Auth include and route the bridge through the API:
+7. Reworked the rendered HTML to avoid the broken Framer Auth include and keep the Directus bridge on the static public path:
    - removed `/_local/cdn.framerauth.com/.../framerauth.js`
-   - replaced `/public/directus-bridge.js` with `/api/directus-bridge`
-8. Added `api/directus-bridge.js` as a served bridge endpoint.
-9. Simplified and then reworked `vercel.json` several times while chasing the `/de/` `404`.
+   - kept `/public/directus-bridge.js`
+8. Simplified and then reworked `vercel.json` several times while chasing the `/de/` `404`.
 
 ## Current State
 
@@ -46,7 +45,5 @@
 
 - [`bookimmo/api/page.js`](/Users/miguelaprossine/bookimmo/api/page.js)
 - [`bookimmo/api/directus.js`](/Users/miguelaprossine/bookimmo/api/directus.js)
-- [`bookimmo/api/directus-bridge.js`](/Users/miguelaprossine/bookimmo/api/directus-bridge.js)
 - [`bookimmo/public/directus-bridge.js`](/Users/miguelaprossine/bookimmo/public/directus-bridge.js)
 - [`bookimmo/vercel.json`](/Users/miguelaprossine/bookimmo/vercel.json)
-

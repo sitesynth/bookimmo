@@ -3,9 +3,6 @@
   "functions": {
     "api/page.js": {
       "includeFiles": "{de/index.html,en/index.html,fr/index.html,it/index.html,nl/index.html,index.html}"
-    },
-    "api/directus-bridge.js": {
-      "includeFiles": "public/directus-bridge.js"
     }
   },
   "redirects": [
