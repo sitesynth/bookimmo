@@ -1,65 +1,63 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": false,
-  "trailingSlash": true,
   "redirects": [
     {
       "source": "/",
       "has": [{ "type": "cookie", "key": "lang", "value": "de" }],
-      "destination": "/de/",
+      "destination": "/de/index.html",
       "permanent": false
     },
     {
       "source": "/",
       "has": [{ "type": "cookie", "key": "lang", "value": "fr" }],
-      "destination": "/fr/",
+      "destination": "/fr/index.html",
       "permanent": false
     },
     {
       "source": "/",
       "has": [{ "type": "cookie", "key": "lang", "value": "it" }],
-      "destination": "/it/",
+      "destination": "/it/index.html",
       "permanent": false
     },
     {
       "source": "/",
       "has": [{ "type": "cookie", "key": "lang", "value": "nl" }],
-      "destination": "/nl/",
+      "destination": "/nl/index.html",
       "permanent": false
     },
     {
       "source": "/",
       "has": [{ "type": "cookie", "key": "lang", "value": "en" }],
-      "destination": "/en/",
+      "destination": "/en/index.html",
       "permanent": false
     },
     {
       "source": "/",
       "has": [{ "type": "header", "key": "x-vercel-ip-country", "value": "(DE|AT|CH|LI)" }],
-      "destination": "/de/",
+      "destination": "/de/index.html",
       "permanent": false
     },
     {
       "source": "/",
       "has": [{ "type": "header", "key": "x-vercel-ip-country", "value": "(FR|BE|LU|MC)" }],
-      "destination": "/fr/",
+      "destination": "/fr/index.html",
       "permanent": false
     },
     {
       "source": "/",
       "has": [{ "type": "header", "key": "x-vercel-ip-country", "value": "(IT|SM|VA)" }],
-      "destination": "/it/",
+      "destination": "/it/index.html",
       "permanent": false
     },
     {
       "source": "/",
       "has": [{ "type": "header", "key": "x-vercel-ip-country", "value": "(NL)" }],
-      "destination": "/nl/",
+      "destination": "/nl/index.html",
       "permanent": false
     },
     {
       "source": "/",
-      "destination": "/en/",
+      "destination": "/en/index.html",
       "permanent": false
     }
   ]
