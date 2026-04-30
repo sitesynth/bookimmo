@@ -374,15 +374,16 @@
 
   function injectLanguageSwitcher() {
     if (document.querySelector("[data-bookimmo-lang-switch]")) return;
-    var navs = document.querySelectorAll("nav, .framer-ivn56n, .framer-f4d4gy, .framer-4nfpj5, .framer-k9z9h4, .framer-3r4n3j");
-    if (!navs.length) return;
+    var footer = document.querySelector("footer") || document.querySelector("[data-framer-name*=\"Footer\"]");
+    if (!footer) return;
     var active = ACTIVE_LOCALE || detectLocaleFromPath() || "en";
-    navs.forEach(function (nav) {
-      var wrap = document.createElement("span");
-      wrap.setAttribute("data-bookimmo-lang-switch", "true");
-      wrap.style.display = "inline-flex";
-      wrap.style.gap = "8px";
-      wrap.style.marginLeft = "8px";
+    var wrap = document.createElement("div");
+    wrap.setAttribute("data-bookimmo-lang-switch", "true");
+    wrap.style.display = "inline-flex";
+    wrap.style.gap = "10px";
+    wrap.style.marginTop = "16px";
+    wrap.style.alignItems = "center";
+    wrap.style.flexWrap = "wrap";
 
       ["en", "de", "fr", "it", "nl"].forEach(function (lang) {
         var a = document.createElement("a");
@@ -398,8 +399,7 @@
         wrap.appendChild(a);
       });
 
-      nav.appendChild(wrap);
-    });
+      footer.appendChild(wrap);
   }
 
   function setButtonsState(form, submitting) {
@@ -517,7 +517,7 @@
     loadMessages(locale).then(function (payload) {
       MESSAGES = payload || {};
       applyLocaleToStaticUI();
-      // language switcher disabled; locale remains automatic via URL/redirects.
+      [ ]*injectLanguageSwitcher();
       injectBlogMenuLink();
     });
     updateAgents();
