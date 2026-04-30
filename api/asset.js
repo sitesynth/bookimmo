@@ -37,57 +37,72 @@ async function readIfExists(absPath) {
   }
 }
 
-function withForwardSlashes(p) {
+function toSlash(p) {
   return String(p || '').replace(/\\/g, '/');
 }
 
-function rebuildVariantPath(rawPath, query) {
-  let rebuilt = String(rawPath || '');
-  if (!rebuilt.includes('__q_')) return rebuilt;
-
-  const extra = [];
-  if (query && typeof query.width === 'string' && query.width) extra.push(`width=${query.width}`);
-  if (query && typeof query.height === 'string' && query.height) extra.push(`height=${query.height}`);
-  if (query && typeof query['scale-down-to'] === 'string' && query['scale-down-to']) {
-    extra.push(`scale-down-to=${query['scale-down-to']}`);
+function decodeSafe(v) {
+  try {
+    return decodeURIComponent(v);
+  } catch {
+    return v;
   }
-
-  if (extra.length && !/[?&](width|height|scale-down-to)=/.test(rebuilt)) {
-    rebuilt += `&${extra.join('&')}`;
-  }
-
-  return rebuilt;
 }
 
-function buildCandidates(requestedPath) {
-  const candidates = [requestedPath];
+function encodeVariantTail(tail) {
+  // Keep Framer-style filename encoding in __q_ suffix.
+  return tail.replace(/=/g, '%3D').replace(/&/g, '%26').replace(/\?/g, '%3F');
+}
 
-  if (requestedPath.includes('&')) {
-    candidates.push(requestedPath.replace(/&/g, '%26'));
+function expandPathCandidates(rawPath, query) {
+  const out = new Set();
+
+  const baseCandidates = new Set([String(rawPath || ''), decodeSafe(String(rawPath || ''))]);
+
+  for (const basePath of baseCandidates) {
+    if (!basePath) continue;
+
+    // If query parser split width/height out of path, restore tail parameters.
+    let restored = basePath;
+    const extra = [];
+    if (typeof query['scale-down-to'] === 'string' && query['scale-down-to']) extra.push(`scale-down-to=${query['scale-down-to']}`);
+    if (typeof query.width === 'string' && query.width) extra.push(`width=${query.width}`);
+    if (typeof query.height === 'string' && query.height) extra.push(`height=${query.height}`);
+
+    if (extra.length && restored.includes('__q_') && !/[?&](scale-down-to|width|height)=/.test(restored)) {
+      restored = `${restored}&${extra.join('&')}`;
+    }
+
+    out.add(restored);
+    out.add(restored.replace(/&/g, '%26'));
+
+    if (!restored.includes('__q_')) continue;
+
+    const [head, tailRaw] = restored.split('__q_');
+    const tailDecoded = decodeSafe(tailRaw);
+
+    // Framer encoded form + decoded form.
+    out.add(`${head}__q_${tailDecoded}`);
+    out.add(`${head}__q_${encodeVariantTail(tailDecoded)}`);
+
+    // Fallback to original source asset without Framer transform suffix.
+    out.add(head);
   }
 
-  if (requestedPath.includes('__q_')) {
-    const base = requestedPath.split('__q_')[0];
-    candidates.push(base);
-  }
-
-  return Array.from(new Set(candidates.map(withForwardSlashes)));
+  return [...out].map(toSlash);
 }
 
 module.exports = async function handler(req, res) {
   const reqPath = req.query.path;
   if (!reqPath) return res.status(400).send('Missing path');
 
-  const decoded = decodeURIComponent(String(reqPath));
-  const rebuilt = rebuildVariantPath(decoded, req.query);
   const root = process.cwd();
+  const requested = expandPathCandidates(reqPath, req.query)
+    .filter((p) => p.startsWith('_local/') || p.startsWith('public/i18n/'));
 
-  const allowed = rebuilt.startsWith('_local/') || rebuilt.startsWith('public/i18n/');
-  if (!allowed) return res.status(403).send('Forbidden');
+  if (!requested.length) return res.status(403).send('Forbidden');
 
-  const candidates = buildCandidates(rebuilt).filter((p) => p.startsWith('_local/') || p.startsWith('public/i18n/'));
-
-  for (const relPath of candidates) {
+  for (const relPath of requested) {
     const absPath = safeResolve(root, relPath);
     if (!absPath) continue;
 
