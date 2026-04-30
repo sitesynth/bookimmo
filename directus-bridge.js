@@ -517,7 +517,7 @@
     loadMessages(locale).then(function (payload) {
       MESSAGES = payload || {};
       applyLocaleToStaticUI();
-      injectLanguageSwitcher();
+      // language switcher disabled; locale remains automatic via URL/redirects.
       injectBlogMenuLink();
     });
     updateAgents();
