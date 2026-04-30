@@ -1,99 +1,26 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
-    "api/page.js": {
-      "includeFiles": "{de/index.html,en/index.html,fr/index.html,it/index.html,nl/index.html,index.html}"
-    },
     "api/directus-bridge.js": {
       "includeFiles": "public/directus-bridge.js"
+    },
+    "api/directus.js": {
+      "includeFiles": "{}"
     }
   },
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "/api/page?lang=de",
-      "permanent": false
-    },
-    {
-      "source": "/de",
-      "destination": "/api/page?lang=de",
-      "permanent": false
-    },
-    {
-      "source": "/de/",
-      "destination": "/api/page?lang=de",
-      "permanent": false
-    },
-    {
-      "source": "/de/index.html",
-      "destination": "/api/page?lang=de",
-      "permanent": false
-    },
-    {
-      "source": "/en",
-      "destination": "/api/page?lang=en",
-      "permanent": false
-    },
-    {
-      "source": "/en/",
-      "destination": "/api/page?lang=en",
-      "permanent": false
-    },
-    {
-      "source": "/en/index.html",
-      "destination": "/api/page?lang=en",
-      "permanent": false
-    },
-    {
-      "source": "/fr",
-      "destination": "/api/page?lang=fr",
-      "permanent": false
-    },
-    {
-      "source": "/fr/",
-      "destination": "/api/page?lang=fr",
-      "permanent": false
-    },
-    {
-      "source": "/fr/index.html",
-      "destination": "/api/page?lang=fr",
-      "permanent": false
-    },
-    {
-      "source": "/it",
-      "destination": "/api/page?lang=it",
-      "permanent": false
-    },
-    {
-      "source": "/it/",
-      "destination": "/api/page?lang=it",
-      "permanent": false
-    },
-    {
-      "source": "/it/index.html",
-      "destination": "/api/page?lang=it",
-      "permanent": false
-    },
-    {
-      "source": "/nl",
-      "destination": "/api/page?lang=nl",
-      "permanent": false
-    },
-    {
-      "source": "/nl/",
-      "destination": "/api/page?lang=nl",
-      "permanent": false
-    },
-    {
-      "source": "/nl/index.html",
-      "destination": "/api/page?lang=nl",
-      "permanent": false
-    },
-    {
-      "source": "/favicon.ico",
-      "destination": "/_local/static/images/9s20P45oGrfvd6tA0odGVXuuo.png",
-      "permanent": false
-    }
+  "cleanUrls": false,
+  "rewrites": [
+    { "source": "/", "destination": "/de/index.html" },
+    { "source": "/de", "destination": "/de/index.html" },
+    { "source": "/de/", "destination": "/de/index.html" },
+    { "source": "/en", "destination": "/en/index.html" },
+    { "source": "/en/", "destination": "/en/index.html" },
+    { "source": "/fr", "destination": "/fr/index.html" },
+    { "source": "/fr/", "destination": "/fr/index.html" },
+    { "source": "/it", "destination": "/it/index.html" },
+    { "source": "/it/", "destination": "/it/index.html" },
+    { "source": "/nl", "destination": "/nl/index.html" },
+    { "source": "/nl/", "destination": "/nl/index.html" }
   ],
   "headers": [
     {
