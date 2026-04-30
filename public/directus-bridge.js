@@ -1,7 +1,6 @@
 (function () {
   var DIRECTUS_BASE = (window.BOOKIMMO_DIRECTUS_URL || "https://cms.book.immo").replace(/\/$/, "");
-  var DIRECTUS_TOKEN =
-    window.BOOKIMMO_DIRECTUS_TOKEN || "b837708aafa22fc40d6e86123329aa268f1065c4b582a1a75080b92e2406d3d0";
+  var DIRECTUS_TOKEN = window.BOOKIMMO_DIRECTUS_TOKEN || "";
   var DIRECTUS_PROXY = "/api/directus";
   var ACTIVE_LOCALE = "en";
   var MESSAGES = {};
@@ -301,7 +300,7 @@
   }
 
   function loadMessages(locale) {
-    return fetch("/public/i18n/" + locale + ".json")
+    return fetch("/i18n/" + locale + ".json")
       .then(function (r) {
         if (!r.ok) throw new Error("i18n load failed " + r.status);
         return r.json();

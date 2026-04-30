@@ -31,7 +31,9 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: "Invalid path. Use /items/... path." });
   }
 
-  const token = process.env.DIRECTUS_API_TOKEN;
+  const envToken = process.env.DIRECTUS_API_TOKEN;
+  const incomingAuth = req.headers.authorization || req.headers.Authorization;
+  const token = envToken || (typeof incomingAuth === "string" && incomingAuth.startsWith("Bearer ") ? incomingAuth.slice(7) : "");
   const headers = { Accept: "application/json" };
   if (token) headers.Authorization = `Bearer ${token}`;
   if (req.method === "POST") headers["Content-Type"] = "application/json";
