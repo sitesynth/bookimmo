@@ -5,7 +5,7 @@
       "includeFiles": "public/directus-bridge.js"
     },
     "api/asset.js": {
-      "includeFiles": "_local/**"
+      "includeFiles": "{_local,public}/**"
     },
     "api/page.js": {
       "includeFiles": "{de,en,fr,it,nl}/index.html"
