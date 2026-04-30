@@ -1,5 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/page.js": {
+      "includeFiles": "{de/index.html,en/index.html,fr/index.html,it/index.html,nl/index.html}"
+    }
+  },
   "redirects": [
     {
       "source": "/",
@@ -67,15 +72,25 @@
     }
   ],
   "rewrites": [
-    { "source": "/dashboard-home", "destination": "/de/index.html" },
-    { "source": "/search", "destination": "/de/index.html" },
-    { "source": "/agent", "destination": "/de/index.html" },
-    { "source": "/account", "destination": "/de/index.html" },
-    { "source": "/Bookmark", "destination": "/de/index.html" },
-    { "source": "/log-in", "destination": "/de/index.html" },
-    { "source": "/sign-up", "destination": "/de/index.html" },
-    { "source": "/forgot-password", "destination": "/de/index.html" },
-    { "source": "/privacy-policy", "destination": "/de/index.html" },
-    { "source": "/terms-of-service", "destination": "/de/index.html" }
+    { "source": "/de", "destination": "/api/page?lang=de" },
+    { "source": "/de/:path*", "destination": "/api/page?lang=de" },
+    { "source": "/en", "destination": "/api/page?lang=en" },
+    { "source": "/en/:path*", "destination": "/api/page?lang=en" },
+    { "source": "/fr", "destination": "/api/page?lang=fr" },
+    { "source": "/fr/:path*", "destination": "/api/page?lang=fr" },
+    { "source": "/it", "destination": "/api/page?lang=it" },
+    { "source": "/it/:path*", "destination": "/api/page?lang=it" },
+    { "source": "/nl", "destination": "/api/page?lang=nl" },
+    { "source": "/nl/:path*", "destination": "/api/page?lang=nl" },
+    { "source": "/dashboard-home", "destination": "/api/page?lang=de" },
+    { "source": "/search", "destination": "/api/page?lang=de" },
+    { "source": "/agent", "destination": "/api/page?lang=de" },
+    { "source": "/account", "destination": "/api/page?lang=de" },
+    { "source": "/Bookmark", "destination": "/api/page?lang=de" },
+    { "source": "/log-in", "destination": "/api/page?lang=de" },
+    { "source": "/sign-up", "destination": "/api/page?lang=de" },
+    { "source": "/forgot-password", "destination": "/api/page?lang=de" },
+    { "source": "/privacy-policy", "destination": "/api/page?lang=de" },
+    { "source": "/terms-of-service", "destination": "/api/page?lang=de" }
   ]
 }
