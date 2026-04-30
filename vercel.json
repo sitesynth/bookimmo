@@ -10,6 +10,16 @@
   },
   "redirects": [
     {
+      "source": "/_local/:path*",
+      "destination": "/api/asset?path=_local/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/public/i18n/:path*",
+      "destination": "/api/asset?path=public/i18n/:path*",
+      "permanent": false
+    },
+    {
       "source": "/",
       "destination": "/de/index.html",
       "permanent": false,
