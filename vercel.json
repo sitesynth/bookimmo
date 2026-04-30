@@ -4,23 +4,32 @@
     "api/directus-bridge.js": {
       "includeFiles": "public/directus-bridge.js"
     },
-    "api/directus.js": {
-      "includeFiles": "{}"
+    "api/asset.js": {
+      "includeFiles": "_local/**"
+    },
+    "api/page.js": {
+      "includeFiles": "{de,en,fr,it,nl}/index.html"
     }
   },
-  "cleanUrls": false,
   "rewrites": [
-    { "source": "/", "destination": "/de/index.html" },
-    { "source": "/de", "destination": "/de/index.html" },
-    { "source": "/de/", "destination": "/de/index.html" },
-    { "source": "/en", "destination": "/en/index.html" },
-    { "source": "/en/", "destination": "/en/index.html" },
-    { "source": "/fr", "destination": "/fr/index.html" },
-    { "source": "/fr/", "destination": "/fr/index.html" },
-    { "source": "/it", "destination": "/it/index.html" },
-    { "source": "/it/", "destination": "/it/index.html" },
-    { "source": "/nl", "destination": "/nl/index.html" },
-    { "source": "/nl/", "destination": "/nl/index.html" }
+    { "source": "/", "destination": "/api/page?lang=de" },
+    { "source": "/de", "destination": "/api/page?lang=de" },
+    { "source": "/de/", "destination": "/api/page?lang=de" },
+    { "source": "/de/index.html", "destination": "/api/page?lang=de" },
+    { "source": "/en", "destination": "/api/page?lang=en" },
+    { "source": "/en/", "destination": "/api/page?lang=en" },
+    { "source": "/en/index.html", "destination": "/api/page?lang=en" },
+    { "source": "/fr", "destination": "/api/page?lang=fr" },
+    { "source": "/fr/", "destination": "/api/page?lang=fr" },
+    { "source": "/fr/index.html", "destination": "/api/page?lang=fr" },
+    { "source": "/it", "destination": "/api/page?lang=it" },
+    { "source": "/it/", "destination": "/api/page?lang=it" },
+    { "source": "/it/index.html", "destination": "/api/page?lang=it" },
+    { "source": "/nl", "destination": "/api/page?lang=nl" },
+    { "source": "/nl/", "destination": "/api/page?lang=nl" },
+    { "source": "/nl/index.html", "destination": "/api/page?lang=nl" },
+    { "source": "/_local/:path*", "destination": "/api/asset?path=_local/:path*" },
+    { "source": "/favicon.ico", "destination": "/api/asset?path=_local/static/images/9s20P45oGrfvd6tA0odGVXuuo.png" }
   ],
   "headers": [
     {
