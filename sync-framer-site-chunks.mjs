@@ -2,8 +2,8 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 const siteId = '7i7OT8rEND0rWXuY5IMijW'
-const baseUrl = `https://framerusercontent.com/sites/${siteId}/`
-const dir = `/Users/miguelaprossine/bookimmo/public/_local/framerusercontent.com/sites/${siteId}`
+const baseUrl = `https://static/sites/${siteId}/`
+const dir = `/Users/miguelaprossine/bookimmo/public/_local/static/sites/${siteId}`
 
 const refs = new Set()
 const seen = new Set()
