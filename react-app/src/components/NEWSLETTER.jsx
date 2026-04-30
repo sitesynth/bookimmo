@@ -1,0 +1,234 @@
+import React from 'react'
+import styles from './NEWSLETTER.module.css'
+
+export default function NEWSLETTER() {
+  return (
+    <>
+      <section
+                    className="framer-j01amm"
+                    id="newsletter"
+                    style={{}}
+                >
+                    <div className="framer-1bwyng9">
+                        <div className="framer-aqipmc">
+                            <div
+                                className="framer-glk3ho"
+                                style={{}}
+                            >
+                                <h3
+                                    className="framer-text framer-styles-preset-1886vs3"
+                                    data-styles-preset="c0Wk7OQFB"
+                                    style={{}}
+                                >
+                                    There is always something new! Don’t miss out.
+                                </h3>
+                            </div>
+                            <div
+                                className="framer-1r688ax"
+                                style={{}}
+                            >
+                                <p
+                                    className="framer-text framer-styles-preset-ia5eoh"
+                                    data-styles-preset="zxQc8f61B"
+                                    style={{}}
+                                >
+                                    Get property updates and the latest on pricing for your next property decision.
+                                </p>
+                            </div>
+                        </div>
+                        <form className="framer-79ac4b">
+                            <label className="framer-6buzkd"
+                                ><div className="framer-form-text-input framer-form-input-wrapper framer-1iaeodx">
+                                    <input
+                                        type="email"
+                                        required
+                                        name="Email"
+                                        placeholder="Enter email address"
+                                        className="framer-form-input framer-form-input-empty"
+                                    /></div
+                            ></label>
+                            <div className="ssr-variant hidden-1woyh6i">
+                                <div className="framer-1ym0wai-container">
+                                    <button
+                                        type="submit"
+                                        className="framer-ojRDq framer-1yij144 framer-v-1yij144"
+                                        data-reset="button"
+                                        style={{}}
+                                        tabindex="0"
+                                    >
+                                        <div
+                                            className="framer-1dqfucg"
+                                            style={{}}
+                                        >
+                                            <p
+                                                style={{}}
+                                                className="framer-text"
+                                            >
+                                                Submit
+                                            </p>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="ssr-variant hidden-olbwcu hidden-72rtr7">
+                                <div className="framer-1ym0wai-container">
+                                    <button
+                                        type="submit"
+                                        className="framer-ojRDq framer-1yij144 framer-v-1yij144"
+                                        data-reset="button"
+                                        style={{}}
+                                        tabindex="0"
+                                    >
+                                        <div
+                                            className="framer-1dqfucg"
+                                            style={{}}
+                                        >
+                                            <p
+                                                style={{}}
+                                                className="framer-text"
+                                            >
+                                                Submit
+                                            </p>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            <input
+                                type="text"
+                                name="website"
+                                tabindex="-1"
+                                autocomplete="one-time-code"
+                                aria-hidden="true"
+                                style={{}}
+                                data-1p-ignore="true"
+                                data-lpignore="true"
+                                data-form-type="other"
+                                data-bwignore="true"
+                                value
+                            /><input
+                                type="text"
+                                name="company"
+                                tabindex="-1"
+                                autocomplete="one-time-code"
+                                aria-hidden="true"
+                                style={{}}
+                                data-1p-ignore="true"
+                                data-lpignore="true"
+                                data-form-type="other"
+                                data-bwignore="true"
+                                value
+                            /><input
+                                type="text"
+                                name="message"
+                                tabindex="-1"
+                                autocomplete="one-time-code"
+                                aria-hidden="true"
+                                style={{}}
+                                data-1p-ignore="true"
+                                data-lpignore="true"
+                                data-form-type="other"
+                                data-bwignore="true"
+                                value
+                            /><input
+                                type="text"
+                                name="subject"
+                                tabindex="-1"
+                                autocomplete="one-time-code"
+                                aria-hidden="true"
+                                style={{}}
+                                data-1p-ignore="true"
+                                data-lpignore="true"
+                                data-form-type="other"
+                                data-bwignore="true"
+                                value
+                            /><input
+                                type="text"
+                                name="title"
+                                tabindex="-1"
+                                autocomplete="one-time-code"
+                                aria-hidden="true"
+                                style={{}}
+                                data-1p-ignore="true"
+                                data-lpignore="true"
+                                data-form-type="other"
+                                data-bwignore="true"
+                                value
+                            /><input
+                                type="text"
+                                name="description"
+                                tabindex="-1"
+                                autocomplete="one-time-code"
+                                aria-hidden="true"
+                                style={{}}
+                                data-1p-ignore="true"
+                                data-lpignore="true"
+                                data-form-type="other"
+                                data-bwignore="true"
+                                value
+                            /><input
+                                type="text"
+                                name="feedback"
+                                tabindex="-1"
+                                autocomplete="one-time-code"
+                                aria-hidden="true"
+                                style={{}}
+                                data-1p-ignore="true"
+                                data-lpignore="true"
+                                data-form-type="other"
+                                data-bwignore="true"
+                                value
+                            /><input
+                                type="text"
+                                name="notes"
+                                tabindex="-1"
+                                autocomplete="one-time-code"
+                                aria-hidden="true"
+                                style={{}}
+                                data-1p-ignore="true"
+                                data-lpignore="true"
+                                data-form-type="other"
+                                data-bwignore="true"
+                                value
+                            /><input
+                                type="text"
+                                name="details"
+                                tabindex="-1"
+                                autocomplete="one-time-code"
+                                aria-hidden="true"
+                                style={{}}
+                                data-1p-ignore="true"
+                                data-lpignore="true"
+                                data-form-type="other"
+                                data-bwignore="true"
+                                value
+                            /><input
+                                type="text"
+                                name="remarks"
+                                tabindex="-1"
+                                autocomplete="one-time-code"
+                                aria-hidden="true"
+                                style={{}}
+                                data-1p-ignore="true"
+                                data-lpignore="true"
+                                data-form-type="other"
+                                data-bwignore="true"
+                                value
+                            /><input
+                                type="text"
+                                name="comments"
+                                tabindex="-1"
+                                autocomplete="one-time-code"
+                                aria-hidden="true"
+                                style={{}}
+                                data-1p-ignore="true"
+                                data-lpignore="true"
+                                data-form-type="other"
+                                data-bwignore="true"
+                                value
+                            />
+                        </form>
+                    </div>
+                </section>
+    </>
+  )
+}
