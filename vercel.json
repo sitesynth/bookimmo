@@ -28,6 +28,7 @@
     { "source": "/nl", "destination": "/api/page?lang=nl" },
     { "source": "/nl/", "destination": "/api/page?lang=nl" },
     { "source": "/nl/index.html", "destination": "/api/page?lang=nl" },
+    { "source": "/public/:path*", "destination": "/api/asset?path=public/:path*" },
     { "source": "/_local/:path*", "destination": "/api/asset?path=_local/:path*" },
     { "source": "/favicon.ico", "destination": "/api/asset?path=_local/static/images/9s20P45oGrfvd6tA0odGVXuuo.png" }
   ],
