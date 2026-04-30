@@ -18,8 +18,16 @@ function buildUpstreamUrl(path, query) {
 }
 
 module.exports = async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
+  }
+
   if (req.method !== "GET" && req.method !== "POST") {
-    res.setHeader("Allow", "GET, POST");
+    res.setHeader("Allow", "GET, POST, OPTIONS");
     return res.status(405).json({ error: "Method not allowed" });
   }
 
@@ -31,9 +39,7 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: "Invalid path. Use /items/... path." });
   }
 
-  const envToken = process.env.DIRECTUS_API_TOKEN;
-  const incomingAuth = req.headers.authorization || req.headers.Authorization;
-  const token = envToken || (typeof incomingAuth === "string" && incomingAuth.startsWith("Bearer ") ? incomingAuth.slice(7) : "");
+  const token = process.env.DIRECTUS_API_TOKEN;
   const headers = { Accept: "application/json" };
   if (token) headers.Authorization = `Bearer ${token}`;
   if (req.method === "POST") headers["Content-Type"] = "application/json";

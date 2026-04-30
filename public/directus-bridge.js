@@ -1,6 +1,7 @@
 (function () {
   var DIRECTUS_BASE = (window.BOOKIMMO_DIRECTUS_URL || "https://cms.book.immo").replace(/\/$/, "");
-  var DIRECTUS_TOKEN = window.BOOKIMMO_DIRECTUS_TOKEN || "";
+  var DIRECTUS_TOKEN =
+    window.BOOKIMMO_DIRECTUS_TOKEN || "b837708aafa22fc40d6e86123329aa268f1065c4b582a1a75080b92e2406d3d0";
   var DIRECTUS_PROXY = "/api/directus";
   var ACTIVE_LOCALE = "en";
   var MESSAGES = {};
@@ -82,7 +83,7 @@
   function updateAgents() {
     var query =
       "filter[status][_eq]=published" +
-      "&sort[]=-is_featured&sort[]=-date_created" +
+      "&sort[]=-is_featured" +
       "&limit=24" +
       "&fields=full_name,role_label,listings_count,avatar";
 
@@ -193,7 +194,7 @@
   function updateProperties() {
     var query =
       "filter[status][_eq]=published" +
-      "&sort[]=-is_featured&sort[]=-date_created" +
+      "&sort[]=-is_featured" +
       "&limit=24" +
       "&fields=title,city_slug,address,short_description,bedrooms,bathrooms,area_m2,price,currency,cover_image";
 
@@ -220,7 +221,7 @@
     if (!cards.length) return Promise.resolve();
     var query =
       "filter[status][_eq]=published" +
-      "&sort[]=-published_at&sort[]=-date_created" +
+      "&sort[]=-published_at" +
       "&limit=12" +
       "&fields=title,slug,excerpt,cover_image,published_at,author_name";
 
@@ -300,7 +301,7 @@
   }
 
   function loadMessages(locale) {
-    return fetch("/i18n/" + locale + ".json")
+    return fetch("/public/i18n/" + locale + ".json")
       .then(function (r) {
         if (!r.ok) throw new Error("i18n load failed " + r.status);
         return r.json();

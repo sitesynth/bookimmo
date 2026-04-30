@@ -16,8 +16,11 @@ module.exports = async function handler(req, res) {
     const html = await fs.readFile(filePath, "utf8");
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Vary", "Accept-Encoding");
     return res.status(200).send(html);
   } catch (error) {
+    console.error(`Failed to load ${filePath}:`, error.message);
     return res.status(500).send("Failed to render page");
   }
 };
