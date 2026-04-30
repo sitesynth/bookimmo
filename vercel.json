@@ -3,6 +3,9 @@
   "functions": {
     "api/page.js": {
       "includeFiles": "{de/index.html,en/index.html,fr/index.html,it/index.html,nl/index.html}"
+    },
+    "api/asset.js": {
+      "includeFiles": "{_local/**,public/i18n/**}"
     }
   },
   "redirects": [
@@ -72,30 +75,113 @@
     }
   ],
   "rewrites": [
-    { "source": "/de", "destination": "/api/page?lang=de" },
-    { "source": "/de/", "destination": "/api/page?lang=de" },
-    { "source": "/de/:path*", "destination": "/api/page?lang=de" },
-    { "source": "/en", "destination": "/api/page?lang=en" },
-    { "source": "/en/", "destination": "/api/page?lang=en" },
-    { "source": "/en/:path*", "destination": "/api/page?lang=en" },
-    { "source": "/fr", "destination": "/api/page?lang=fr" },
-    { "source": "/fr/", "destination": "/api/page?lang=fr" },
-    { "source": "/fr/:path*", "destination": "/api/page?lang=fr" },
-    { "source": "/it", "destination": "/api/page?lang=it" },
-    { "source": "/it/", "destination": "/api/page?lang=it" },
-    { "source": "/it/:path*", "destination": "/api/page?lang=it" },
-    { "source": "/nl", "destination": "/api/page?lang=nl" },
-    { "source": "/nl/", "destination": "/api/page?lang=nl" },
-    { "source": "/nl/:path*", "destination": "/api/page?lang=nl" },
-    { "source": "/dashboard-home", "destination": "/api/page?lang=de" },
-    { "source": "/search", "destination": "/api/page?lang=de" },
-    { "source": "/agent", "destination": "/api/page?lang=de" },
-    { "source": "/account", "destination": "/api/page?lang=de" },
-    { "source": "/Bookmark", "destination": "/api/page?lang=de" },
-    { "source": "/log-in", "destination": "/api/page?lang=de" },
-    { "source": "/sign-up", "destination": "/api/page?lang=de" },
-    { "source": "/forgot-password", "destination": "/api/page?lang=de" },
-    { "source": "/privacy-policy", "destination": "/api/page?lang=de" },
-    { "source": "/terms-of-service", "destination": "/api/page?lang=de" }
+    {
+      "source": "/_local/:path*",
+      "destination": "/api/asset?path=_local/:path*"
+    },
+    {
+      "source": "/public/i18n/:path*",
+      "destination": "/api/asset?path=public/i18n/:path*"
+    },
+    {
+      "source": "/de",
+      "destination": "/api/page?lang=de"
+    },
+    {
+      "source": "/de/",
+      "destination": "/api/page?lang=de"
+    },
+    {
+      "source": "/de/:path*",
+      "destination": "/api/page?lang=de"
+    },
+    {
+      "source": "/en",
+      "destination": "/api/page?lang=en"
+    },
+    {
+      "source": "/en/",
+      "destination": "/api/page?lang=en"
+    },
+    {
+      "source": "/en/:path*",
+      "destination": "/api/page?lang=en"
+    },
+    {
+      "source": "/fr",
+      "destination": "/api/page?lang=fr"
+    },
+    {
+      "source": "/fr/",
+      "destination": "/api/page?lang=fr"
+    },
+    {
+      "source": "/fr/:path*",
+      "destination": "/api/page?lang=fr"
+    },
+    {
+      "source": "/it",
+      "destination": "/api/page?lang=it"
+    },
+    {
+      "source": "/it/",
+      "destination": "/api/page?lang=it"
+    },
+    {
+      "source": "/it/:path*",
+      "destination": "/api/page?lang=it"
+    },
+    {
+      "source": "/nl",
+      "destination": "/api/page?lang=nl"
+    },
+    {
+      "source": "/nl/",
+      "destination": "/api/page?lang=nl"
+    },
+    {
+      "source": "/nl/:path*",
+      "destination": "/api/page?lang=nl"
+    },
+    {
+      "source": "/dashboard-home",
+      "destination": "/api/page?lang=de"
+    },
+    {
+      "source": "/search",
+      "destination": "/api/page?lang=de"
+    },
+    {
+      "source": "/agent",
+      "destination": "/api/page?lang=de"
+    },
+    {
+      "source": "/account",
+      "destination": "/api/page?lang=de"
+    },
+    {
+      "source": "/Bookmark",
+      "destination": "/api/page?lang=de"
+    },
+    {
+      "source": "/log-in",
+      "destination": "/api/page?lang=de"
+    },
+    {
+      "source": "/sign-up",
+      "destination": "/api/page?lang=de"
+    },
+    {
+      "source": "/forgot-password",
+      "destination": "/api/page?lang=de"
+    },
+    {
+      "source": "/privacy-policy",
+      "destination": "/api/page?lang=de"
+    },
+    {
+      "source": "/terms-of-service",
+      "destination": "/api/page?lang=de"
+    }
   ]
 }
