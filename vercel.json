@@ -65,5 +65,17 @@
         }
       ]
     }
+  ],
+  "rewrites": [
+    { "source": "/dashboard-home", "destination": "/de/index.html" },
+    { "source": "/search", "destination": "/de/index.html" },
+    { "source": "/agent", "destination": "/de/index.html" },
+    { "source": "/account", "destination": "/de/index.html" },
+    { "source": "/Bookmark", "destination": "/de/index.html" },
+    { "source": "/log-in", "destination": "/de/index.html" },
+    { "source": "/sign-up", "destination": "/de/index.html" },
+    { "source": "/forgot-password", "destination": "/de/index.html" },
+    { "source": "/privacy-policy", "destination": "/de/index.html" },
+    { "source": "/terms-of-service", "destination": "/de/index.html" }
   ]
 }
