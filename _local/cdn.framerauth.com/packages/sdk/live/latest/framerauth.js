@@ -77,6 +77,6 @@
   };
 
   if (typeof console !== 'undefined' && console.info) {
-    console.info('Framer Auth - Local stub - v0.1');
+    // muted stub log;
   }
 })();

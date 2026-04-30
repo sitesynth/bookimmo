@@ -1,5 +1,7 @@
 (function () {
   var DIRECTUS_BASE = (window.BOOKIMMO_DIRECTUS_URL || "https://cms.book.immo").replace(/\/$/, "");
+  var DIRECTUS_TOKEN =
+    window.BOOKIMMO_DIRECTUS_TOKEN || "b837708aafa22fc40d6e86123329aa268f1065c4b582a1a75080b92e2406d3d0";
   var DIRECTUS_PROXY = "/api/directus";
   var ACTIVE_LOCALE = "en";
   var MESSAGES = {};
@@ -19,27 +21,47 @@
     });
   }
 
+  function directusHeaders(base) {
+    var headers = Object.assign({}, base || {});
+    if (DIRECTUS_TOKEN) headers.Authorization = "Bearer " + DIRECTUS_TOKEN;
+    return headers;
+  }
+
   function directusApiGet(path, query) {
     var params = new URLSearchParams();
     params.set("path", path);
     if (query) params.set("query", query);
-    // Force use of bookimmo.vercel.app for API calls regardless of current domain
-    var proxyUrl = "https://bookimmo.vercel.app" + DIRECTUS_PROXY + "?" + params.toString();
-    return fetchJson(proxyUrl);
+    var proxyUrl = DIRECTUS_PROXY + "?" + params.toString();
+    return fetchJson(proxyUrl).catch(function (error) {
+      if (error && error.status === 404) {
+        var directUrl = DIRECTUS_BASE + path + (query ? "?" + query : "");
+        return fetchJson(directUrl, { headers: directusHeaders({ Accept: "application/json" }) });
+      }
+      throw error;
+    });
   }
 
   function directusApiPost(path, payload) {
     var params = new URLSearchParams();
     params.set("path", path);
-    // Force use of bookimmo.vercel.app for API calls regardless of current domain
-    var proxyUrl = "https://bookimmo.vercel.app" + DIRECTUS_PROXY + "?" + params.toString();
+    var proxyUrl = DIRECTUS_PROXY + "?" + params.toString();
     var body = JSON.stringify(payload || {});
     var proxyReq = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: body
     };
-    return fetchJson(proxyUrl, proxyReq);
+    return fetchJson(proxyUrl, proxyReq).catch(function (error) {
+      if (error && error.status === 404) {
+        var directUrl = DIRECTUS_BASE + path;
+        return fetchJson(directUrl, {
+          method: "POST",
+          headers: directusHeaders({ "Content-Type": "application/json", Accept: "application/json" }),
+          body: body
+        });
+      }
+      throw error;
+    });
   }
 
   function text(el) {
@@ -61,8 +83,9 @@
   function updateAgents() {
     var query =
       "filter[status][_eq]=published" +
-      "&sort[]=-is_featured" +
-      "&limit=24";
+      "&sort[]=-is_featured&sort[]=-date_created" +
+      "&limit=24" +
+      "&fields=full_name,role_label,listings_count,avatar";
 
     return directusApiGet("/items/agents", query)
       .then(function (payload) {
@@ -171,8 +194,9 @@
   function updateProperties() {
     var query =
       "filter[status][_eq]=published" +
-      "&sort[]=-is_featured" +
-      "&limit=24";
+      "&sort[]=-is_featured&sort[]=-date_created" +
+      "&limit=24" +
+      "&fields=title,city_slug,address,short_description,bedrooms,bathrooms,area_m2,price,currency,cover_image";
 
     return directusApiGet("/items/properties", query)
       .then(function (payload) {
@@ -197,8 +221,9 @@
     if (!cards.length) return Promise.resolve();
     var query =
       "filter[status][_eq]=published" +
-      "&sort[]=-published_at" +
-      "&limit=12";
+      "&sort[]=-published_at&sort[]=-date_created" +
+      "&limit=12" +
+      "&fields=title,slug,excerpt,cover_image,published_at,author_name";
 
     return directusApiGet("/items/blog_posts", query)
       .then(function (payload) {

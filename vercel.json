@@ -1,58 +1,42 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "outputDirectory": ".",
+  "functions": {
+    "api/page.js": {
+      "includeFiles": "{de/index.html,en/index.html,fr/index.html,it/index.html,nl/index.html,index.html}"
+    },
+    "api/directus-bridge.js": {
+      "includeFiles": "public/directus-bridge.js"
+    }
+  },
   "redirects": [
     {
       "source": "/",
-      "destination": "/de/index.html",
-      "permanent": false,
-      "has": [
-        {
-          "type": "header",
-          "key": "x-vercel-ip-country",
-          "value": "(DE|AT|CH)"
-        }
-      ]
+      "destination": "/api/page?lang=de",
+      "permanent": false
     },
     {
-      "source": "/",
-      "destination": "/fr/index.html",
-      "permanent": false,
-      "has": [
-        {
-          "type": "header",
-          "key": "x-vercel-ip-country",
-          "value": "(FR|BE)"
-        }
-      ]
+      "source": "/de",
+      "destination": "/api/page?lang=de",
+      "permanent": false
     },
     {
-      "source": "/",
-      "destination": "/it/index.html",
-      "permanent": false,
-      "has": [
-        {
-          "type": "header",
-          "key": "x-vercel-ip-country",
-          "value": "IT"
-        }
-      ]
+      "source": "/en",
+      "destination": "/api/page?lang=en",
+      "permanent": false
     },
     {
-      "source": "/",
-      "destination": "/nl/index.html",
-      "permanent": false,
-      "has": [
-        {
-          "type": "header",
-          "key": "x-vercel-ip-country",
-          "value": "NL"
-        }
-      ]
+      "source": "/fr",
+      "destination": "/api/page?lang=fr",
+      "permanent": false
     },
     {
-      "source": "/",
-      "destination": "/en/index.html",
+      "source": "/it",
+      "destination": "/api/page?lang=it",
+      "permanent": false
+    },
+    {
+      "source": "/nl",
+      "destination": "/api/page?lang=nl",
       "permanent": false
     }
   ],
@@ -62,7 +46,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "script-src 'self' 'unsafe-eval' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:;"
+          "value": "script-src 'self' 'unsafe-eval' 'unsafe-inline' https: blob:; worker-src 'self' blob:; child-src 'self' blob:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:;"
         }
       ]
     }

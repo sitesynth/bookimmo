@@ -2,8 +2,8 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 const siteId = '7i7OT8rEND0rWXuY5IMijW'
-const baseUrl = `https://framerusercontent.com/sites/${siteId}/`
-const dir = `/Users/miguelaprossine/bookimmo/public/_local/framerusercontent.com/sites/${siteId}`
+const baseUrl = `https://static/sites/${siteId}/`
+const dir = `/Users/miguelaprossine/bookimmo/public/_local/static/sites/${siteId}`
 
 const refs = new Set()
 const seen = new Set()
@@ -20,8 +20,8 @@ function addRef(ref) {
 function extractRefs(text) {
   const patterns = [
     new RegExp(`\\./([A-Za-z0-9._/-]+\\.(?:mjs|js|json))`, 'g'),
-    new RegExp(`/_local/framerusercontent\\.com/sites/${siteId}/([A-Za-z0-9._/-]+\\.(?:mjs|js|json))`, 'g'),
-    new RegExp(`https://framerusercontent\\.com/sites/${siteId}/([A-Za-z0-9._/-]+\\.(?:mjs|js|json))`, 'g'),
+    new RegExp(`/_local/static/sites/${siteId}/([A-Za-z0-9._/-]+\\.(?:mjs|js|json))`, 'g'),
+    new RegExp(`https://static/sites/${siteId}/([A-Za-z0-9._/-]+\\.(?:mjs|js|json))`, 'g'),
   ]
   for (const re of patterns) {
     let m

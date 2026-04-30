@@ -1,0 +1,13 @@
+export default function (React) {
+  const Icon = React.forwardRef((props, ref) =>
+    React.createElement(
+      "g",
+      { ref, ...props },
+      React.createElement("path", {
+        d: "M40 48h24l18 96a16 16 0 0 0 15.72 13h87.86a16 16 0 0 0 15.52-12.07l18.16-68A8 8 0 0 0 211.52 64H71.2l-2.08-11.12A16 16 0 0 0 53.4 40H40a8 8 0 0 0 0 16Zm136.38 93H97.72L74.2 80h126.9ZM104 200a16 16 0 1 0 16 16 16 16 0 0 0-16-16Zm80 0a16 16 0 1 0 16 16 16 16 0 0 0-16-16Z"
+      })
+    )
+  );
+
+  return Icon;
+}
