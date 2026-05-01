@@ -130,7 +130,7 @@
         if (!cards.length) return;
 
         cards.forEach(function (card, index) {
-          var agent = agents[index % agents.length];
+          var agent = agents[index];
           if (!agent) {
             card.style.display = 'none';
             return;
@@ -239,7 +239,8 @@
         if (!cards.length) return;
 
         cards.forEach(function (card, index) {
-          var property = properties[index % properties.length];
+          var property = properties[index];
+          if (!property) { card.style.display = 'none'; return; }
           updatePropertyCard(card, property);
         });
       })
@@ -262,7 +263,8 @@
         var posts = (payload && payload.data) || [];
         if (!posts.length) return;
         cards.forEach(function (card, index) {
-          var post = posts[index % posts.length];
+          var post = posts[index];
+          if (!post) { card.style.display = 'none'; return; }
           var titleEl = card.querySelector("[data-bookimmo-blog-title], h3, h4, h5, p");
           var excerptEl = card.querySelector("[data-bookimmo-blog-excerpt]");
           var imgEl = card.querySelector("img");
