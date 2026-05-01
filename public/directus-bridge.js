@@ -6,6 +6,12 @@
   var ACTIVE_LOCALE = "en";
   var MESSAGES = {};
 
+  function shouldUseProxy() {
+    var h = (window.location && window.location.hostname) || "";
+    if (h === "localhost" || h === "127.0.0.1") return false;
+    return true;
+  }
+
   function directusAssetUrl(fileId) {
     return DIRECTUS_BASE + "/assets/" + encodeURIComponent(fileId) + "?fit=cover&width=1200&height=1200&quality=80";
   }
@@ -28,39 +34,43 @@
   }
 
   function directusApiGet(path, query) {
+    var directUrl = DIRECTUS_BASE + path + (query ? "?" + query : "");
+    if (!shouldUseProxy()) {
+      return fetchJson(directUrl, { headers: directusHeaders({ Accept: "application/json" }) });
+    }
     var params = new URLSearchParams();
     params.set("path", path);
     if (query) params.set("query", query);
     var proxyUrl = DIRECTUS_PROXY + "?" + params.toString();
-    return fetchJson(proxyUrl).catch(function (error) {
-      if (error && error.status === 404) {
-        var directUrl = DIRECTUS_BASE + path + (query ? "?" + query : "");
-        return fetchJson(directUrl, { headers: directusHeaders({ Accept: "application/json" }) });
-      }
-      throw error;
+    return fetchJson(proxyUrl).catch(function () {
+      return fetchJson(directUrl, { headers: directusHeaders({ Accept: "application/json" }) });
     });
   }
 
   function directusApiPost(path, payload) {
+    var directUrl = DIRECTUS_BASE + path;
+    var body = JSON.stringify(payload || {});
+    if (!shouldUseProxy()) {
+      return fetchJson(directUrl, {
+        method: "POST",
+        headers: directusHeaders({ "Content-Type": "application/json", Accept: "application/json" }),
+        body: body
+      });
+    }
     var params = new URLSearchParams();
     params.set("path", path);
     var proxyUrl = DIRECTUS_PROXY + "?" + params.toString();
-    var body = JSON.stringify(payload || {});
     var proxyReq = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: body
     };
-    return fetchJson(proxyUrl, proxyReq).catch(function (error) {
-      if (error && error.status === 404) {
-        var directUrl = DIRECTUS_BASE + path;
-        return fetchJson(directUrl, {
-          method: "POST",
-          headers: directusHeaders({ "Content-Type": "application/json", Accept: "application/json" }),
-          body: body
-        });
-      }
-      throw error;
+    return fetchJson(proxyUrl, proxyReq).catch(function () {
+      return fetchJson(directUrl, {
+        method: "POST",
+        headers: directusHeaders({ "Content-Type": "application/json", Accept: "application/json" }),
+        body: body
+      });
     });
   }
 
@@ -80,6 +90,30 @@
     return Array.prototype.slice.call(document.querySelectorAll(".framer-1huqr8v-container .framer-1XAtZ"));
   }
 
+  function clearFramerPlaceholderImage(card) {
+    var imgs = card.querySelectorAll('img');
+    imgs.forEach(function (img) {
+      if (img.src && img.src.includes('/_local/')) {
+        img.src = '';
+        img.srcset = '';
+        img.removeAttribute('srcset');
+      }
+    });
+    var bgWrap = card.querySelector('[data-framer-background-image-wrapper="true"]');
+    if (bgWrap) bgWrap.style.backgroundImage = 'none';
+  }
+
+  function setAgentImage(card, assetUrl) {
+    if (!card) return;
+    clearFramerPlaceholderImage(card);
+    if (!assetUrl) return;
+    var imgEl = card.querySelector('img[alt="Agent image"]') || card.querySelector('img');
+    if (imgEl) {
+      imgEl.src = assetUrl;
+      imgEl.srcset = assetUrl + ' 1200w';
+    }
+  }
+
   function updateAgents() {
     var query =
       "filter[status][_eq]=published" +
@@ -97,12 +131,14 @@
 
         cards.forEach(function (card, index) {
           var agent = agents[index % agents.length];
-          if (!agent) return;
+          if (!agent) {
+            card.style.display = 'none';
+            return;
+          }
 
           var nameEl = card.querySelector("h6");
           var roleEl = card.querySelector(".framer-qdgec p");
           var countEl = card.querySelector(".framer-uzrc5l p");
-          var imgEl = card.querySelector('img[alt="Agent image"]');
 
           setText(nameEl, agent.full_name || text(nameEl));
           setText(roleEl, agent.role_label || text(roleEl));
@@ -111,11 +147,7 @@
             countEl.textContent = String(agent.listings_count);
           }
 
-          if (imgEl && agent.avatar) {
-            var asset = directusAssetUrl(agent.avatar);
-            imgEl.src = asset;
-            imgEl.srcset = asset + " 1200w";
-          }
+          setAgentImage(card, agent.avatar ? directusAssetUrl(agent.avatar) : null);
         });
       })
       .catch(function (err) {
@@ -301,7 +333,7 @@
   }
 
   function loadMessages(locale) {
-    return fetch("/public/i18n/" + locale + ".json")
+    return fetch("/i18n/" + locale + ".json")
       .then(function (r) {
         if (!r.ok) throw new Error("i18n load failed " + r.status);
         return r.json();
