@@ -11,4 +11,11 @@ if (DIRECTUS_TOKEN) {
   client.setToken(DIRECTUS_TOKEN)
 }
 
+// directusAsset(id, { width: 600, quality: 80 }) → '/api/directus?path=/assets/{id}&query=width%3D600...'
+export function directusAsset(id, params = {}) {
+  if (!id) return ''
+  const query = Object.entries(params).map(([k, v]) => `${k}=${v}`).join('&')
+  return `/api/directus?path=/assets/${id}${query ? '&query=' + encodeURIComponent(query) : ''}`
+}
+
 export { client, readItems }
