@@ -1,22 +1,16 @@
 import { useState, useEffect, useMemo } from 'react'
+import { client, readItems } from '../api/directus.js'
 
-// Builds a Directus filter query string.
-// Multi-select filters use _in operator; single values use _eq.
-function buildQuery(filters) {
-  const parts = [
-    'fields=id,title,slug,price,bedrooms,bathrooms,area_m2,city_slug,address,listing_type,property_category,is_featured,short_description,description,status',
-    'filter[status][_eq]=published',
-    'limit=50',
-    'sort[]=-is_featured',
-  ]
-  if (filters.category?.length)  filters.category.forEach(v => parts.push(`filter[property_category][_in]=${encodeURIComponent(v)}`))
-  if (filters.location?.length)  filters.location.forEach(v => parts.push(`filter[city_slug][_in]=${encodeURIComponent(v)}`))
-  if (filters.type?.length)      filters.type.forEach(v => parts.push(`filter[listing_type][_in]=${encodeURIComponent(v)}`))
-  if (filters.featured)          parts.push('filter[is_featured][_eq]=true')
-  if (filters.bedrooms?.length)  filters.bedrooms.forEach(v => parts.push(`filter[bedrooms][_in]=${v}`))
-  if (filters.priceMin)          parts.push(`filter[price][_gte]=${filters.priceMin}`)
-  if (filters.priceMax)          parts.push(`filter[price][_lte]=${filters.priceMax}`)
-  return parts.join('&')
+function buildFilter(filters) {
+  const filter = { status: { _eq: 'published' } }
+  if (filters.category?.length)  filter.property_category = { _in: filters.category }
+  if (filters.location?.length)  filter.city_slug = { _in: filters.location }
+  if (filters.type?.length)      filter.listing_type = { _in: filters.type }
+  if (filters.featured)          filter.is_featured = { _eq: true }
+  if (filters.bedrooms?.length)  filter.bedrooms = { _in: filters.bedrooms.map(Number) }
+  if (filters.priceMin)          filter.price = { ...filter.price, _gte: filters.priceMin }
+  if (filters.priceMax)          filter.price = { ...filter.price, _lte: filters.priceMax }
+  return filter
 }
 
 export function useDirectusSearch(filters = {}) {
@@ -27,14 +21,18 @@ export function useDirectusSearch(filters = {}) {
   const filterKey = useMemo(() => JSON.stringify(filters), [filters])
 
   useEffect(() => {
-    const query = buildQuery(filters)
-    const url = `/api/directus?path=/items/properties&query=${encodeURIComponent(query)}`
-
+    let cancelled = false
     setLoading(true)
-    fetch(url)
-      .then(r => r.json())
-      .then(json => { setProperties(json.data || []); setLoading(false) })
-      .catch(err => { setError(err); setLoading(false) })
+    client.request(readItems('properties', {
+      fields: ['id','title','slug','price','bedrooms','bathrooms','area_m2','city_slug','address','listing_type','property_category','is_featured','short_description','description','status'],
+      filter: buildFilter(filters),
+      sort: ['-is_featured'],
+      limit: 50,
+    }))
+      .then(res => { if (!cancelled) { setProperties(res ?? []); setLoading(false) } })
+      .catch(err => { if (!cancelled) { setError(err); setLoading(false) } })
+    return () => { cancelled = true }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterKey])
 
   return { properties, loading, error }
