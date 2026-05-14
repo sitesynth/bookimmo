@@ -24,29 +24,10 @@ import AgentDetailPage from './pages/AgentDetailPage.jsx'
 
 const LANGS = ['de', 'en', 'fr', 'it', 'nl']
 
-function LanguageSwitcher({ currentLang }) {
-  const navigate = useNavigate()
-  return (
-    <div style={{ position: 'fixed', top: 12, right: 16, zIndex: 9999, display: 'flex', gap: 6, background: 'rgba(255,255,255,0.9)', borderRadius: 8, padding: '4px 8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-      {LANGS.map(l => (
-        <button key={l} onClick={() => navigate(`/${l}`)}
-          style={{ fontWeight: l === currentLang ? 700 : 400, cursor: 'pointer', border: 'none', background: 'none', fontSize: 13, padding: '2px 4px' }}>
-          {l.toUpperCase()}
-        </button>
-      ))}
-    </div>
-  )
-}
-
 function LangWrapper({ lang }) {
   const { i18n } = useTranslation()
   useEffect(() => { i18n.changeLanguage(lang) }, [lang, i18n])
-  return (
-    <>
-      <LanguageSwitcher currentLang={lang} />
-      <Outlet />
-    </>
-  )
+  return <Outlet />
 }
 
 export default function App() {
