@@ -1,0 +1,198 @@
+{
+  "componentName": "Explore",
+  "framerName": "Explore",
+  "purpose": "Explore / browse section",
+  "content": {
+    "names": [
+      "Explore",
+      "Image, Text",
+      "Image &amp; Text",
+      "Placeholder",
+      "Text, Image",
+      "Explore &amp; Find your&nbsp;Dream&nbsp; home",
+      "Explore Image",
+      "Video",
+      "Happy Client",
+      "Image",
+      "Happy Client Image",
+      "200+ Happy Client",
+      "Text",
+      "“We believe there's a perfect home for everybody, no matter the budget. That's why we always find the best homes for your budget.”",
+      "Metrics",
+      "Metrics, Patronizer Text",
+      "Metric",
+      "$200M+",
+      "Sold in Real Estate",
+      "100+",
+      "Property Sold",
+      "List",
+      "Bullet",
+      "Over 100k+ property &amp; update regularly",
+      "Expert agent consultation",
+      "Loan &amp; low Interest facility",
+      "Without Icon",
+      "See Properties"
+    ],
+    "text": "Explore &amp; Find your Dream home 200+ Happy Client “We believe there's a perfect home for everybody, no matter the budget. That's why we always find the best homes for your budget.” $200M+ Sold in Real Estate 100+ Property Sold Over 100k+ property &amp; update regularly Expert agent consultation Loan &amp; low Interest facility Browse Listings",
+    "images": [
+      {
+        "src": "/_local/static/images/5QUUPPX8KvTI2vwKGRCYLHc7w.png__q_width%3D1176%26height%3D1356",
+        "alt": "House image"
+      },
+      {
+        "src": "/_local/static/images/5QUUPPX8KvTI2vwKGRCYLHc7w.png__q_width%3D1176%26height%3D1356",
+        "alt": "House image"
+      },
+      {
+        "src": "/_local/static/images/8FX3bYAWosZlsyk57QdR3tqbEqI.png__q_width%3D160%26height%3D160",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/DFe5wJZZLAF5Esmwd7R6XUev2M.png__q_width%3D160%26height%3D160",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/YU9Dvp7rSniLTSDiEjUDrth0A4c.png__q_width%3D160%26height%3D160",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/YbTBBngvmnB8hFsz0Z7Ovns4Dgg.png__q_width%3D160%26height%3D160",
+        "alt": ""
+      }
+    ],
+    "links": [],
+    "appearIds": [],
+    "classes": [
+      "framer-ospjfn",
+      "framer-1il8hii",
+      "framer-uu7rbx",
+      "framer-ol5pqw",
+      "framer-1j57kmt",
+      "framer-1od91ro",
+      "framer-text",
+      "framer-styles-preset-utqn72",
+      "framer-15xsjwz",
+      "framer-g63xhy",
+      "framer-qit9l1-container",
+      "framer-1t6xdsw",
+      "framer-n86g05",
+      "framer-1w4entv",
+      "framer-125qkyp",
+      "framer-ycza08",
+      "framer-os8q4h",
+      "framer-11lf28u",
+      "framer-styles-preset-ia5eoh",
+      "framer-un23b5",
+      "framer-1nw1ybn",
+      "framer-tqz0ke",
+      "framer-styles-preset-14npl34",
+      "framer-1dbeozr",
+      "framer-1jfbg6g",
+      "framer-iilxq7",
+      "framer-mf69gm",
+      "framer-orhjty",
+      "framer-18o71v2",
+      "framer-at0hin",
+      "framer-qkn4a5",
+      "framer-styles-preset-91ry8n",
+      "framer-19etjgq",
+      "framer-12qvky",
+      "framer-1i86u0u",
+      "framer-j6ahz1",
+      "framer-10jko7d",
+      "framer-354haq",
+      "framer-c7vioj",
+      "framer-1ra228k",
+      "framer-xttxzq",
+      "framer-3gw4wo",
+      "framer-sen03e",
+      "framer-193j54c",
+      "framer-1iqaoth",
+      "framer-1awtp7n",
+      "framer-9pjzob-container",
+      "framer-VU4R2",
+      "framer-YPkpu",
+      "framer-1xc55fg",
+      "framer-v-l1bsy7",
+      "framer-1ln4cau",
+      "framer-2k1xbr"
+    ]
+  },
+  "animations": {
+    "scrollAppear": null,
+    "loops": [
+      {
+        "type": "loop",
+        "state": "pn={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "hn={opacity:1,rotate:-360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "gn={opacity:1,rotate:0,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "li={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "zi={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      }
+    ],
+    "hovers": [
+      {
+        "type": "variant",
+        "config": "variants:{\"r_MKrnUtr-hover\":{backgroundColor:`rgba(0, 0, 0, 0)`,opacity:.6},\"SRDXm348e-hover\":{opacity:.6},\"txfStIeBt-hover\":{opacity:.6},r_MKrnUtr:{\"--border-bottom-width\":`${g.borderBottomWidth??g.borderWidth}px`,\"--border-color\":g.borderColor,\"--border-left-width\":`${g.borderLeftWidth??g.borderWidth}px`,\"--border-right-width\":`${g.borderRightWidth??g.borderWidth}px`,\"--border-style\":g.borderStyle,\"--border-top-width\":`${g.borderTopWidth??g.borderWidth}px`,backgroundColor:`rgba(0, 0, 0, 0)`}}"
+      },
+      {
+        "type": "variant",
+        "config": "variants:{\"fXLxM_2eb-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`,opacity:.6},\"fXLxM_2eb-pressed\":{backgroundColor:`rgb(51, 51, 51)`,opacity:.6},Dt1AWl_eW:{opacity:.5},KNXL_Zv0R:{backgroundColor:`rgba(255, 34, 68, 0.15)`}}"
+      },
+      {
+        "type": "variant",
+        "config": "variants:{\"n_No7PBPH-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`},\"n_No7PBPH-pressed\":{backgroundColor:`rgb(51, 51, 51)`},vpRMcC5rY:{opacity:.5},xOy9hq7sG:{backgroundColor:`rgba(255, 34, 68, 0.15)`}}"
+      }
+    ]
+  },
+  "tokens": {
+    "display": "flex",
+    "gap": "16px",
+    "padding": "120px 56px",
+    "flex-direction": "column",
+    "--framer-paragraph-spacing": "0px",
+    "color": "transparent",
+    "background-color": "initial",
+    "--framer-font-family": "Inter, Inter Placeholder, sans-serif",
+    "--framer-font-style": "normal",
+    "--framer-font-weight": "500",
+    "--framer-text-color": "#000",
+    "--framer-font-size": "16px",
+    "--framer-letter-spacing": "0",
+    "--framer-text-transform": "none",
+    "--framer-text-decoration": "none",
+    "--framer-text-decoration-style": "none",
+    "--framer-text-decoration-color": "none",
+    "--framer-text-decoration-thickness": "none",
+    "--framer-text-decoration-skip-ink": "none",
+    "--framer-text-decoration-offset": "none",
+    "--framer-line-height": "1.2em",
+    "--framer-text-alignment": "start",
+    "--framer-font-open-type-features": "normal",
+    "--framer-text-background-color": "initial",
+    "--framer-text-background-radius": "initial",
+    "--framer-text-background-corner-shape": "initial",
+    "--framer-text-background-padding": "initial",
+    "font-size": "16px",
+    "font-family": "Inter, Inter Placeholder, sans-serif",
+    "--framer-font-family-bold": "\"Bricolage Grotesque\", \"Bricolage Grotesque Placeholder\", sans-serif",
+    "--framer-font-style-bold": "normal",
+    "--framer-font-weight-bold": "700",
+    "--framer-text-stroke-color": "initial",
+    "--framer-text-stroke-width": "initial",
+    "border-radius": "16px"
+  },
+  "prompt": "# React Component Contract: Explore\n\n## Overview\nFramer section: \"Explore\"\nPurpose: Explore / browse section\n\n## Element structure (Framer data-framer-name hierarchy)\n- Explore\n- Image, Text\n- Image &amp; Text\n- Placeholder\n- Text, Image\n- Explore &amp; Find your&nbsp;Dream&nbsp; home\n- Explore Image\n- Video\n- Happy Client\n- Image\n- Happy Client Image\n- 200+ Happy Client\n- Text\n- “We believe there's a perfect home for everybody, no matter the budget. That's why we always find the best homes for your budget.”\n- Metrics\n- Metrics, Patronizer Text\n- Metric\n- $200M+\n- Sold in Real Estate\n- 100+\n- Property Sold\n- List\n- Bullet\n- Over 100k+ property &amp; update regularly\n- Expert agent consultation\n\n## Text content\nExplore &amp; Find your Dream home 200+ Happy Client “We believe there's a perfect home for everybody, no matter the budget. That's why we always find the best homes for your budget.” $200M+ Sold in Real Estate 100+ Property Sold Over 100k+ property &amp; update regularly Expert agent consultation Loan &amp; low Interest facility Browse Listings\n\n## Images / media\n1. /_local/static/images/5QUUPPX8KvTI2vwKGRCYLHc7w.png__q_width%3D1176%26height%3D1356 — alt: \"House image\"\n2. /_local/static/images/5QUUPPX8KvTI2vwKGRCYLHc7w.png__q_width%3D1176%26height%3D1356 — alt: \"House image\"\n3. /_local/static/images/8FX3bYAWosZlsyk57QdR3tqbEqI.png__q_width%3D160%26height%3D160\n4. /_local/static/images/DFe5wJZZLAF5Esmwd7R6XUev2M.png__q_width%3D160%26height%3D160\n5. /_local/static/images/YU9Dvp7rSniLTSDiEjUDrth0A4c.png__q_width%3D160%26height%3D160\n6. /_local/static/images/YbTBBngvmnB8hFsz0Z7Ovns4Dgg.png__q_width%3D160%26height%3D160\n\n## Loop animations\n- pn={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\n- hn={opacity:1,rotate:-360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\n- gn={opacity:1,rotate:0,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\nImplement as CSS animation or Framer Motion animate with repeat=Infinity, ease='linear'\n\n## Hover states\nvariants:{\"r_MKrnUtr-hover\":{backgroundColor:`rgba(0, 0, 0, 0)`,opacity:.6},\"SRDXm348e-hover\":{opacity:.6},\"txfStIeBt-hover\":{opacity:.6},r_MKrnUtr:{\"--border-bottom-width\":`${g.borderBottomWidth??g.b\nvariants:{\"fXLxM_2eb-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`,opacity:.6},\"fXLxM_2eb-pressed\":{backgroundColor:`rgb(51, 51, 51)`,opacity:.6},Dt1AWl_eW:{opacity:.5},KNXL_Zv0R:{backgroundColor:`\n\n## Design tokens (from Framer CSS)\ndisplay: flex\ngap: 16px\npadding: 120px 56px\nflex-direction: column\n--framer-paragraph-spacing: 0px\ncolor: transparent\nbackground-color: initial\n--framer-font-family: Inter, Inter Placeholder, sans-serif\n--framer-font-style: normal\n--framer-font-weight: 500\n--framer-text-color: #000\n--framer-font-size: 16px\n--framer-letter-spacing: 0\n--framer-text-transform: none\n--framer-text-decoration: none\n--framer-text-decoration-style: none\n--framer-text-decoration-color: none\n--framer-text-decoration-thickness: none\n--framer-text-decoration-skip-ink: none\n--framer-text-decoration-offset: none\n\n## Generation requirements\n- React 18, export default function Explore()\n- Import and use Framer Motion for every animation described above\n- TailwindCSS for styling; match Framer colors/spacing/typography\n- Semantic HTML (h1/h2/p/section/nav/ul/li where appropriate)\n- Self-contained: no external state, no props required\n- Desktop-first, responsive with sm:/md:/lg: breakpoints where obvious\n- Output ONLY the component code, no markdown fences, no comments"
+}

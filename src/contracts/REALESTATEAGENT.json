@@ -1,0 +1,194 @@
+{
+  "componentName": "REALESTATEAGENT",
+  "framerName": "REAL ESTATE AGENT",
+  "purpose": "Hero / landing section with headline and CTA",
+  "content": {
+    "names": [
+      "REAL ESTATE AGENT",
+      "Hero Texts",
+      "Our Agents",
+      "Explore highlighted properties.",
+      "Agent withLoggedOut",
+      "Variant 1",
+      "Image",
+      "Agent Image",
+      "Agent Details",
+      "Name, Listing number",
+      "Mike Rutter",
+      "Listing Amount",
+      "25 listing",
+      "Agent type",
+      "Listing Agent",
+      "Logo",
+      "Text, CTA",
+      "Our agent are available to help with your property search and give your enquiries on the best offers.",
+      "Button",
+      "Sign up"
+    ],
+    "text": "Our Agents Explore the world-class agents. Ford Clinton 3 listing Listing Agent Ford Clinton 3 listing Listing Agent Hassan Patrick 2 listing Sales Person Hassan Patrick 2 listing Sales Person Mike Rutter 2 listing Commercial Broker Mike Rutter 2 listing Commercial Broker Chloe Waterwood 2 listing Realtor Chloe Waterwood 2 listing Realtor Jessy King 3 listing Commercial Broker Jessy King 3 listing Commercial Broker Our agent are available to help with your property search and give your enquiries on the best offers. Sign up Our agent are available to help with your property search and give your enquiries on the best offers. Sign up",
+    "images": [
+      {
+        "src": "/_local/static/images/6YEx3JiYIJRZsLw9TyBaZ8jK1kM.jpg",
+        "alt": "Agent image"
+      },
+      {
+        "src": "/_local/static/images/6YEx3JiYIJRZsLw9TyBaZ8jK1kM.jpg",
+        "alt": "Agent image"
+      },
+      {
+        "src": "/_local/static/images/quQX9ZfMLyWD5wvMy21bvkWs0Dg.jpg",
+        "alt": "Agent image"
+      },
+      {
+        "src": "/_local/static/images/quQX9ZfMLyWD5wvMy21bvkWs0Dg.jpg",
+        "alt": "Agent image"
+      },
+      {
+        "src": "/_local/static/images/JKorM5B0WmJOc8WoLSGW2e0hNG8.jpg",
+        "alt": "Agent image"
+      },
+      {
+        "src": "/_local/static/images/JKorM5B0WmJOc8WoLSGW2e0hNG8.jpg",
+        "alt": "Agent image"
+      },
+      {
+        "src": "/_local/static/images/PIzpRmCuCiJQt9woTpMYJzrTC4.jpg",
+        "alt": "Agent image"
+      },
+      {
+        "src": "/_local/static/images/PIzpRmCuCiJQt9woTpMYJzrTC4.jpg",
+        "alt": "Agent image"
+      },
+      {
+        "src": "/_local/static/images/N5NDqZCOMGJfADro90oU9uNsrU.jpg",
+        "alt": "Agent image"
+      },
+      {
+        "src": "/_local/static/images/N5NDqZCOMGJfADro90oU9uNsrU.jpg",
+        "alt": "Agent image"
+      }
+    ],
+    "links": [],
+    "appearIds": [],
+    "classes": [
+      "framer-hq0buh",
+      "framer-qoisk6",
+      "framer-be72q9",
+      "framer-text",
+      "framer-styles-preset-utqn72",
+      "framer-fsqlz7",
+      "framer-styles-preset-14npl34",
+      "framer-1wriefg",
+      "framer-78axpx",
+      "framer-1huqr8v-container",
+      "framer-1XAtZ",
+      "framer-naQjU",
+      "framer-YPkpu",
+      "framer-1bl41xj",
+      "framer-v-1bl41xj",
+      "framer-1resaau",
+      "framer-15zphby",
+      "framer-1a6eogl",
+      "framer-1mjskoq",
+      "framer-1d99ja6",
+      "framer-styles-preset-52e3eb",
+      "framer-1x3fxwq",
+      "framer-uzrc5l",
+      "framer-styles-preset-ia5eoh",
+      "framer-1wkms7j",
+      "framer-qdgec",
+      "framer-74jjr6",
+      "framer-195bpyh-container",
+      "framer-epkgX",
+      "framer-43ZH4",
+      "framer-pj3p5",
+      "framer-v-pj3p5",
+      "framer-1bvxrj2",
+      "framer-ysv62j",
+      "framer-s8xnrb",
+      "framer-1uddirv",
+      "framer-1aehj9j",
+      "framer-be2msb",
+      "framer-1q4wl61",
+      "framer-1gga5lp",
+      "framer-styles-preset-91ry8n"
+    ]
+  },
+  "animations": {
+    "scrollAppear": null,
+    "loops": [
+      {
+        "type": "loop",
+        "state": "pn={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "hn={opacity:1,rotate:-360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "gn={opacity:1,rotate:0,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "li={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "zi={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      }
+    ],
+    "hovers": [
+      {
+        "type": "variant",
+        "config": "variants:{\"r_MKrnUtr-hover\":{backgroundColor:`rgba(0, 0, 0, 0)`,opacity:.6},\"SRDXm348e-hover\":{opacity:.6},\"txfStIeBt-hover\":{opacity:.6},r_MKrnUtr:{\"--border-bottom-width\":`${g.borderBottomWidth??g.borderWidth}px`,\"--border-color\":g.borderColor,\"--border-left-width\":`${g.borderLeftWidth??g.borderWidth}px`,\"--border-right-width\":`${g.borderRightWidth??g.borderWidth}px`,\"--border-style\":g.borderStyle,\"--border-top-width\":`${g.borderTopWidth??g.borderWidth}px`,backgroundColor:`rgba(0, 0, 0, 0)`}}"
+      },
+      {
+        "type": "variant",
+        "config": "variants:{\"fXLxM_2eb-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`,opacity:.6},\"fXLxM_2eb-pressed\":{backgroundColor:`rgb(51, 51, 51)`,opacity:.6},Dt1AWl_eW:{opacity:.5},KNXL_Zv0R:{backgroundColor:`rgba(255, 34, 68, 0.15)`}}"
+      },
+      {
+        "type": "variant",
+        "config": "variants:{\"n_No7PBPH-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`},\"n_No7PBPH-pressed\":{backgroundColor:`rgb(51, 51, 51)`},vpRMcC5rY:{opacity:.5},xOy9hq7sG:{backgroundColor:`rgba(255, 34, 68, 0.15)`}}"
+      }
+    ]
+  },
+  "tokens": {
+    "display": "flex",
+    "gap": "104px",
+    "padding": "120px 56px",
+    "background-color": "#fff",
+    "color": "#fff",
+    "--framer-paragraph-spacing": "0px",
+    "--framer-font-family": "Inter, Inter Placeholder, sans-serif",
+    "--framer-font-style": "normal",
+    "--framer-font-weight": "500",
+    "--framer-text-color": "#000",
+    "--framer-font-size": "16px",
+    "--framer-letter-spacing": "0",
+    "--framer-text-transform": "none",
+    "--framer-text-decoration": "none",
+    "--framer-text-decoration-style": "none",
+    "--framer-text-decoration-color": "none",
+    "--framer-text-decoration-thickness": "none",
+    "--framer-text-decoration-skip-ink": "none",
+    "--framer-text-decoration-offset": "none",
+    "--framer-line-height": "1.2em",
+    "--framer-text-alignment": "start",
+    "--framer-font-open-type-features": "normal",
+    "--framer-text-background-color": "initial",
+    "--framer-text-background-radius": "initial",
+    "--framer-text-background-corner-shape": "initial",
+    "--framer-text-background-padding": "initial",
+    "font-size": "16px",
+    "font-family": "Inter, Inter Placeholder, sans-serif",
+    "--framer-font-family-bold": "\"Bricolage Grotesque\", \"Bricolage Grotesque Placeholder\", sans-serif",
+    "--framer-font-style-bold": "normal",
+    "--framer-font-weight-bold": "700",
+    "--framer-text-stroke-color": "initial",
+    "--framer-text-stroke-width": "initial",
+    "grid-template-columns": "repeat(3, minmax(50px, 1fr))",
+    "border-radius": "inherit"
+  },
+  "prompt": "# React Component Contract: REALESTATEAGENT\n\n## Overview\nFramer section: \"REAL ESTATE AGENT\"\nPurpose: Hero / landing section with headline and CTA\n\n## Element structure (Framer data-framer-name hierarchy)\n- REAL ESTATE AGENT\n- Hero Texts\n- Our Agents\n- Explore highlighted properties.\n- Agent withLoggedOut\n- Variant 1\n- Image\n- Agent Image\n- Agent Details\n- Name, Listing number\n- Mike Rutter\n- Listing Amount\n- 25 listing\n- Agent type\n- Listing Agent\n- Logo\n- Text, CTA\n- Our agent are available to help with your property search and give your enquiries on the best offers.\n- Button\n- Sign up\n\n## Text content\nOur Agents Explore the world-class agents. Ford Clinton 3 listing Listing Agent Ford Clinton 3 listing Listing Agent Hassan Patrick 2 listing Sales Person Hassan Patrick 2 listing Sales Person Mike Rutter 2 listing Commercial Broker Mike Rutter 2 listing Commercial Broker Chloe Waterwood 2 listing Realtor Chloe Waterwood 2 listing Realtor Jessy King 3 listing Commercial Broker Jessy King 3 listing Commercial Broker Our agent are available to help with your property search and give your enquiries on the best offers. Sign up Our agent are available to help with your property search and give your enquiries on the best offers. Sign up\n\n## Images / media\n1. /_local/static/images/6YEx3JiYIJRZsLw9TyBaZ8jK1kM.jpg — alt: \"Agent image\"\n2. /_local/static/images/6YEx3JiYIJRZsLw9TyBaZ8jK1kM.jpg — alt: \"Agent image\"\n3. /_local/static/images/quQX9ZfMLyWD5wvMy21bvkWs0Dg.jpg — alt: \"Agent image\"\n4. /_local/static/images/quQX9ZfMLyWD5wvMy21bvkWs0Dg.jpg — alt: \"Agent image\"\n5. /_local/static/images/JKorM5B0WmJOc8WoLSGW2e0hNG8.jpg — alt: \"Agent image\"\n6. /_local/static/images/JKorM5B0WmJOc8WoLSGW2e0hNG8.jpg — alt: \"Agent image\"\n\n## Loop animations\n- pn={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\n- hn={opacity:1,rotate:-360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\n- gn={opacity:1,rotate:0,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\nImplement as CSS animation or Framer Motion animate with repeat=Infinity, ease='linear'\n\n## Hover states\nvariants:{\"r_MKrnUtr-hover\":{backgroundColor:`rgba(0, 0, 0, 0)`,opacity:.6},\"SRDXm348e-hover\":{opacity:.6},\"txfStIeBt-hover\":{opacity:.6},r_MKrnUtr:{\"--border-bottom-width\":`${g.borderBottomWidth??g.b\nvariants:{\"fXLxM_2eb-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`,opacity:.6},\"fXLxM_2eb-pressed\":{backgroundColor:`rgb(51, 51, 51)`,opacity:.6},Dt1AWl_eW:{opacity:.5},KNXL_Zv0R:{backgroundColor:`\n\n## Design tokens (from Framer CSS)\ndisplay: flex\ngap: 104px\npadding: 120px 56px\nbackground-color: #fff\ncolor: #fff\n--framer-paragraph-spacing: 0px\n--framer-font-family: Inter, Inter Placeholder, sans-serif\n--framer-font-style: normal\n--framer-font-weight: 500\n--framer-text-color: #000\n--framer-font-size: 16px\n--framer-letter-spacing: 0\n--framer-text-transform: none\n--framer-text-decoration: none\n--framer-text-decoration-style: none\n--framer-text-decoration-color: none\n--framer-text-decoration-thickness: none\n--framer-text-decoration-skip-ink: none\n--framer-text-decoration-offset: none\n--framer-line-height: 1.2em\n\n## Generation requirements\n- React 18, export default function REALESTATEAGENT()\n- Import and use Framer Motion for every animation described above\n- TailwindCSS for styling; match Framer colors/spacing/typography\n- Semantic HTML (h1/h2/p/section/nav/ul/li where appropriate)\n- Self-contained: no external state, no props required\n- Desktop-first, responsive with sm:/md:/lg: breakpoints where obvious\n- Output ONLY the component code, no markdown fences, no comments"
+}

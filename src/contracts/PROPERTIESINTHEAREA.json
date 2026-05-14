@@ -1,0 +1,150 @@
+{
+  "componentName": "PROPERTIESINTHEAREA",
+  "framerName": "PROPERTIES IN THE AREA",
+  "purpose": "Hero / landing section with headline and CTA",
+  "content": {
+    "names": [
+      "PROPERTIES IN THE AREA",
+      "Hero Texts",
+      "Perks with book.immo",
+      "Your trusted real estate partner in every transaction.",
+      "Perks",
+      "Variant 1",
+      "Buy",
+      "House Illustrations",
+      "Text",
+      "BUY PROPERTIES",
+      "Explore book.immos’s 2 million+ homes tailored and uncover your ideal living space."
+    ],
+    "text": "Perks with book.immo Your trusted real estate partner in every transaction. BUY PROPERTIES Explore book.immos’s 2 million+ homes tailored and uncover your ideal living space. BUY PROPERTIES Explore book.immos’s 2 million+ homes tailored and uncover your ideal living space. RENT PROPERTIES Discover a rental you'll love on book.immo, thanks to 35+ filters and tailored keywords. RENT PROPERTIES Discover a rental you'll love on book.immo, thanks to 35+ filters and tailored keywords. LEASE PROPERTIES List, sell, thrive – with our rental top-notch real estate agency. It’s super easy &amp; fun. LEASE PROPERTIES List, sell, thrive – with our rental top-notch real estate agency. It’s super easy &amp; fun.",
+    "images": [
+      {
+        "src": "/_local/static/images/Se9u2rAqn5l1LYGqVHHAFkbg3Ec.png",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/Se9u2rAqn5l1LYGqVHHAFkbg3Ec.png",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/UBO73Y95XE4vBN9qkDXrXmvIzPg.png__q_width%3D138%26height%3D138",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/UBO73Y95XE4vBN9qkDXrXmvIzPg.png__q_width%3D138%26height%3D138",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/WOLdrqLubVu3woSyNQJR8f0ob98.png__q_width%3D138%26height%3D138",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/WOLdrqLubVu3woSyNQJR8f0ob98.png__q_width%3D138%26height%3D138",
+        "alt": ""
+      }
+    ],
+    "links": [],
+    "appearIds": [],
+    "classes": [
+      "framer-y50s6j",
+      "framer-cio142",
+      "framer-14gdvu",
+      "framer-text",
+      "framer-styles-preset-utqn72",
+      "framer-29tyvk",
+      "framer-styles-preset-14npl34",
+      "framer-hummqc",
+      "framer-7izm53-container",
+      "framer-jNKQs",
+      "framer-43ZH4",
+      "framer-YPkpu",
+      "framer-1c22dr2",
+      "framer-v-1c22dr2",
+      "framer-bd3mwg",
+      "framer-j31ftq",
+      "framer-13248n4",
+      "framer-10kxe8e",
+      "framer-styles-preset-91ry8n",
+      "framer-1sc2t7q",
+      "framer-styles-preset-ia5eoh",
+      "framer-m8zn8d-container",
+      "framer-it29h1-container"
+    ]
+  },
+  "animations": {
+    "scrollAppear": null,
+    "loops": [
+      {
+        "type": "loop",
+        "state": "pn={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "hn={opacity:1,rotate:-360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "gn={opacity:1,rotate:0,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "li={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "zi={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      }
+    ],
+    "hovers": [
+      {
+        "type": "variant",
+        "config": "variants:{\"r_MKrnUtr-hover\":{backgroundColor:`rgba(0, 0, 0, 0)`,opacity:.6},\"SRDXm348e-hover\":{opacity:.6},\"txfStIeBt-hover\":{opacity:.6},r_MKrnUtr:{\"--border-bottom-width\":`${g.borderBottomWidth??g.borderWidth}px`,\"--border-color\":g.borderColor,\"--border-left-width\":`${g.borderLeftWidth??g.borderWidth}px`,\"--border-right-width\":`${g.borderRightWidth??g.borderWidth}px`,\"--border-style\":g.borderStyle,\"--border-top-width\":`${g.borderTopWidth??g.borderWidth}px`,backgroundColor:`rgba(0, 0, 0, 0)`}}"
+      },
+      {
+        "type": "variant",
+        "config": "variants:{\"fXLxM_2eb-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`,opacity:.6},\"fXLxM_2eb-pressed\":{backgroundColor:`rgb(51, 51, 51)`,opacity:.6},Dt1AWl_eW:{opacity:.5},KNXL_Zv0R:{backgroundColor:`rgba(255, 34, 68, 0.15)`}}"
+      },
+      {
+        "type": "variant",
+        "config": "variants:{\"n_No7PBPH-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`},\"n_No7PBPH-pressed\":{backgroundColor:`rgb(51, 51, 51)`},vpRMcC5rY:{opacity:.5},xOy9hq7sG:{backgroundColor:`rgba(255, 34, 68, 0.15)`}}"
+      }
+    ]
+  },
+  "tokens": {
+    "display": "flex",
+    "gap": "104px",
+    "padding": "120px 56px",
+    "--framer-paragraph-spacing": "0px",
+    "color": "transparent",
+    "background-color": "initial",
+    "--framer-font-family": "Inter, Inter Placeholder, sans-serif",
+    "--framer-font-style": "normal",
+    "--framer-font-weight": "500",
+    "--framer-text-color": "#000",
+    "--framer-font-size": "16px",
+    "--framer-letter-spacing": "0",
+    "--framer-text-transform": "none",
+    "--framer-text-decoration": "none",
+    "--framer-text-decoration-style": "none",
+    "--framer-text-decoration-color": "none",
+    "--framer-text-decoration-thickness": "none",
+    "--framer-text-decoration-skip-ink": "none",
+    "--framer-text-decoration-offset": "none",
+    "--framer-line-height": "1.2em",
+    "--framer-text-alignment": "start",
+    "--framer-font-open-type-features": "normal",
+    "--framer-text-background-color": "initial",
+    "--framer-text-background-radius": "initial",
+    "--framer-text-background-corner-shape": "initial",
+    "--framer-text-background-padding": "initial",
+    "font-size": "16px",
+    "font-family": "Inter, Inter Placeholder, sans-serif",
+    "--framer-font-family-bold": "\"Bricolage Grotesque\", \"Bricolage Grotesque Placeholder\", sans-serif",
+    "--framer-font-style-bold": "normal",
+    "--framer-font-weight-bold": "700",
+    "--framer-text-stroke-color": "initial",
+    "--framer-text-stroke-width": "initial",
+    "flex-direction": "column"
+  },
+  "prompt": "# React Component Contract: PROPERTIESINTHEAREA\n\n## Overview\nFramer section: \"PROPERTIES IN THE AREA\"\nPurpose: Hero / landing section with headline and CTA\n\n## Element structure (Framer data-framer-name hierarchy)\n- PROPERTIES IN THE AREA\n- Hero Texts\n- Perks with book.immo\n- Your trusted real estate partner in every transaction.\n- Perks\n- Variant 1\n- Buy\n- House Illustrations\n- Text\n- BUY PROPERTIES\n- Explore book.immos’s 2 million+ homes tailored and uncover your ideal living space.\n\n## Text content\nPerks with book.immo Your trusted real estate partner in every transaction. BUY PROPERTIES Explore book.immos’s 2 million+ homes tailored and uncover your ideal living space. BUY PROPERTIES Explore book.immos’s 2 million+ homes tailored and uncover your ideal living space. RENT PROPERTIES Discover a rental you'll love on book.immo, thanks to 35+ filters and tailored keywords. RENT PROPERTIES Discover a rental you'll love on book.immo, thanks to 35+ filters and tailored keywords. LEASE PROPERTIES List, sell, thrive – with our rental top-notch real estate agency. It’s super easy &amp; fun. LEASE PROPERTIES List, sell, thrive – with our rental top-notch real estate agency. It’s super easy &amp;\n\n## Images / media\n1. /_local/static/images/Se9u2rAqn5l1LYGqVHHAFkbg3Ec.png\n2. /_local/static/images/Se9u2rAqn5l1LYGqVHHAFkbg3Ec.png\n3. /_local/static/images/UBO73Y95XE4vBN9qkDXrXmvIzPg.png__q_width%3D138%26height%3D138\n4. /_local/static/images/UBO73Y95XE4vBN9qkDXrXmvIzPg.png__q_width%3D138%26height%3D138\n5. /_local/static/images/WOLdrqLubVu3woSyNQJR8f0ob98.png__q_width%3D138%26height%3D138\n6. /_local/static/images/WOLdrqLubVu3woSyNQJR8f0ob98.png__q_width%3D138%26height%3D138\n\n## Loop animations\n- pn={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\n- hn={opacity:1,rotate:-360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\n- gn={opacity:1,rotate:0,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\nImplement as CSS animation or Framer Motion animate with repeat=Infinity, ease='linear'\n\n## Hover states\nvariants:{\"r_MKrnUtr-hover\":{backgroundColor:`rgba(0, 0, 0, 0)`,opacity:.6},\"SRDXm348e-hover\":{opacity:.6},\"txfStIeBt-hover\":{opacity:.6},r_MKrnUtr:{\"--border-bottom-width\":`${g.borderBottomWidth??g.b\nvariants:{\"fXLxM_2eb-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`,opacity:.6},\"fXLxM_2eb-pressed\":{backgroundColor:`rgb(51, 51, 51)`,opacity:.6},Dt1AWl_eW:{opacity:.5},KNXL_Zv0R:{backgroundColor:`\n\n## Design tokens (from Framer CSS)\ndisplay: flex\ngap: 104px\npadding: 120px 56px\n--framer-paragraph-spacing: 0px\ncolor: transparent\nbackground-color: initial\n--framer-font-family: Inter, Inter Placeholder, sans-serif\n--framer-font-style: normal\n--framer-font-weight: 500\n--framer-text-color: #000\n--framer-font-size: 16px\n--framer-letter-spacing: 0\n--framer-text-transform: none\n--framer-text-decoration: none\n--framer-text-decoration-style: none\n--framer-text-decoration-color: none\n--framer-text-decoration-thickness: none\n--framer-text-decoration-skip-ink: none\n--framer-text-decoration-offset: none\n--framer-line-height: 1.2em\n\n## Generation requirements\n- React 18, export default function PROPERTIESINTHEAREA()\n- Import and use Framer Motion for every animation described above\n- TailwindCSS for styling; match Framer colors/spacing/typography\n- Semantic HTML (h1/h2/p/section/nav/ul/li where appropriate)\n- Self-contained: no external state, no props required\n- Desktop-first, responsive with sm:/md:/lg: breakpoints where obvious\n- Output ONLY the component code, no markdown fences, no comments"
+}
