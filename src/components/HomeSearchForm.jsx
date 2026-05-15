@@ -143,8 +143,8 @@ export default function HomeSearchForm() {
      * The maxWidth container keeps it within the page's content column.
      */
     <div style={{
-      position:'relative', zIndex:10,
-      marginTop:-148, marginBottom:0,
+      position:'relative',
+      marginTop:0, marginBottom:0,
       padding:'0 40px',
     }}>
       <style>{`@keyframes hsf-sweep{0%{background-position:200% center}100%{background-position:-200% center}}`}</style>
