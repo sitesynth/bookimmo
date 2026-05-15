@@ -12662,3 +12662,26 @@ html body { background: var(--token-8162f168-ed62-49f3-b338-425fedfa1e6f, rgb(25
   aspect-ratio: unset !important;
   transform: none !important;
 }
+
+/* Announcement bar — shift fixed nav down when bar is visible */
+.framer-2u9hi5-container {
+  transition: top 0.4s ease !important;
+}
+body.bar-visible .framer-2u9hi5-container {
+  top: 41px !important;
+}
+
+/* Announcement bar dot pulse */
+@keyframes barDotPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(255,102,37,0.7); }
+  50%       { opacity: 0.3; box-shadow: 0 0 2px rgba(255,102,37,0.2); }
+}
+
+/* Nav — frosted glass effect */
+.framer-5bpAr {
+  background-color: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.08) !important;
+}

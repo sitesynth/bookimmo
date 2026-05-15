@@ -1,76 +1,103 @@
-import React, { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import React, { useState, useEffect } from 'react'
+import WaitlistModal from './WaitlistModal.jsx'
 
 export default function AnnouncementBar() {
   const [visible, setVisible] = useState(true)
+  const [modalOpen, setModalOpen] = useState(false)
+
+  useEffect(() => {
+    document.body.classList.toggle('bar-visible', visible)
+    return () => document.body.classList.remove('bar-visible')
+  }, [visible])
 
   return (
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          initial={{ y: -64, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -64, opacity: 0 }}
-          transition={{ duration: 0.45, ease: 'easeOut' }}
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 2000,
-            width: '100%',
-            backgroundColor: 'rgb(25, 26, 32)',
-            borderBottom: '1px solid rgba(255,102,37,0.3)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '10px 48px',
-            gap: 12,
-          }}
-        >
-          {/* Orange accent dot */}
-          <span style={{
-            width: 8, height: 8,
-            borderRadius: '50%',
-            background: 'rgb(255,102,37)',
-            flexShrink: 0,
-            boxShadow: '0 0 6px rgba(255,102,37,0.7)',
-          }} />
+    <>
+      {/* Spacer keeps normal-flow space so Framer content isn't hidden under the fixed bar */}
+      <div style={{
+        maxHeight: visible ? '41px' : '0px',
+        transition: 'max-height 0.4s ease',
+        overflow: 'hidden',
+        flexShrink: 0,
+      }} />
 
-          <p style={{
-            margin: 0,
-            fontFamily: '"Lexend", sans-serif',
-            fontSize: 13,
-            fontWeight: 400,
-            color: 'rgba(245,245,245,0.9)',
-            textAlign: 'center',
-            lineHeight: 1.5,
-          }}>
-            🚀 <strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Запуск в июне!</strong>
-            {' '}Первым <strong style={{ color: '#fff', fontWeight: 600 }}>200 пользователям</strong> бесплатно поможем найти квартиру — присоединяйтесь сейчас.
-          </p>
+      {/* Fixed bar — scrolls with nav, not with page */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1999,
+        overflow: 'hidden',
+        maxHeight: visible ? '80px' : '0px',
+        opacity: visible ? 1 : 0,
+        transition: 'max-height 0.4s ease, opacity 0.35s ease',
+      }}>
+      <div style={{
+        width: '100%',
+        backgroundColor: 'rgb(25, 26, 32)',
+        borderBottom: '1px solid rgba(255,102,37,0.3)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '10px 48px',
+        gap: 12,
+        position: 'relative',
+      }}>
+        <span style={{
+          width: 8, height: 8,
+          borderRadius: '50%',
+          background: 'rgb(255,102,37)',
+          flexShrink: 0,
+          boxShadow: '0 0 6px rgba(255,102,37,0.7)',
+          animation: 'barDotPulse 1.4s ease-in-out infinite',
+        }} />
 
-          {/* Close button */}
+        <p style={{
+          margin: 0,
+          fontFamily: '"Lexend", sans-serif',
+          fontSize: 13,
+          fontWeight: 400,
+          color: 'rgba(245,245,245,0.9)',
+          textAlign: 'center',
+          lineHeight: 1.5,
+        }}>
+          🚀 <strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Launching in June!</strong>
+          {' '}The first <strong style={{ color: '#fff', fontWeight: 600 }}>200 users</strong> get free apartment matching —{' '}
           <button
-            onClick={() => setVisible(false)}
-            aria-label="Close"
+            onClick={() => setModalOpen(true)}
             style={{
-              position: 'absolute',
-              right: 16,
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: 'rgba(245,245,245,0.5)',
-              fontSize: 18,
-              lineHeight: 1,
-              padding: '4px 8px',
-              transition: 'color 0.2s',
+              background: 'none', border: 'none', padding: 0,
+              cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit',
+              color: 'rgb(255,102,37)', fontWeight: 600,
+              textDecoration: 'underline', textUnderlineOffset: 3,
             }}
-            onMouseEnter={e => e.target.style.color = 'rgba(245,245,245,0.9)'}
-            onMouseLeave={e => e.target.style.color = 'rgba(245,245,245,0.5)'}
-          >
-            ×
-          </button>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          >join now</button>.
+        </p>
+
+        <button
+          onClick={() => setVisible(false)}
+          aria-label="Close"
+          style={{
+            position: 'absolute',
+            right: 16,
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: 'rgba(245,245,245,0.5)',
+            fontSize: 18,
+            lineHeight: 1,
+            padding: '4px 8px',
+            transition: 'color 0.2s',
+          }}
+          onMouseEnter={e => e.target.style.color = 'rgba(245,245,245,0.9)'}
+          onMouseLeave={e => e.target.style.color = 'rgba(245,245,245,0.5)'}
+        >
+          ×
+        </button>
+      </div>
+      </div>
+
+      {modalOpen && <WaitlistModal onClose={() => setModalOpen(false)} />}
+    </>
   )
 }
