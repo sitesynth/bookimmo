@@ -637,6 +637,23 @@ const resetButton = findElement(
 
 ## Runtime hooks и CSS
 
+### Классификация анимаций: что выживает при миграции
+
+Framer использует два принципиально разных механизма анимаций:
+
+| Тип | Механизм в Framer | После миграции |
+|-----|-------------------|----------------|
+| Scroll-appear секций | JS IntersectionObserver | ✅ Работает — заменяем своим хуком |
+| Бесконечный тикер | JS-only CSS animation | ✅ Работает — `addTickerAnimation` + CSS |
+| Текстовые `:hover` ссылки | CSS `:hover` | ✅ Работает — в `framer-styles.css` |
+| Hover на карточках (scale, shadow) | `framer-motion` `whileHover` JS | ❌ Теряется — нет в SSR CSS |
+| Hover на кнопках (scale, glow) | `framer-motion` `whileHover` JS | ❌ Теряется — нет в SSR CSS |
+| Transition при смене состояния | `framer-motion` animate | ❌ Теряется — JS-only |
+
+**Почему hover теряется:** Framer применяет hover-эффекты через JavaScript (`whileHover={{ scale: 1.02 }}`). В SSR HTML присутствует только `will-change: transform` и `cursor: pointer` — без самого transform и transition. CSS `:hover` для компонентных анимаций в бандлах отсутствует.
+
+---
+
 ### `useFramerAppear` (`src/hooks/useFramerAppear.js`)
 
 IntersectionObserver для scroll-appear анимаций:
@@ -644,8 +661,10 @@ IntersectionObserver для scroll-appear анимаций:
 - При попадании в viewport → добавляет класс `appeared`
 - Дочерние `[data-framer-appear-id]` элементы каскадно получают `appeared` с задержкой 80мс
 
-Настройки observer: `threshold: 0.01, rootMargin: '200px 0px 200px 0px'`  
-(большой rootMargin — чтобы элементы появлялись до того, как пользователь до них докрутил)
+Настройки observer: `threshold: 0.01, rootMargin: '0px 0px -40px 0px'`  
+(отрицательный нижний rootMargin — анимация начинается когда элемент на 40px вошёл в нижний край viewport, пользователь видит её в процессе)
+
+> ⚠️ Не используй большой положительный rootMargin (например `200px`) — анимация заканчивается до того, как элемент попадает в поле зрения.
 
 ### `framer-styles.css` — runtime patches
 
@@ -654,7 +673,8 @@ IntersectionObserver для scroll-appear анимаций:
 [data-framer-appear-id] {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.6s, transform 0.6s;
+  transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1);
+  will-change: opacity, transform;
 }
 [data-framer-appear-id].appeared {
   opacity: 1 !important;
@@ -662,7 +682,7 @@ IntersectionObserver для scroll-appear анимаций:
 }
 ```
 Важно: `translateY` = 24px (не 150px как в оригинале Framer).  
-150px выводит элементы за пределы `rootMargin` и IntersectionObserver их не видит.
+150px выводит элементы за пределы rootMargin — IntersectionObserver их не замечает.
 
 **Ticker анимация:**
 ```css
@@ -675,6 +695,52 @@ IntersectionObserver для scroll-appear анимаций:
 }
 ```
 `-50%` работает потому что элементы удвоены — прокрутив половину, мы снова в начале (seamless loop).
+
+---
+
+### Восстановление hover-анимаций (framer-motion → CSS)
+
+Hover-эффекты карточек и кнопок нужно добавлять вручную в `framer-styles.css` как CSS-патчи, так как они не извлекаются из Framer.
+
+**Паттерн: карточки со `cursor: pointer` + `will-change: transform`**
+
+Framer добавляет `cursor: pointer` и `will-change: var(--framer-will-change-override, transform)` на все интерактивные карточки. Этот признак используем для применения hover:
+
+```css
+/* framer-styles.css — патч для card hover */
+[style*="cursor: pointer"][style*="will-change"],
+div[tabindex="0"] {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+[style*="cursor: pointer"][style*="will-change"]:hover,
+div[tabindex="0"]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+```
+
+> ⚠️ Слишком широкий селектор может зацепить nav-элементы. Проверяй в браузере, сужай до нужного контейнера:
+> ```css
+> .framer-1bxsx5l div[tabindex="0"]:hover,   /* New Listing */
+> .framer-sc2163 div[tabindex="0"]:hover {    /* Featured Properties */
+>   transform: translateY(-3px);
+> }
+> ```
+
+**Паттерн: кнопки**
+
+Framer-кнопки используют классы вида `.framer-XXXXX` с `cursor: pointer`. Добавляй transition напрямую:
+
+```css
+/* Пример для конкретных кнопок проекта — найти классы через DevTools */
+.framer-XXXXX:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  transition: filter 0.15s, transform 0.15s;
+}
+```
+
+**Где искать классы:** DevTools → Inspect кнопки → смотришь `.framer-XXXXX` ближайший контейнер с `cursor: pointer`.
 
 ---
 
@@ -778,6 +844,9 @@ vercel.json (автогенерируется)
 | Preview не обновляется | Worktree ≠ основной репозиторий | Запускать generate-components из worktree |
 | Кастомная секция не отображается на Vercel | Компонент не добавлен в `src/pages/HomePage.jsx` (production) | Добавить `import` + JSX и синхронизировать worktree → production через `cp` |
 | Заголовок секции выглядит иначе | `letterSpacing` не соответствует Framer-токенам | h2: `letterSpacing: '-2px'`, `fontWeight: 500`, `fontSize: 40` |
+| Hover на карточках не работает | `whileHover` в Framer = JS-only, не попадает в SSR CSS | Добавить CSS-патч в `framer-styles.css` (см. раздел "Восстановление hover-анимаций") |
+| Секции появляются без анимации | `rootMargin` слишком большой — анимация заканчивается вне viewport | Использовать `rootMargin: '0px 0px -40px 0px'` в `useFramerAppear.js` |
+| Scroll-анимация не видна на кастомной секции | `data-framer-appear-id` не добавлен на `<section>` | Добавить атрибут: `<section data-framer-appear-id="my-section-name">` |
 
 ---
 
