@@ -43,6 +43,7 @@ export default function FAQ() {
             color: 'rgb(255,102,37)',
             margin: '0 0 12px',
             lineHeight: 1.2,
+            letterSpacing: '-1px',
           }}>
             Frequently asked questions
           </h2>
