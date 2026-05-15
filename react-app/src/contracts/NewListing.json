@@ -1,0 +1,236 @@
+{
+  "componentName": "NewListing",
+  "framerName": "New Listing",
+  "purpose": "Hero / landing section with headline and CTA",
+  "content": {
+    "names": [
+      "New Listing",
+      "Hero Texts",
+      "Explore latest &amp; featured properties for sale.",
+      "Property List withLoggedOut",
+      "Variant 1",
+      "Image",
+      "Property Image",
+      "Tag, Bookmark",
+      "Tag",
+      "Rentals",
+      "Bookmark",
+      "City &amp; Listing Details",
+      "Property Name &amp; Price",
+      "Gorgeous Villa for Rent",
+      "Address &amp; Image",
+      "Address",
+      "vuesax/outline/location",
+      "Greenville, Jersey City",
+      "Ellipse 2",
+      "No. of Images",
+      "vuesax/outline/gallery",
+      "06",
+      "Description, Metadata",
+      "Description",
+      "Mckinley Hill is situated inside Fort Bonifacio which is a 50 hectares owned by Megaworld...",
+      "Metadata",
+      "Bedroom",
+      "Bedrooms",
+      "03",
+      "Bathroom",
+      "Shower",
+      "Size",
+      "vuesax/outline/ruler",
+      "600 ft²",
+      "$ 900 / month"
+    ],
+    "text": "New Listing Explore latest &amp; featured properties for sale. Sales Apartment '); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; \" class=\"framer-ioe6q5\" aria-hidden=\"true\" > Luxury Loft Jersey City 04 Nestled in a charming suburban area, this stunning home rests on a spacious lot, offering.. 1 Room 2 Bathroom 600 ft² $ 950,000 Sales Apartment '); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; \" class=\"framer-ioe6q5\" aria-hidden=\"true\" > Luxury Loft Jersey City 04 Nestled in a charming suburban area, this stunning home rests on a spacious lot, offering.. 1 Room 2 Bathroom 600 ft² $ 950,000 Rent Houses '); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; \" class=\"framer-ioe6q5\" aria-hidden=\"true\" > Cozy Condo Catskills 04 Nestled amidst serene woodlands, this luxury house gracefully sits atop a hill... 4+ Rooms 4+ Bathroom 600 ft² $ 466,000 Rent Houses '); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; \" class=\"framer-ioe6q5\" aria-hidden=\"true\" > Cozy Condo Catskills 04 Nestled amidst serene woodlands, this luxury house gracefully sits atop a hill... 4+ Rooms 4+ Bathroom 600 ft² $ 466,000 Sales Duplex '); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; \" class=\"framer-ioe6q5\" aria-hidden=\"true\" > Suburb Home Pleasantville 04 Located in a charming suburban neighborhood, this beautiful home gracefully... 3 Rooms 3 Bathroom 600 ft² $ 950,000 Sales Duplex '); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; \" class=\"framer-ioe6q5\" aria-hidden=\"true\" > Suburb Home Pleasantville 04 Located in a charming suburban neighborhood, this beautiful home gracefully... 3 Rooms 3 Bathroom 600 ft² $ 950,000 Rent Industrial '); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; \" class=\"framer-ioe6q5\" aria-hidden=\"true\" > Smart Home Duplex Catskills 04 Situated in a bustling urban neighborhood, this smart home duplex elegantly... 3 Rooms 3 Bathroom 600 ft² $ 1500 Rent Industrial '); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; \" class=\"framer-ioe6q5\" aria-hidden=\"true\" > Smart Home Duplex Catskills 04 Situated in a bustling urban neighborhood, this smart home duplex elegantly... 3 Rooms 3 Bathroom 600 ft² $ 1500 Lease Offices '); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; \" class=\"framer-ioe6q5\" aria-hidden=\"true\" > Luxury House Catskills 04 Nestled amidst serene woodlands, this luxury house gracefully sits atop a hill... 3 Rooms 3 Bathroom 600 ft² $ 980,000 Lease Offices '); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; \" class=\"framer-ioe6q5\" aria-hidden=\"true\" > Luxury House Catskills 04 Nestled amidst serene woodlands, this luxury house gracefully sits atop a hill... 3 Rooms 3 Bathroom 600 ft² $ 980,000 Sales Apartment '); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; \" class=\"framer-ioe6q5\" aria-hidden=\"true\" > Gorgeous Villa for Rent Jersey City 04 Primarily enveloped in woodland, this property majestically stands on a crest... 3 Rooms 3 Bathroom 600 ft² $ 550,000 Sales Apartment '); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; \" class=\"framer-ioe6q5\" aria-hidden=\"true\" > Gorgeous Villa for Rent Jersey City 04 Primarily enveloped in woodland, this property majestically stands on a crest... 3 Rooms 3 Bathroom 600 ft² $ 550,000",
+    "images": [
+      {
+        "src": "/_local/static/images/YB8HvCRaMzDFv3gr1oraLARMV10.jpg",
+        "alt": "Property image 1"
+      },
+      {
+        "src": "/_local/static/images/YB8HvCRaMzDFv3gr1oraLARMV10.jpg",
+        "alt": "Property image 1"
+      },
+      {
+        "src": "/_local/static/images/LtciWS6CyIqXmgu9hbArgmRgxs.jpg",
+        "alt": "Property image 1"
+      },
+      {
+        "src": "/_local/static/images/LtciWS6CyIqXmgu9hbArgmRgxs.jpg",
+        "alt": "Property image 1"
+      },
+      {
+        "src": "/_local/static/images/uJIxALexex0qutxW0BGT1e8RZU.jpg",
+        "alt": "Property image 1"
+      },
+      {
+        "src": "/_local/static/images/uJIxALexex0qutxW0BGT1e8RZU.jpg",
+        "alt": "Property image 1"
+      },
+      {
+        "src": "/_local/static/images/6tsHyqe0lsOpKgANd4B3r8lEwak.jpg",
+        "alt": "Property image 1"
+      },
+      {
+        "src": "/_local/static/images/6tsHyqe0lsOpKgANd4B3r8lEwak.jpg",
+        "alt": "Property image 1"
+      },
+      {
+        "src": "/_local/static/images/gRIsS7b7H7QhFCmWRl88B6uVZMQ.jpg",
+        "alt": "Property image 1"
+      },
+      {
+        "src": "/_local/static/images/gRIsS7b7H7QhFCmWRl88B6uVZMQ.jpg",
+        "alt": "Property image 1"
+      },
+      {
+        "src": "/_local/static/images/bmKq0zjCmV9aMdk4qbciIhZPU.jpg",
+        "alt": "Property image 1"
+      },
+      {
+        "src": "/_local/static/images/bmKq0zjCmV9aMdk4qbciIhZPU.jpg",
+        "alt": "Property image 1"
+      }
+    ],
+    "links": [],
+    "appearIds": [],
+    "classes": [
+      "framer-1bxsx5l",
+      "framer-rjb4ps",
+      "framer-19vbh8e",
+      "framer-text",
+      "framer-styles-preset-utqn72",
+      "framer-1205ghe",
+      "framer-styles-preset-14npl34",
+      "framer-1rdwhhz",
+      "framer-1xatb4o",
+      "framer-mml9uo-container",
+      "framer-HGZgT",
+      "framer-0XLgG",
+      "framer-z7jVh",
+      "framer-43ZH4",
+      "framer-7pw6e5",
+      "framer-v-7pw6e5",
+      "framer-1xsavoc",
+      "framer-1ptfapo",
+      "framer-snpe0y",
+      "framer-1saj5dv",
+      "framer-bf54kt",
+      "framer-e068pn",
+      "framer-13jkru8",
+      "framer-1qwj4yr",
+      "framer-vori28",
+      "framer-fmztsu-container",
+      "framer-DY2JI",
+      "framer-vclek2",
+      "framer-v-vclek2",
+      "framer-oy3x9m",
+      "framer-ioe6q5",
+      "framer-1137r44",
+      "framer-14l44j1-container",
+      "framer-1tmh81c",
+      "framer-yqyybu",
+      "framer-1wkyxtb",
+      "framer-styles-preset-12tiplp",
+      "framer-sg4ojm",
+      "framer-gbg6p6",
+      "framer-sfns3h",
+      "framer-1818x2k",
+      "framer-styles-preset-11vnrd8",
+      "framer-78l7mk",
+      "framer-dioymb",
+      "framer-1v9zod7",
+      "framer-1h9hmig",
+      "framer-1y57gcz",
+      "framer-1qb2qyc",
+      "framer-7638c",
+      "framer-1b3rgnf",
+      "framer-174wxt1",
+      "framer-4x6e16",
+      "framer-1j5gvwn",
+      "framer-12qkory",
+      "framer-10teaic",
+      "framer-4kuu3k",
+      "framer-194ndwo",
+      "framer-13y7ah0",
+      "framer-1m6ryg7",
+      "framer-f8yopp",
+      "framer-styles-preset-91ry8n"
+    ]
+  },
+  "animations": {
+    "scrollAppear": null,
+    "loops": [
+      {
+        "type": "loop",
+        "state": "pn={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "hn={opacity:1,rotate:-360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "gn={opacity:1,rotate:0,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "li={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "zi={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      }
+    ],
+    "hovers": [
+      {
+        "type": "variant",
+        "config": "variants:{\"r_MKrnUtr-hover\":{backgroundColor:`rgba(0, 0, 0, 0)`,opacity:.6},\"SRDXm348e-hover\":{opacity:.6},\"txfStIeBt-hover\":{opacity:.6},r_MKrnUtr:{\"--border-bottom-width\":`${g.borderBottomWidth??g.borderWidth}px`,\"--border-color\":g.borderColor,\"--border-left-width\":`${g.borderLeftWidth??g.borderWidth}px`,\"--border-right-width\":`${g.borderRightWidth??g.borderWidth}px`,\"--border-style\":g.borderStyle,\"--border-top-width\":`${g.borderTopWidth??g.borderWidth}px`,backgroundColor:`rgba(0, 0, 0, 0)`}}"
+      },
+      {
+        "type": "variant",
+        "config": "variants:{\"fXLxM_2eb-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`,opacity:.6},\"fXLxM_2eb-pressed\":{backgroundColor:`rgb(51, 51, 51)`,opacity:.6},Dt1AWl_eW:{opacity:.5},KNXL_Zv0R:{backgroundColor:`rgba(255, 34, 68, 0.15)`}}"
+      },
+      {
+        "type": "variant",
+        "config": "variants:{\"n_No7PBPH-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`},\"n_No7PBPH-pressed\":{backgroundColor:`rgb(51, 51, 51)`},vpRMcC5rY:{opacity:.5},xOy9hq7sG:{backgroundColor:`rgba(255, 34, 68, 0.15)`}}"
+      }
+    ]
+  },
+  "tokens": {
+    "display": "flex",
+    "gap": "104px",
+    "padding": "120px 56px",
+    "background-color": "#fff",
+    "color": "#fff",
+    "--framer-paragraph-spacing": "0px",
+    "--framer-font-family": "Inter, Inter Placeholder, sans-serif",
+    "--framer-font-style": "normal",
+    "--framer-font-weight": "500",
+    "--framer-text-color": "#000",
+    "--framer-font-size": "16px",
+    "--framer-letter-spacing": "0",
+    "--framer-text-transform": "none",
+    "--framer-text-decoration": "none",
+    "--framer-text-decoration-style": "none",
+    "--framer-text-decoration-color": "none",
+    "--framer-text-decoration-thickness": "none",
+    "--framer-text-decoration-skip-ink": "none",
+    "--framer-text-decoration-offset": "none",
+    "--framer-line-height": "1.2em",
+    "--framer-text-alignment": "start",
+    "--framer-font-open-type-features": "normal",
+    "--framer-text-background-color": "initial",
+    "--framer-text-background-radius": "initial",
+    "--framer-text-background-corner-shape": "initial",
+    "--framer-text-background-padding": "initial",
+    "font-size": "16px",
+    "font-family": "Inter, Inter Placeholder, sans-serif",
+    "--framer-font-family-bold": "\"Bricolage Grotesque\", \"Bricolage Grotesque Placeholder\", sans-serif",
+    "--framer-font-style-bold": "normal",
+    "--framer-font-weight-bold": "700",
+    "--framer-text-stroke-color": "initial",
+    "--framer-text-stroke-width": "initial",
+    "grid-template-columns": "repeat(3, minmax(50px, 1fr))"
+  },
+  "prompt": "# React Component Contract: NewListing\n\n## Overview\nFramer section: \"New Listing\"\nPurpose: Hero / landing section with headline and CTA\n\n## Element structure (Framer data-framer-name hierarchy)\n- New Listing\n- Hero Texts\n- Explore latest &amp; featured properties for sale.\n- Property List withLoggedOut\n- Variant 1\n- Image\n- Property Image\n- Tag, Bookmark\n- Tag\n- Rentals\n- Bookmark\n- City &amp; Listing Details\n- Property Name &amp; Price\n- Gorgeous Villa for Rent\n- Address &amp; Image\n- Address\n- vuesax/outline/location\n- Greenville, Jersey City\n- Ellipse 2\n- No. of Images\n- vuesax/outline/gallery\n- 06\n- Description, Metadata\n- Description\n- Mckinley Hill is situated inside Fort Bonifacio which is a 50 hectares owned by Megaworld...\n\n## Text content\nNew Listing Explore latest &amp; featured properties for sale. Sales Apartment '); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; \" class=\"framer-ioe6q5\" aria-hidden=\"true\" > Luxury Loft Jersey City 04 Nestled in a charming suburban area, this stunning home rests on a spacious lot, offering.. 1 Room 2 Bathroom 600 ft² $ 950,000 Sales Apartment '); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; \" class=\"framer-ioe6q5\" aria-hidden=\"true\" > Luxury Loft Jersey City 04 Nestled in a charming suburban area, this stunning home rests on a spacious l\n\n## Images / media\n1. /_local/static/images/YB8HvCRaMzDFv3gr1oraLARMV10.jpg — alt: \"Property image 1\"\n2. /_local/static/images/YB8HvCRaMzDFv3gr1oraLARMV10.jpg — alt: \"Property image 1\"\n3. /_local/static/images/LtciWS6CyIqXmgu9hbArgmRgxs.jpg — alt: \"Property image 1\"\n4. /_local/static/images/LtciWS6CyIqXmgu9hbArgmRgxs.jpg — alt: \"Property image 1\"\n5. /_local/static/images/uJIxALexex0qutxW0BGT1e8RZU.jpg — alt: \"Property image 1\"\n6. /_local/static/images/uJIxALexex0qutxW0BGT1e8RZU.jpg — alt: \"Property image 1\"\n\n## Loop animations\n- pn={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\n- hn={opacity:1,rotate:-360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\n- gn={opacity:1,rotate:0,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\nImplement as CSS animation or Framer Motion animate with repeat=Infinity, ease='linear'\n\n## Hover states\nvariants:{\"r_MKrnUtr-hover\":{backgroundColor:`rgba(0, 0, 0, 0)`,opacity:.6},\"SRDXm348e-hover\":{opacity:.6},\"txfStIeBt-hover\":{opacity:.6},r_MKrnUtr:{\"--border-bottom-width\":`${g.borderBottomWidth??g.b\nvariants:{\"fXLxM_2eb-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`,opacity:.6},\"fXLxM_2eb-pressed\":{backgroundColor:`rgb(51, 51, 51)`,opacity:.6},Dt1AWl_eW:{opacity:.5},KNXL_Zv0R:{backgroundColor:`\n\n## Design tokens (from Framer CSS)\ndisplay: flex\ngap: 104px\npadding: 120px 56px\nbackground-color: #fff\ncolor: #fff\n--framer-paragraph-spacing: 0px\n--framer-font-family: Inter, Inter Placeholder, sans-serif\n--framer-font-style: normal\n--framer-font-weight: 500\n--framer-text-color: #000\n--framer-font-size: 16px\n--framer-letter-spacing: 0\n--framer-text-transform: none\n--framer-text-decoration: none\n--framer-text-decoration-style: none\n--framer-text-decoration-color: none\n--framer-text-decoration-thickness: none\n--framer-text-decoration-skip-ink: none\n--framer-text-decoration-offset: none\n--framer-line-height: 1.2em\n\n## Generation requirements\n- React 18, export default function NewListing()\n- Import and use Framer Motion for every animation described above\n- TailwindCSS for styling; match Framer colors/spacing/typography\n- Semantic HTML (h1/h2/p/section/nav/ul/li where appropriate)\n- Self-contained: no external state, no props required\n- Desktop-first, responsive with sm:/md:/lg: breakpoints where obvious\n- Output ONLY the component code, no markdown fences, no comments"
+}

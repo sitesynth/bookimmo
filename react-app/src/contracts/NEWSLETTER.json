@@ -1,0 +1,131 @@
+{
+  "componentName": "NEWSLETTER",
+  "framerName": "NEWSLETTER",
+  "purpose": "Newsletter signup section",
+  "content": {
+    "names": [
+      "NEWSLETTER",
+      "Title &amp; Description",
+      "There is always something new! Don’t miss out.",
+      "Get property updates and the latest on pricing for your next property decision.",
+      "Default"
+    ],
+    "text": "There is always something new! Don’t miss out. Get property updates and the latest on pricing for your next property decision. Submit Submit",
+    "images": [],
+    "links": [],
+    "appearIds": [],
+    "classes": [
+      "framer-j01amm",
+      "framer-1bwyng9",
+      "framer-aqipmc",
+      "framer-glk3ho",
+      "framer-text",
+      "framer-styles-preset-1886vs3",
+      "framer-1r688ax",
+      "framer-styles-preset-ia5eoh",
+      "framer-79ac4b",
+      "framer-6buzkd",
+      "framer-form-text-input",
+      "framer-form-input-wrapper",
+      "framer-1iaeodx",
+      "framer-form-input",
+      "framer-form-input-empty",
+      "framer-1ym0wai-container",
+      "framer-ojRDq",
+      "framer-1yij144",
+      "framer-v-1yij144",
+      "framer-1dqfucg"
+    ]
+  },
+  "animations": {
+    "scrollAppear": null,
+    "loops": [
+      {
+        "type": "loop",
+        "state": "pn={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "hn={opacity:1,rotate:-360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "gn={opacity:1,rotate:0,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "li={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "zi={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      }
+    ],
+    "hovers": [
+      {
+        "type": "variant",
+        "config": "variants:{\"r_MKrnUtr-hover\":{backgroundColor:`rgba(0, 0, 0, 0)`,opacity:.6},\"SRDXm348e-hover\":{opacity:.6},\"txfStIeBt-hover\":{opacity:.6},r_MKrnUtr:{\"--border-bottom-width\":`${g.borderBottomWidth??g.borderWidth}px`,\"--border-color\":g.borderColor,\"--border-left-width\":`${g.borderLeftWidth??g.borderWidth}px`,\"--border-right-width\":`${g.borderRightWidth??g.borderWidth}px`,\"--border-style\":g.borderStyle,\"--border-top-width\":`${g.borderTopWidth??g.borderWidth}px`,backgroundColor:`rgba(0, 0, 0, 0)`}}"
+      },
+      {
+        "type": "variant",
+        "config": "variants:{\"fXLxM_2eb-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`,opacity:.6},\"fXLxM_2eb-pressed\":{backgroundColor:`rgb(51, 51, 51)`,opacity:.6},Dt1AWl_eW:{opacity:.5},KNXL_Zv0R:{backgroundColor:`rgba(255, 34, 68, 0.15)`}}"
+      },
+      {
+        "type": "variant",
+        "config": "variants:{\"n_No7PBPH-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`},\"n_No7PBPH-pressed\":{backgroundColor:`rgb(51, 51, 51)`},vpRMcC5rY:{opacity:.5},xOy9hq7sG:{backgroundColor:`rgba(255, 34, 68, 0.15)`}}"
+      }
+    ]
+  },
+  "tokens": {
+    "display": "flex",
+    "gap": "0",
+    "padding": "0 56px 56px",
+    "flex-direction": "column",
+    "border-radius": "16px",
+    "--framer-paragraph-spacing": "0px",
+    "color": "transparent",
+    "background-color": "initial",
+    "--framer-font-family": "Inter, Inter Placeholder, sans-serif",
+    "--framer-font-style": "normal",
+    "--framer-font-weight": "500",
+    "--framer-text-color": "#000",
+    "--framer-font-size": "16px",
+    "--framer-letter-spacing": "0",
+    "--framer-text-transform": "none",
+    "--framer-text-decoration": "none",
+    "--framer-text-decoration-style": "none",
+    "--framer-text-decoration-color": "none",
+    "--framer-text-decoration-thickness": "none",
+    "--framer-text-decoration-skip-ink": "none",
+    "--framer-text-decoration-offset": "none",
+    "--framer-line-height": "1.2em",
+    "--framer-text-alignment": "start",
+    "--framer-font-open-type-features": "normal",
+    "--framer-text-background-color": "initial",
+    "--framer-text-background-radius": "initial",
+    "--framer-text-background-corner-shape": "initial",
+    "--framer-text-background-padding": "initial",
+    "font-size": "16px",
+    "font-family": "Inter, Inter Placeholder, sans-serif",
+    "--framer-font-family-bold": "\"Bricolage Grotesque\", \"Bricolage Grotesque Placeholder\", sans-serif",
+    "--framer-font-style-bold": "normal",
+    "--framer-font-weight-bold": "700",
+    "--framer-text-stroke-color": "initial",
+    "--framer-text-stroke-width": "initial",
+    "--framer-input-border-radius-bottom-left": "4px",
+    "--framer-input-border-radius-bottom-right": "4px",
+    "--framer-input-border-radius-top-left": "4px",
+    "--framer-input-border-radius-top-right": "4px",
+    "--framer-input-focused-border-style": "solid",
+    "--framer-input-focused-border-width": "1px",
+    "--framer-input-font-family": "\"Lexend\"",
+    "--framer-input-font-letter-spacing": "0em",
+    "--framer-input-font-line-height": "1.2em",
+    "--framer-input-font-size": "14px",
+    "--framer-input-font-weight": "400",
+    "--framer-input-icon-color": "#999",
+    "--framer-input-padding": "12px",
+    "--framer-input-placeholder-color": "#191a2080"
+  },
+  "prompt": "# React Component Contract: NEWSLETTER\n\n## Overview\nFramer section: \"NEWSLETTER\"\nPurpose: Newsletter signup section\n\n## Element structure (Framer data-framer-name hierarchy)\n- NEWSLETTER\n- Title &amp; Description\n- There is always something new! Don’t miss out.\n- Get property updates and the latest on pricing for your next property decision.\n- Default\n\n## Text content\nThere is always something new! Don’t miss out. Get property updates and the latest on pricing for your next property decision. Submit Submit\n\n## Loop animations\n- pn={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\n- hn={opacity:1,rotate:-360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\n- gn={opacity:1,rotate:0,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\nImplement as CSS animation or Framer Motion animate with repeat=Infinity, ease='linear'\n\n## Hover states\nvariants:{\"r_MKrnUtr-hover\":{backgroundColor:`rgba(0, 0, 0, 0)`,opacity:.6},\"SRDXm348e-hover\":{opacity:.6},\"txfStIeBt-hover\":{opacity:.6},r_MKrnUtr:{\"--border-bottom-width\":`${g.borderBottomWidth??g.b\nvariants:{\"fXLxM_2eb-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`,opacity:.6},\"fXLxM_2eb-pressed\":{backgroundColor:`rgb(51, 51, 51)`,opacity:.6},Dt1AWl_eW:{opacity:.5},KNXL_Zv0R:{backgroundColor:`\n\n## Design tokens (from Framer CSS)\ndisplay: flex\ngap: 0\npadding: 0 56px 56px\nflex-direction: column\nborder-radius: 16px\n--framer-paragraph-spacing: 0px\ncolor: transparent\nbackground-color: initial\n--framer-font-family: Inter, Inter Placeholder, sans-serif\n--framer-font-style: normal\n--framer-font-weight: 500\n--framer-text-color: #000\n--framer-font-size: 16px\n--framer-letter-spacing: 0\n--framer-text-transform: none\n--framer-text-decoration: none\n--framer-text-decoration-style: none\n--framer-text-decoration-color: none\n--framer-text-decoration-thickness: none\n--framer-text-decoration-skip-ink: none\n\n## Generation requirements\n- React 18, export default function NEWSLETTER()\n- Import and use Framer Motion for every animation described above\n- TailwindCSS for styling; match Framer colors/spacing/typography\n- Semantic HTML (h1/h2/p/section/nav/ul/li where appropriate)\n- Self-contained: no external state, no props required\n- Desktop-first, responsive with sm:/md:/lg: breakpoints where obvious\n- Output ONLY the component code, no markdown fences, no comments"
+}

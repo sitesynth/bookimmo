@@ -1,0 +1,244 @@
+{
+  "componentName": "Hero",
+  "framerName": "Hero",
+  "purpose": "Hero / landing section with headline and CTA",
+  "content": {
+    "names": [
+      "Hero",
+      "Hero Texts",
+      "Hero Text",
+      "Hero text, Image",
+      "Find the perfect",
+      "House",
+      "House Illustration",
+      "Second line",
+      "property with book.immo",
+      "We believe there's a perfect home for everybody, no matter the budget. That's why we always find the best homes for your budget.",
+      "Image, Testimonial",
+      "Hero Image",
+      "Variant 1",
+      "Testimonial",
+      "Image, Name, Location",
+      "Tesimonial Image",
+      "Name, Location",
+      "Evans Keith",
+      "Pleasantville, United Kingdom",
+      "Efficient, knowledgeable, &amp; made our home search a smooth experience. Highly recommended agency!",
+      "Socials",
+      "instagram",
+      "facebook"
+    ],
+    "text": "Find the perfect property with book.immo We believe there's a perfect home for everybody, no matter the budget. That's why we always find the best homes for your budget. Evans Keith Westside, Kent From start to finish, this agency provided exceptional service. Their knowledge and efficiency made finding our new home a breeze. Highly recommended! Michael Davis Jersey City, London Working with this agency was a seamless experience. Their efficiency and expertise made our home search effortless. I highly recommend them! John Smith Greenville, Manchester Efficient, knowledgeable, &amp; made our home search a smooth experience. Highly recommended agency! Emily Johnson Capitol Hill, Leeds This agency transformed our home search into a stress-free journey. Their expertise and efficiency are unmatched. I highly recommend their services! Evans Keith Westside, Kent From start to finish, this agency provided exceptional service. Their knowledge and efficiency made finding our new home a breeze. Highly recommended! Michael Davis Jersey City, London Working with this agency was a seamless experience. Their efficiency and expertise made our home search effortless. I highly recommend them! John Smith Greenville, Manchester Efficient, knowledgeable, &amp; made our home search a smooth experience. Highly recommended agency! Emily Johnson Capitol Hill, Leeds This agency transformed our home search into a stress-free journey. Their expertise and efficiency are unmatched. I highly recommend their services! Evans Keith Westside, Kent From start to finish, this agency provided exceptional service. Their knowledge and efficiency made finding our new home a breeze. Highly recommended! Michael Davis Jersey City, London Working with this agency was a seamless experience. Their efficiency and expertise made our home search effortless. I highly recommend them! John Smith Greenville, Manchester Efficient, knowledgeable, &amp; made our home search a smooth experience. Highly recommended agency! Emily Johnson Capitol Hill, Leeds This agency transformed our home search into a stress-free journey. Their expertise and efficiency are unmatched. I highly recommend their services!",
+    "images": [
+      {
+        "src": "/_local/static/images/zem5ljiIMhVZOBlOiatmZWIP3o.png__q_width%3D286%26height%3D150",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/1K4h58ZVgf8kQSw4uZAnxC1xyw.jpg__q_width%3D4096%26height%3D2296",
+        "alt": "Hero Image"
+      },
+      {
+        "src": "/_local/static/images/1K4h58ZVgf8kQSw4uZAnxC1xyw.jpg__q_width%3D4096%26height%3D2296",
+        "alt": "Hero Image"
+      },
+      {
+        "src": "/_local/static/images/1K4h58ZVgf8kQSw4uZAnxC1xyw.jpg__q_width%3D4096%26height%3D2296",
+        "alt": "Hero Image"
+      },
+      {
+        "src": "/_local/static/images/qP1y1nguVCscpAYMZwguJEh0k.png",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/Wu3jIIXne7CD8oB2WuVqxx1Wfk.jpg",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/G0lj1YdBRIBP4H3OMNFu7nQBlZM.jpg",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/PuuH9rscTTEm9J660VhsWjGtqk.jpg",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/qP1y1nguVCscpAYMZwguJEh0k.png",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/Wu3jIIXne7CD8oB2WuVqxx1Wfk.jpg",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/G0lj1YdBRIBP4H3OMNFu7nQBlZM.jpg",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/PuuH9rscTTEm9J660VhsWjGtqk.jpg",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/qP1y1nguVCscpAYMZwguJEh0k.png",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/Wu3jIIXne7CD8oB2WuVqxx1Wfk.jpg",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/G0lj1YdBRIBP4H3OMNFu7nQBlZM.jpg",
+        "alt": ""
+      },
+      {
+        "src": "/_local/static/images/PuuH9rscTTEm9J660VhsWjGtqk.jpg",
+        "alt": ""
+      }
+    ],
+    "links": [],
+    "appearIds": [
+      "r6linc",
+      "1fyywk9"
+    ],
+    "classes": [
+      "framer-1oqa2t2",
+      "framer-r6linc",
+      "framer-bkwk62",
+      "framer-1du093q",
+      "framer-1tvwn6d",
+      "framer-text",
+      "framer-styles-preset-lz3mo3",
+      "framer-lwwfas",
+      "framer-1ctuwx3",
+      "framer-1nob8pj",
+      "framer-hv0zx2",
+      "framer-e74vho",
+      "framer-styles-preset-14npl34",
+      "framer-1fyywk9",
+      "framer-1eell78",
+      "framer-umtja3",
+      "framer-1tl69sb-container",
+      "framer-UXnqI",
+      "framer-uv1j5a",
+      "framer-v-uv1j5a",
+      "framer-1pro32s-container",
+      "framer-1lob7hi-container",
+      "framer-QEKiq",
+      "framer-AzDb2",
+      "framer-YPkpu",
+      "framer-65u8ll",
+      "framer-v-65u8ll",
+      "framer-1dav190",
+      "framer-1mb6qrk",
+      "framer-1orzkbp",
+      "framer-1mbgy7z",
+      "framer-2x1fuu",
+      "framer-styles-preset-1qz59gd",
+      "framer-dhbame",
+      "framer-styles-preset-ia5eoh",
+      "framer-slnjsp",
+      "framer-1kbf1ci",
+      "framer-1a9s89o",
+      "framer-14f970k",
+      "framer-1xwguzg",
+      "framer-1sif6bo-container",
+      "framer-1f9i4ja-container",
+      "framer-nl3dda-container"
+    ]
+  },
+  "animations": {
+    "scrollAppear": {
+      "ids": [
+        "r6linc",
+        "1fyywk9"
+      ],
+      "initial": {
+        "opacity": 0.001,
+        "y": 150
+      },
+      "animate": {
+        "opacity": 1,
+        "y": 0
+      },
+      "springs": [
+        "transition:{damping:20,delay:.2,mass:1,stiffness:80,type:`spring`}",
+        "transition:{damping:20,delay:.3,mass:1,stiffness:80,type:`spring`}",
+        "transition:{damping:20,delay:.1,mass:1,stiffness:80,type:`spring`}"
+      ]
+    },
+    "loops": [
+      {
+        "type": "loop",
+        "state": "pn={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "hn={opacity:1,rotate:-360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "gn={opacity:1,rotate:0,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "li={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      },
+      {
+        "type": "loop",
+        "state": "zi={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}"
+      }
+    ],
+    "hovers": [
+      {
+        "type": "variant",
+        "config": "variants:{\"r_MKrnUtr-hover\":{backgroundColor:`rgba(0, 0, 0, 0)`,opacity:.6},\"SRDXm348e-hover\":{opacity:.6},\"txfStIeBt-hover\":{opacity:.6},r_MKrnUtr:{\"--border-bottom-width\":`${g.borderBottomWidth??g.borderWidth}px`,\"--border-color\":g.borderColor,\"--border-left-width\":`${g.borderLeftWidth??g.borderWidth}px`,\"--border-right-width\":`${g.borderRightWidth??g.borderWidth}px`,\"--border-style\":g.borderStyle,\"--border-top-width\":`${g.borderTopWidth??g.borderWidth}px`,backgroundColor:`rgba(0, 0, 0, 0)`}}"
+      },
+      {
+        "type": "variant",
+        "config": "variants:{\"fXLxM_2eb-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`,opacity:.6},\"fXLxM_2eb-pressed\":{backgroundColor:`rgb(51, 51, 51)`,opacity:.6},Dt1AWl_eW:{opacity:.5},KNXL_Zv0R:{backgroundColor:`rgba(255, 34, 68, 0.15)`}}"
+      },
+      {
+        "type": "variant",
+        "config": "variants:{\"n_No7PBPH-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`},\"n_No7PBPH-pressed\":{backgroundColor:`rgb(51, 51, 51)`},vpRMcC5rY:{opacity:.5},xOy9hq7sG:{backgroundColor:`rgba(255, 34, 68, 0.15)`}}"
+      }
+    ]
+  },
+  "tokens": {
+    "display": "flex",
+    "gap": "88px",
+    "padding": "160px 0 88px",
+    "--framer-paragraph-spacing": "0px",
+    "color": "transparent",
+    "background-color": "initial",
+    "--framer-font-family": "Inter, Inter Placeholder, sans-serif",
+    "--framer-font-style": "normal",
+    "--framer-font-weight": "500",
+    "--framer-text-color": "#000",
+    "--framer-font-size": "16px",
+    "--framer-letter-spacing": "0",
+    "--framer-text-transform": "none",
+    "--framer-text-decoration": "none",
+    "--framer-text-decoration-style": "none",
+    "--framer-text-decoration-color": "none",
+    "--framer-text-decoration-thickness": "none",
+    "--framer-text-decoration-skip-ink": "none",
+    "--framer-text-decoration-offset": "none",
+    "--framer-line-height": "1.2em",
+    "--framer-text-alignment": "start",
+    "--framer-font-open-type-features": "normal",
+    "--framer-text-background-color": "initial",
+    "--framer-text-background-radius": "initial",
+    "--framer-text-background-corner-shape": "initial",
+    "--framer-text-background-padding": "initial",
+    "font-size": "16px",
+    "font-family": "Inter, Inter Placeholder, sans-serif",
+    "--framer-font-family-bold": "\"Bricolage Grotesque\", \"Bricolage Grotesque Placeholder\", sans-serif",
+    "--framer-font-style-bold": "normal",
+    "--framer-font-weight-bold": "700",
+    "--framer-text-stroke-color": "initial",
+    "--framer-text-stroke-width": "initial",
+    "border-radius": "64px",
+    "flex-direction": "column"
+  },
+  "prompt": "# React Component Contract: Hero\n\n## Overview\nFramer section: \"Hero\"\nPurpose: Hero / landing section with headline and CTA\n\n## Element structure (Framer data-framer-name hierarchy)\n- Hero\n- Hero Texts\n- Hero Text\n- Hero text, Image\n- Find the perfect\n- House\n- House Illustration\n- Second line\n- property with book.immo\n- We believe there's a perfect home for everybody, no matter the budget. That's why we always find the best homes for your budget.\n- Image, Testimonial\n- Hero Image\n- Variant 1\n- Testimonial\n- Image, Name, Location\n- Tesimonial Image\n- Name, Location\n- Evans Keith\n- Pleasantville, United Kingdom\n- Efficient, knowledgeable, &amp; made our home search a smooth experience. Highly recommended agency!\n- Socials\n- instagram\n- facebook\n\n## Text content\nFind the perfect property with book.immo We believe there's a perfect home for everybody, no matter the budget. That's why we always find the best homes for your budget. Evans Keith Westside, Kent From start to finish, this agency provided exceptional service. Their knowledge and efficiency made finding our new home a breeze. Highly recommended! Michael Davis Jersey City, London Working with this agency was a seamless experience. Their efficiency and expertise made our home search effortless. I highly recommend them! John Smith Greenville, Manchester Efficient, knowledgeable, &amp; made our home search a smooth experience. Highly recommended agency! Emily Johnson Capitol Hill, Leeds This age\n\n## Images / media\n1. /_local/static/images/zem5ljiIMhVZOBlOiatmZWIP3o.png__q_width%3D286%26height%3D150\n2. /_local/static/images/1K4h58ZVgf8kQSw4uZAnxC1xyw.jpg__q_width%3D4096%26height%3D2296 — alt: \"Hero Image\"\n3. /_local/static/images/1K4h58ZVgf8kQSw4uZAnxC1xyw.jpg__q_width%3D4096%26height%3D2296 — alt: \"Hero Image\"\n4. /_local/static/images/1K4h58ZVgf8kQSw4uZAnxC1xyw.jpg__q_width%3D4096%26height%3D2296 — alt: \"Hero Image\"\n5. /_local/static/images/qP1y1nguVCscpAYMZwguJEh0k.png\n6. /_local/static/images/Wu3jIIXne7CD8oB2WuVqxx1Wfk.jpg\n\n## Scroll-appear animations (Framer Motion)\nElements: r6linc, 1fyywk9\nInitial: { opacity: 0, y: 150 }\nAnimate to: { opacity: 1, y: 0 } on viewport enter (once)\nTransition: spring — damping: 20, stiffness: 80, mass: 1\nStagger delays: 0.1s / 0.2s / 0.3s per element\nUse: <motion.div initial={{opacity:0,y:150}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{type:'spring',damping:20,stiffness:80,mass:1,delay:0.1}}>\n\n## Loop animations\n- pn={opacity:1,rotate:360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\n- hn={opacity:1,rotate:-360,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\n- gn={opacity:1,rotate:0,rotateX:0,rotateY:0,scale:1,skewX:0,skewY:0,x:0,y:0}\nImplement as CSS animation or Framer Motion animate with repeat=Infinity, ease='linear'\n\n## Hover states\nvariants:{\"r_MKrnUtr-hover\":{backgroundColor:`rgba(0, 0, 0, 0)`,opacity:.6},\"SRDXm348e-hover\":{opacity:.6},\"txfStIeBt-hover\":{opacity:.6},r_MKrnUtr:{\"--border-bottom-width\":`${g.borderBottomWidth??g.b\nvariants:{\"fXLxM_2eb-hover\":{backgroundColor:`rgba(51, 51, 51, 0.85)`,opacity:.6},\"fXLxM_2eb-pressed\":{backgroundColor:`rgb(51, 51, 51)`,opacity:.6},Dt1AWl_eW:{opacity:.5},KNXL_Zv0R:{backgroundColor:`\n\n## Design tokens (from Framer CSS)\ndisplay: flex\ngap: 88px\npadding: 160px 0 88px\n--framer-paragraph-spacing: 0px\ncolor: transparent\nbackground-color: initial\n--framer-font-family: Inter, Inter Placeholder, sans-serif\n--framer-font-style: normal\n--framer-font-weight: 500\n--framer-text-color: #000\n--framer-font-size: 16px\n--framer-letter-spacing: 0\n--framer-text-transform: none\n--framer-text-decoration: none\n--framer-text-decoration-style: none\n--framer-text-decoration-color: none\n--framer-text-decoration-thickness: none\n--framer-text-decoration-skip-ink: none\n--framer-text-decoration-offset: none\n--framer-line-height: 1.2em\n\n## Generation requirements\n- React 18, export default function Hero()\n- Import and use Framer Motion for every animation described above\n- TailwindCSS for styling; match Framer colors/spacing/typography\n- Semantic HTML (h1/h2/p/section/nav/ul/li where appropriate)\n- Self-contained: no external state, no props required\n- Desktop-first, responsive with sm:/md:/lg: breakpoints where obvious\n- Output ONLY the component code, no markdown fences, no comments"
+}
