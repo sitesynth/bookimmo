@@ -22,17 +22,14 @@ export default function HomePage() {
   const [gateOpen, setGateOpen]     = useState(false)
   const [guestHref, setGuestHref]   = useState('./search')
 
-  // Intercept clicks on property cards (they link to ./sign-up)
+  // Intercept clicks on property cards inside New Listing / Featured Properties
   const handleClick = useCallback((e) => {
-    const anchor = e.target.closest('a[href="./sign-up"]')
-    if (!anchor) return
-    // Only intercept if inside a property card (not the nav Sign Up button)
-    const inNav = anchor.closest('.framer-2u9hi5-container, nav')
-    if (inNav) return
+    const card = e.target.closest('div[tabindex="0"]')
+    if (!card) return
+    const inSection = card.closest('.framer-1bxsx5l, .framer-sc2163')
+    if (!inSection) return
     e.preventDefault()
-    // Try to find the actual property href nearby (sibling/parent links)
-    const card = anchor.closest('[class*="framer-"]')
-    const propLink = card?.querySelector('a[href*="Property-Details"]')
+    const propLink = card.querySelector('a[href*="Property-Details"]')
     setGuestHref(propLink?.getAttribute('href') || './search')
     setGateOpen(true)
   }, [])
