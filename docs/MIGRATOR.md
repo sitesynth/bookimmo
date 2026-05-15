@@ -171,6 +171,8 @@ CSS собирается в один файл в строго определён
 | `react-app/src/computed-styles.json` | HTML-секции homepage |
 | `react-app/src/computed-styles-{slug}.json` | HTML-секции каждой страницы |
 | `react-app/src/framer-directus-field-map.json` | Маппинг полей CMS |
+| `react-app/public/assets/images/*.{png,jpg,webp,svg}` | Все изображения сайта (скачаны локально) |
+| `react-app/public/assets/videos/*.mp4` | Все видео сайта (скачаны локально) |
 
 ---
 
@@ -198,11 +200,22 @@ node generate-components.mjs --only=search
 
 #### Шаги 1-4: Генерация компонентов
 
-##### 1 — Скачивание видео-ассетов
+##### 1 — Скачивание ассетов (видео + изображения)
 
-Сканирует все `computed-styles*.json` в поиске `framerusercontent.com/assets/*.mp4`.  
-Каждое видео скачивается в `react-app/public/assets/videos/` через `curl`.  
-URL в HTML автоматически заменяются на локальные `/assets/videos/filename.mp4`.
+**Видео** (`downloadVideoAssets`):
+- Сканирует все `computed-styles*.json` в поиске `framerusercontent.com/assets/*.mp4`
+- Скачивает в `react-app/public/assets/videos/` через `curl`
+- URL в HTML заменяются на `/assets/videos/filename.mp4`
+
+**Изображения** (`downloadImageAssets`):
+- Сканирует все `computed-styles*.json` в поиске `framerusercontent.com/images/*.{png,jpg,jpeg,webp,svg}`
+- Скачивает в `react-app/public/assets/images/` через `curl`
+- URL в HTML заменяются на `/assets/images/filename.ext`
+- Query-параметры (`?scale-down-to=512` и т.п.) стрипаются — отдаём оригинальный размер
+
+Оба шага идемпотентны: если файл уже скачан, пропускается (`already downloaded`).
+
+**Зачем:** Framer CDN (`framerusercontent.com`) — внешняя зависимость. Если Framer удалит проект или изображение, сайт сломается. Локальные копии исключают эту зависимость полностью.
 
 ##### 2 — HTML → JSX трансформация (`htmlToJsx`)
 
@@ -844,6 +857,7 @@ vercel.json (автогенерируется)
 | Preview не обновляется | Worktree ≠ основной репозиторий | Запускать generate-components из worktree |
 | Кастомная секция не отображается на Vercel | Компонент не добавлен в `src/pages/HomePage.jsx` (production) | Добавить `import` + JSX и синхронизировать worktree → production через `cp` |
 | Заголовок секции выглядит иначе | `letterSpacing` не соответствует Framer-токенам | h2: `letterSpacing: '-2px'`, `fontWeight: 500`, `fontSize: 40` |
+| Изображения не загружаются после деплоя | `framerusercontent.com` ссылки — внешняя зависимость от Framer CDN | `generate-components.mjs` автоматически скачивает все изображения в `public/assets/images/` |
 | Hover на карточках не работает | `whileHover` в Framer = JS-only, не попадает в SSR CSS | Добавить CSS-патч в `framer-styles.css` (см. раздел "Восстановление hover-анимаций") |
 | Секции появляются без анимации | `rootMargin` слишком большой — анимация заканчивается вне viewport | Использовать `rootMargin: '0px 0px -40px 0px'` в `useFramerAppear.js` |
 | Scroll-анимация не видна на кастомной секции | `data-framer-appear-id` не добавлен на `<section>` | Добавить атрибут: `<section data-framer-appear-id="my-section-name">` |

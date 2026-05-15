@@ -12642,3 +12642,23 @@ html body { background: var(--token-8162f168-ed62-49f3-b338-425fedfa1e6f, rgb(25
 .framer-LzZXo[data-filter-active="true"] .framer-1wb1v7d {
   transform: translateX(20px) !important;
 }
+
+/* Footer height override */
+.framer-3hcO7.framer-bpvuxa {
+  height: 700px !important;
+}
+.framer-1u4z99a-container {
+  height: 700px !important;
+}
+
+/* Footer background image — full cover */
+.framer-3hcO7 .framer-6otc0c {
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: unset !important;
+  transform: none !important;
+}
