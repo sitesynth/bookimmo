@@ -13,6 +13,8 @@ import NEWSLETTER from '../components/NEWSLETTER.jsx'
 import GETINTOUCH from '../components/GETINTOUCH.jsx'
 import Footer from '../components/Footer.jsx'
 import Variant1 from '../components/Variant1.jsx'
+import HomeSearchForm from '../components/HomeSearchForm.jsx'
+
 export default function HomePage() {
   useFramerAppear()
   return (
@@ -20,6 +22,7 @@ export default function HomePage() {
       <SvgSprites />
       <Section0 />
       <Hero />
+      <HomeSearchForm />
       <PROPERTIESINTHEAREA />
       <Explore />
       <NewListing />
