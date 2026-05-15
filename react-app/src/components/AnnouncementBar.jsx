@@ -33,6 +33,7 @@ export default function AnnouncementBar() {
           background: 'rgb(255,102,37)',
           flexShrink: 0,
           boxShadow: '0 0 6px rgba(255,102,37,0.7)',
+          animation: 'barDotPulse 1.4s ease-in-out infinite',
         }} />
 
         <p style={{

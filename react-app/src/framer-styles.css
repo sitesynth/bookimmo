@@ -12670,3 +12670,9 @@ html body { background: var(--token-8162f168-ed62-49f3-b338-425fedfa1e6f, rgb(25
 body.bar-visible .framer-2u9hi5-container {
   top: 41px !important;
 }
+
+/* Announcement bar dot pulse */
+@keyframes barDotPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(255,102,37,0.7); }
+  50%       { opacity: 0.3; box-shadow: 0 0 2px rgba(255,102,37,0.2); }
+}
