@@ -22,11 +22,10 @@ const RENT_BUDGETS = [
   { label: 'Over €4,000/mo', min: 4000,  max: null  },
 ]
 
-const PROPERTY_TYPES = ['All', 'Apartment', 'House', 'Villa', 'New property', 'Land', 'Commercial', 'Office']
+const PROPERTY_TYPES = ['Apartment', 'House', 'Villa', 'New property', 'Land', 'Commercial', 'Office']
 const BED_OPTS  = ['Any', '1', '2', '3', '4', '5+']
 const SIZE_OPTS = ['Any', '50 m²', '75 m²', '100 m²', '150 m²', '200 m²', '300 m²']
 
-// Design-system divider matching BookImmo's rgba(25,26,32,0.08) borders
 const SEP = () => (
   <div style={{width:1, alignSelf:'stretch', backgroundColor:'rgba(25,26,32,0.08)', margin:'8px 0', flexShrink:0}} />
 )
@@ -93,13 +92,106 @@ function Select({ label, options, value, onChange, minWidth = 130 }) {
   )
 }
 
+function MultiSelect({ label, options, values, onChange, minWidth = 155 }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+  useEffect(() => {
+    const h = (e) => { if (!ref.current?.contains(e.target)) setOpen(false) }
+    document.addEventListener('mousedown', h)
+    return () => document.removeEventListener('mousedown', h)
+  }, [])
+
+  const toggle = (opt) => {
+    if (values.includes(opt)) onChange(values.filter(v => v !== opt))
+    else onChange([...values, opt])
+  }
+
+  const active = values.length > 0
+  const displayLabel = active
+    ? (values.length === 1 ? values[0] : `${values.length} types`)
+    : label
+
+  return (
+    <div ref={ref} style={{position:'relative', display:'flex', alignItems:'stretch'}}>
+      <button type="button" onClick={() => setOpen(o => !o)}
+        style={{
+          display:'flex', alignItems:'center', gap:6,
+          padding:'0 14px', minWidth, background:'none', border:'none', cursor:'pointer',
+          fontFamily:'"Lexend",sans-serif', fontSize:13,
+          color: active ? 'rgb(255,102,37)' : 'rgb(25,26,32)',
+          fontWeight: active ? 600 : 400,
+          whiteSpace:'nowrap', height:'100%',
+        }}>
+        <span style={{flex:1, textAlign:'left'}}>{displayLabel}</span>
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"
+          style={{flexShrink:0, transition:'transform 0.15s', transform: open ? 'rotate(180deg)' : 'none'}}>
+          <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
+
+      {open && (
+        <div style={{
+          position:'absolute', top:'calc(100% + 4px)', left:0,
+          minWidth: Math.max(minWidth, 200),
+          backgroundColor:'white', borderRadius:12,
+          boxShadow:'0 8px 32px rgba(25,26,32,0.16)',
+          border:'1px solid rgba(25,26,32,0.08)',
+          zIndex:300,
+        }}>
+          {values.length > 0 && (
+            <button type="button" onClick={() => onChange([])}
+              style={{
+                display:'flex', alignItems:'center', gap:10,
+                width:'100%', textAlign:'left', padding:'9px 14px',
+                background:'none', border:'none', borderBottom:'1px solid rgba(25,26,32,0.08)', cursor:'pointer',
+                fontFamily:'"Lexend",sans-serif', fontSize:12,
+                color:'rgba(25,26,32,0.45)', fontWeight:400,
+              }}>
+              All types
+            </button>
+          )}
+          {options.map(opt => {
+            const checked = values.includes(opt)
+            return (
+              <button key={opt} type="button" onClick={() => toggle(opt)}
+                style={{
+                  display:'flex', alignItems:'center', gap:10,
+                  width:'100%', textAlign:'left', padding:'9px 14px',
+                  background:'none', border:'none', cursor:'pointer',
+                  fontFamily:'"Lexend",sans-serif', fontSize:13,
+                  color: checked ? 'rgb(255,102,37)' : 'rgb(25,26,32)',
+                  fontWeight: checked ? 600 : 400,
+                  backgroundColor: checked ? 'rgba(255,102,37,0.06)' : 'transparent',
+                }}>
+                <span style={{
+                  width:16, height:16, borderRadius:4, flexShrink:0,
+                  border: checked ? '2px solid rgb(255,102,37)' : '1.5px solid rgba(25,26,32,0.25)',
+                  backgroundColor: checked ? 'rgb(255,102,37)' : 'transparent',
+                  display:'flex', alignItems:'center', justifyContent:'center',
+                }}>
+                  {checked && (
+                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                      <path d="M1 4l3 3 5-6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                </span>
+                {opt}
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function HomeSearchForm() {
   const navigate  = useNavigate()
   const { lang }  = useParams()
 
   const [txType,      setTxType]      = useState('Buy')
   const [text,        setText]        = useState('')
-  const [propType,    setPropType]    = useState('')
+  const [propTypes,   setPropTypes]   = useState([])
   const [budget,      setBudget]      = useState('')
   const [bedroomsMin, setBedroomsMin] = useState('')
   const [bedroomsMax, setBedroomsMax] = useState('')
@@ -107,7 +199,6 @@ export default function HomeSearchForm() {
   const [sizeMax,     setSizeMax]     = useState('')
   const [propCount,   setPropCount]   = useState(null)
 
-  // Reset budget when switching Buy/Rent (price ranges are incompatible)
   const handleTxType = (t) => { setTxType(t); setBudget('') }
 
   const budgets = txType === 'Buy' ? BUY_BUDGETS : RENT_BUDGETS
@@ -127,7 +218,7 @@ export default function HomeSearchForm() {
     const params = new URLSearchParams()
     if (text) params.set('q', text)
     params.set('type', txType.toLowerCase())
-    if (propType && propType !== 'All') params.set('category', propType)
+    propTypes.forEach(pt => params.append('category[]', pt))
     const bObj = budgets.find(b => b.label === budget)
     if (bObj?.min != null) params.set('priceMin', bObj.min)
     if (bObj?.max != null) params.set('priceMax', bObj.max)
@@ -137,61 +228,75 @@ export default function HomeSearchForm() {
   }
 
   return (
-    /*
-     * Pull the form up by ~218px so it overlays the bottom of the hero image.
-     * z-index:10 puts it above Framer's hero content.
-     * The maxWidth container keeps it within the page's content column.
-     */
     <div style={{
-      position:'relative', zIndex:10,
-      marginTop:-148, marginBottom:0,
-      padding:'0 40px',
+      position:'relative',
+      marginTop:0, marginBottom:0,
+      width:1088,
     }}>
-      <style>{`@keyframes hsf-sweep{0%{background-position:200% center}100%{background-position:-200% center}}`}</style>
-      <div style={{maxWidth:1400, margin:'0 auto', position:'relative'}}>
-        {/* Animated orange border sweep */}
-        <div style={{position:'absolute',inset:-2,borderRadius:14,zIndex:-1,background:'linear-gradient(90deg,rgba(25,26,32,0.08) 0%,rgba(255,140,0,0.7) 40%,rgba(255,184,0,0.9) 50%,rgba(255,140,0,0.7) 60%,rgba(25,26,32,0.08) 100%)',backgroundSize:'200% 100%',animation:'hsf-sweep 3s ease-in-out infinite'}} />
+      <div>
+        <style>{`
+          @keyframes hsf-sweep {
+            0%   { background-position: 200% center; }
+            100% { background-position: -200% center; }
+          }
+        `}</style>
 
-        {/* Claim bar — headline + live property count */}
+        {/* Animated border wrapper */}
         <div style={{
-          backgroundColor:'white',
-          borderRadius:'12px 12px 0 0',
-          padding:'14px 20px',
-          display:'flex', alignItems:'center', justifyContent:'space-between',
-          borderBottom:'1px solid rgba(25,26,32,0.08)',
+          padding: 1.5,
+          borderRadius: 17,
+          background: 'linear-gradient(90deg, rgba(25,26,32,0.08) 0%, rgba(255,140,0,0.7) 40%, rgba(255,184,0,0.9) 50%, rgba(255,140,0,0.7) 60%, rgba(25,26,32,0.08) 100%)',
+          backgroundSize: '200% 100%',
+          animation: 'hsf-sweep 3s ease-in-out infinite',
         }}>
-          <div style={{display:'flex',alignItems:'center',gap:8}}>
-            <svg width="20" height="20" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="hsf-lg0" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FF6625"/><stop offset="100%" stopColor="#FFB800"/></linearGradient><linearGradient id="hsf-lg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FF6625"/><stop offset="100%" stopColor="#FFB800"/></linearGradient></defs><path d="M17 3L3 14h4v14h8v-8h4v8h8V14h4L17 3z" fill="url(#hsf-lg0)"/><path d="M13 26v-8h8v8" stroke="url(#hsf-lg1)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            <p style={{margin:0, fontFamily:'"Lexend",sans-serif', fontSize:13, fontWeight:700, letterSpacing:'0.08em', color:'rgb(25,26,32)', textTransform:'uppercase'}}>Find your property</p>
-          </div>
-          {propCount != null && (
-            <span style={{fontFamily:'"Lexend",sans-serif', fontSize:13, fontWeight:600, color:'rgb(255,102,37)', whiteSpace:'nowrap', marginLeft:16}}>
-              {propCount.toLocaleString()} listings
-            </span>
-          )}
-        </div>
 
-        {/* Card */}
+        {/* Unified card */}
         <div style={{
           backgroundColor:'white',
-          border:'1px solid rgba(25,26,32,0.08)',
-          borderTop:'none',
-          borderRadius:'0 0 12px 12px',
-          boxShadow:'0 12px 40px rgba(25,26,32,0.14)',
+          borderRadius:16,
           overflow:'visible',
         }}>
+          {/* Label row */}
+          <div style={{
+            padding:'12px 20px 0',
+            display:'flex', alignItems:'center', justifyContent:'space-between',
+          }}>
+            <div style={{display:'flex', alignItems:'center', gap:8}}>
+              <svg width="22" height="20" viewBox="0 0 28.5 25" style={{flexShrink:0}} xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="hsf-lg0" x1="14.1" y1="3.2" x2="14.1" y2="27.1" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stopColor="#ffb800"/>
+                    <stop offset="1" stopColor="#ff8c00"/>
+                  </linearGradient>
+                  <linearGradient id="hsf-lg1" x1="7" y1="3.2" x2="7" y2="27.1" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stopColor="#ffb800"/>
+                    <stop offset="1" stopColor="#ff8c00"/>
+                  </linearGradient>
+                </defs>
+                <path d="M27.8,16.9c0,1.7-.5,3.7-1.2,5.5h0l-6-3.5v-3.4c0-.9-.7-1.5-1.5-1.5s-1.5.7-1.5,1.5v1.5l-8.3-4.9c-.2-.1-.5-.2-.8-.2h0c-.3,0-.6,0-.9.3L.5,16.3C.8,9,6.8,3.2,14.1,3.2s13.7,6.1,13.7,13.7Z" fill="url(#hsf-lg0)"/>
+                <path d="M2.8,24.6c-.9-1.4-1.6-2.9-1.9-4.5l7.6-4.7,4.7,2.8-10.4,6.5h0Z" fill="url(#hsf-lg1)"/>
+              </svg>
+              <span style={{fontFamily:'"Lexend",sans-serif', fontSize:12, fontWeight:500, color:'rgba(25,26,32,0.4)', letterSpacing:'0.06em', textTransform:'uppercase'}}>
+                Find your property
+              </span>
+            </div>
+            {propCount != null && (
+              <span style={{fontFamily:'"Lexend",sans-serif', fontSize:12, fontWeight:600, color:'rgb(255,102,37)'}}>
+                {propCount.toLocaleString()} listings
+              </span>
+            )}
+          </div>
+
           <form onSubmit={handleSearch}>
 
             {/* ── Row 1 ── */}
-            <div style={{display:'flex', alignItems:'stretch', borderBottom:'1px solid rgba(25,26,32,0.08)', minHeight:52}}>
+            <div style={{display:'flex', alignItems:'stretch', borderBottom:'1px solid rgba(25,26,32,0.07)', minHeight:56, margin:'0 8px'}}>
 
-              {/* Transaction type */}
               <Select label="Buy" options={TX_TYPES} value={txType} onChange={handleTxType} minWidth={80} />
               <SEP />
 
-              {/* Location input */}
               <div style={{flex:'1 1 0', display:'flex', alignItems:'center', gap:10, padding:'0 14px', minWidth:0}}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{flexShrink:0, opacity:0.35}}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" style={{flexShrink:0, opacity:0.3}}>
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="rgb(25,26,32)" strokeWidth="1.5"/>
                   <circle cx="12" cy="10" r="3" stroke="rgb(25,26,32)" strokeWidth="1.5"/>
                 </svg>
@@ -201,22 +306,21 @@ export default function HomeSearchForm() {
               </div>
               <SEP />
 
-              {/* Property type */}
-              <Select label="All property types" options={PROPERTY_TYPES}
-                value={propType} onChange={v => setPropType(v === 'All' ? '' : v)} minWidth={155} />
+              <MultiSelect label="All property types" options={PROPERTY_TYPES}
+                values={propTypes} onChange={setPropTypes} minWidth={155} />
               <SEP />
 
-              {/* Budget */}
               <Select label="Budget" options={budgets.map(b => b.label)}
                 value={budget} onChange={v => setBudget(v === 'Any' ? '' : v)} minWidth={150} />
+              <SEP />
 
-              {/* Search button — dark, matching BookImmo "Browse Listings" style */}
               <button type="submit" style={{
-                margin:8, padding:'0 28px',
+                margin:'10px 8px',
+                padding:'0 32px',
                 backgroundColor:'rgb(25,26,32)',
                 border:'none', cursor:'pointer',
                 fontFamily:'"Lexend",sans-serif', fontSize:14, fontWeight:500, color:'white',
-                flexShrink:0, borderRadius:8, transition:'background-color 0.2s',
+                flexShrink:0, borderRadius:10, transition:'background-color 0.2s',
               }}
                 onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(25,26,32,0.82)'}
                 onMouseLeave={e => e.currentTarget.style.backgroundColor = 'rgb(25,26,32)'}>
@@ -225,7 +329,7 @@ export default function HomeSearchForm() {
             </div>
 
             {/* ── Row 2 ── */}
-            <div style={{display:'flex', alignItems:'stretch', minHeight:44}}>
+            <div style={{display:'flex', alignItems:'stretch', minHeight:44, margin:'0 8px'}}>
               <Select label="Min Bedrooms" options={BED_OPTS}
                 value={bedroomsMin} onChange={v => setBedroomsMin(v === 'Any' ? '' : v)} minWidth={130} />
               <SEP />
@@ -240,17 +344,16 @@ export default function HomeSearchForm() {
 
               <div style={{flex:1}} />
 
-              {/* Map search */}
               <button type="button"
                 onClick={() => navigate(`/${lang || 'de'}/search?map=1`)}
                 style={{
                   display:'flex', alignItems:'center', gap:8,
                   padding:'0 20px', background:'none',
-                  border:'none', borderLeft:'1px solid rgba(25,26,32,0.08)',
+                  border:'none', borderLeft:'1px solid rgba(25,26,32,0.07)',
                   cursor:'pointer', fontFamily:'"Lexend",sans-serif',
-                  fontSize:13, fontWeight:500, color:'rgb(25,26,32)', flexShrink:0,
+                  fontSize:13, fontWeight:500, color:'rgba(25,26,32,0.6)', flexShrink:0,
                 }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                   <path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
                   <path d="M9 3v15M15 6v15" stroke="currentColor" strokeWidth="1.5"/>
                 </svg>
@@ -260,6 +363,7 @@ export default function HomeSearchForm() {
 
           </form>
         </div>
+        </div>{/* end animated border wrapper */}
       </div>
     </div>
   )
