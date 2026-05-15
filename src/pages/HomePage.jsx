@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import { useFramerAppear } from '../hooks/useFramerAppear.js'
 import SvgSprites from '../components/SvgSprites.jsx'
+import AnnouncementBar from '../components/AnnouncementBar.jsx'
 import Section0 from '../components/Section0.jsx'
 import Hero from '../components/Hero.jsx'
 import PROPERTIESINTHEAREA from '../components/PROPERTIESINTHEAREA.jsx'
@@ -40,6 +41,7 @@ export default function HomePage() {
       style={{minHeight:'100vh',width:'auto'}}
       onClick={handleClick}
     >
+      <AnnouncementBar />
       <SvgSprites />
       <Section0 />
       <Hero />
