@@ -74,7 +74,7 @@ function PropertyCard({ property, index }) {
   const [pressed, setPressed] = React.useState(false)
   return (
     <div ref={cardRef} className="framer-rNUfR framer-z7jVh framer-0XLgG framer-43ZH4 framer-14rg9q4 framer-v-14rg9q4" data-framer-name="Variant 1"
-      style={{'--nsxbbh':'0px 0px 36px 0px',backgroundColor:'var(--token-8162f168-ed62-49f3-b338-425fedfa1e6f, rgb(245, 245, 245))',width:'100%',borderRadius:'12px',opacity:1,transition:'transform 0.15s ease, box-shadow 0.15s ease',transform:pressed?'scale(0.97)':'scale(1)',boxShadow:pressed?'none':'var(--nsxbbh, none)'}}
+      style={{width:'100%',borderRadius:'12px',opacity:1,transition:'transform 0.15s ease',transform:pressed?'scale(0.97)':'scale(1)'}}
       onMouseEnter={() => cardRef.current?.classList.add('hover')}
       onMouseLeave={() => { cardRef.current?.classList.remove('hover'); setPressed(false) }}
       onMouseDown={() => setPressed(true)}

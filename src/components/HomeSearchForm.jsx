@@ -147,7 +147,10 @@ export default function HomeSearchForm() {
       marginTop:-148, marginBottom:0,
       padding:'0 40px',
     }}>
-      <div style={{maxWidth:1400, margin:'0 auto'}}>
+      <style>{`@keyframes hsf-sweep{0%{background-position:200% center}100%{background-position:-200% center}}`}</style>
+      <div style={{maxWidth:1400, margin:'0 auto', position:'relative'}}>
+        {/* Animated orange border sweep */}
+        <div style={{position:'absolute',inset:-2,borderRadius:14,zIndex:-1,background:'linear-gradient(90deg,rgba(25,26,32,0.08) 0%,rgba(255,140,0,0.7) 40%,rgba(255,184,0,0.9) 50%,rgba(255,140,0,0.7) 60%,rgba(25,26,32,0.08) 100%)',backgroundSize:'200% 100%',animation:'hsf-sweep 3s ease-in-out infinite'}} />
 
         {/* Claim bar — headline + live property count */}
         <div style={{
@@ -157,9 +160,10 @@ export default function HomeSearchForm() {
           display:'flex', alignItems:'center', justifyContent:'space-between',
           borderBottom:'1px solid rgba(25,26,32,0.08)',
         }}>
-          <p style={{margin:0, fontFamily:'"Lexend",sans-serif', fontSize:15, fontWeight:600, color:'rgb(25,26,32)'}}>
-            Find your perfect property with BookImmo
-          </p>
+          <div style={{display:'flex',alignItems:'center',gap:8}}>
+            <svg width="20" height="20" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="hsf-lg0" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FF6625"/><stop offset="100%" stopColor="#FFB800"/></linearGradient><linearGradient id="hsf-lg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FF6625"/><stop offset="100%" stopColor="#FFB800"/></linearGradient></defs><path d="M17 3L3 14h4v14h8v-8h4v8h8V14h4L17 3z" fill="url(#hsf-lg0)"/><path d="M13 26v-8h8v8" stroke="url(#hsf-lg1)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <p style={{margin:0, fontFamily:'"Lexend",sans-serif', fontSize:13, fontWeight:700, letterSpacing:'0.08em', color:'rgb(25,26,32)', textTransform:'uppercase'}}>Find your property</p>
+          </div>
           {propCount != null && (
             <span style={{fontFamily:'"Lexend",sans-serif', fontSize:13, fontWeight:600, color:'rgb(255,102,37)', whiteSpace:'nowrap', marginLeft:16}}>
               {propCount.toLocaleString()} listings
