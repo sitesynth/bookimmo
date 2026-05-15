@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
+import WaitlistModal from './WaitlistModal.jsx'
 
 export default function AnnouncementBar() {
   const [visible, setVisible] = useState(true)
+  const [modalOpen, setModalOpen] = useState(false)
 
   useEffect(() => {
     document.body.classList.toggle('bar-visible', visible)
@@ -9,13 +11,27 @@ export default function AnnouncementBar() {
   }, [visible])
 
   return (
-    <div style={{
-      overflow: 'hidden',
-      maxHeight: visible ? '80px' : '0px',
-      opacity: visible ? 1 : 0,
-      transition: 'max-height 0.4s ease, opacity 0.35s ease',
-      width: '100%',
-    }}>
+    <>
+      {/* Spacer keeps normal-flow space so Framer content isn't hidden under the fixed bar */}
+      <div style={{
+        maxHeight: visible ? '41px' : '0px',
+        transition: 'max-height 0.4s ease',
+        overflow: 'hidden',
+        flexShrink: 0,
+      }} />
+
+      {/* Fixed bar — scrolls with nav, not with page */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1999,
+        overflow: 'hidden',
+        maxHeight: visible ? '80px' : '0px',
+        opacity: visible ? 1 : 0,
+        transition: 'max-height 0.4s ease, opacity 0.35s ease',
+      }}>
       <div style={{
         width: '100%',
         backgroundColor: 'rgb(25, 26, 32)',
@@ -46,7 +62,16 @@ export default function AnnouncementBar() {
           lineHeight: 1.5,
         }}>
           🚀 <strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Launching in June!</strong>
-          {' '}The first <strong style={{ color: '#fff', fontWeight: 600 }}>200 users</strong> get free apartment matching — join now.
+          {' '}The first <strong style={{ color: '#fff', fontWeight: 600 }}>200 users</strong> get free apartment matching —{' '}
+          <button
+            onClick={() => setModalOpen(true)}
+            style={{
+              background: 'none', border: 'none', padding: 0,
+              cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit',
+              color: 'rgb(255,102,37)', fontWeight: 600,
+              textDecoration: 'underline', textUnderlineOffset: 3,
+            }}
+          >join now</button>.
         </p>
 
         <button
@@ -70,6 +95,9 @@ export default function AnnouncementBar() {
           ×
         </button>
       </div>
-    </div>
+      </div>
+
+      {modalOpen && <WaitlistModal onClose={() => setModalOpen(false)} />}
+    </>
   )
 }
