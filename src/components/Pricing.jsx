@@ -56,7 +56,7 @@ export default function Pricing() {
   const total = STEPS.slice(0, selected + 1).reduce((sum, s) => sum + parseInt(s.price.replace('€', '')), 0)
 
   return (
-    <section style={{
+    <section id="pricing" style={{
       width: '100%',
       backgroundColor: 'rgb(245,245,245)',
       padding: '80px 40px',
@@ -262,7 +262,7 @@ export default function Pricing() {
                   {step.price}
                 </p>
               </div>
-              <button style={{
+              <a href="./sign-up" style={{
                 padding: '14px 28px',
                 borderRadius: 10,
                 border: 'none',
@@ -273,9 +273,11 @@ export default function Pricing() {
                 fontWeight: 600,
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
+                textDecoration: 'none',
+                display: 'inline-block',
               }}>
                 Get started
-              </button>
+              </a>
             </div>
           </div>
 
