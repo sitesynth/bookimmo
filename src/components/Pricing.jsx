@@ -139,7 +139,7 @@ export default function Pricing() {
         fontFamily: '"Bricolage Grotesque", sans-serif',
         fontSize: isMobile ? 30 : 40,
         fontWeight: 500, color: 'rgb(255,102,37)',
-        margin: '0 0 12px', lineHeight: 1.2, letterSpacing: '-1px',
+        margin: '0 0 12px', lineHeight: 1.2, letterSpacing: '-2px',
       }}>
         Pay as you progress
       </h2>
