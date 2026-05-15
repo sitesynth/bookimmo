@@ -78,7 +78,7 @@ export default function AuthGateModal({ onClose, guestHref }) {
               fontFamily: '"Lexend", sans-serif', fontSize: 13, fontWeight: 600,
               color: 'rgb(245,245,245)',
             }}>
-              Log in
+              Sign in
             </a>
           </div>
 
