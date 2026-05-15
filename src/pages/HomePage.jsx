@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import { useFramerAppear } from '../hooks/useFramerAppear.js'
 import SvgSprites from '../components/SvgSprites.jsx'
 import Section0 from '../components/Section0.jsx'
@@ -15,10 +15,34 @@ import NEWSLETTER from '../components/NEWSLETTER.jsx'
 import GETINTOUCH from '../components/GETINTOUCH.jsx'
 import Footer from '../components/Footer.jsx'
 import Variant1 from '../components/Variant1.jsx'
+import AuthGateModal from '../components/AuthGateModal.jsx'
+
 export default function HomePage() {
   useFramerAppear()
+  const [gateOpen, setGateOpen]     = useState(false)
+  const [guestHref, setGuestHref]   = useState('./search')
+
+  // Intercept clicks on property cards (they link to ./sign-up)
+  const handleClick = useCallback((e) => {
+    const anchor = e.target.closest('a[href="./sign-up"]')
+    if (!anchor) return
+    // Only intercept if inside a property card (not the nav Sign Up button)
+    const inNav = anchor.closest('.framer-2u9hi5-container, nav')
+    if (inNav) return
+    e.preventDefault()
+    // Try to find the actual property href nearby (sibling/parent links)
+    const card = anchor.closest('[class*="framer-"]')
+    const propLink = card?.querySelector('a[href*="Property-Details"]')
+    setGuestHref(propLink?.getAttribute('href') || './search')
+    setGateOpen(true)
+  }, [])
+
   return (
-    <div className="framer-f8vvx framer-HOibb framer-77SxD framer-Sscx1 framer-YPkpu framer-43ZH4 framer-KnW9u framer-rEghC framer-72rtr7" style={{minHeight:'100vh',width:'auto'}}>
+    <div
+      className="framer-f8vvx framer-HOibb framer-77SxD framer-Sscx1 framer-YPkpu framer-43ZH4 framer-KnW9u framer-rEghC framer-72rtr7"
+      style={{minHeight:'100vh',width:'auto'}}
+      onClick={handleClick}
+    >
       <SvgSprites />
       <Section0 />
       <Hero />
@@ -34,6 +58,13 @@ export default function HomePage() {
       <GETINTOUCH />
       <Footer />
       <Variant1 />
+
+      {gateOpen && (
+        <AuthGateModal
+          guestHref={guestHref}
+          onClose={() => setGateOpen(false)}
+        />
+      )}
     </div>
   )
 }
