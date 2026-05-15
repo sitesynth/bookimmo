@@ -39,7 +39,7 @@ function useAgentProperties(agentSlug) {
 function AgentPropCard({ p }) {
   const imgSrc = p.cover_image
     ? `/api/directus?path=/assets/${p.cover_image}&query=${encodeURIComponent('width=600&quality=80')}`
-    : 'https://framerusercontent.com/images/LtciWS6CyIqXmgu9hbArgmRgxs.jpg'
+    : '/assets/images/LtciWS6CyIqXmgu9hbArgmRgxs.jpg'
   return (
     <div className="framer-1x9aqwu-container">
       <div className="framer-rNUfR framer-z7jVh framer-0XLgG framer-43ZH4 framer-14rg9q4 framer-v-14rg9q4" style={{'--nsxbbh': "0px 0px 36px 0px", backgroundColor: "var(--token-8162f168-ed62-49f3-b338-425fedfa1e6f, rgb(245, 245, 245))", width: "100%", borderRadius: "12px", opacity: "1"}}>
@@ -99,7 +99,7 @@ export default function AgentDetailPage() {
   const [showContactForm, setShowContactForm] = useState(false)
   const agentImgSrc = a?.avatar
     ? '/api/directus?path=/assets/' + a.avatar + '&query=' + encodeURIComponent('width=600&quality=80')
-    : 'https://framerusercontent.com/images/quQX9ZfMLyWD5wvMy21bvkWs0Dg.jpg'
+    : '/assets/images/quQX9ZfMLyWD5wvMy21bvkWs0Dg.jpg'
 
   if (loading) return (
     <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center'}}>

@@ -11,7 +11,7 @@ const FRAMER_IMGS = [
   'uJIxALexex0qutxW0BGT1e8RZU.jpg','6tsHyqe0lsOpKgANd4B3r8lEwak.jpg',
   'gRIsS7b7H7QhFCmWRl88B6uVZMQ.jpg','bmKq0zjCmV9aMdk4qbciIhZPU.jpg',
 ]
-const getImg = i => `https://framerusercontent.com/images/${FRAMER_IMGS[i % FRAMER_IMGS.length]}`
+const getImg = i => `/assets/images/${FRAMER_IMGS[i % FRAMER_IMGS.length]}`
 
 // SVG icon paths extracted from computed-styles HTML (Phosphor icons)
 const CATEGORY_ICONS = {
