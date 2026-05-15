@@ -39,7 +39,7 @@ export default function FAQ() {
           <h2 style={{
             fontFamily: '"Bricolage Grotesque", sans-serif',
             fontSize: 40,
-            fontWeight: 700,
+            fontWeight: 500,
             color: 'rgb(255,102,37)',
             margin: '0 0 12px',
             lineHeight: 1.2,
