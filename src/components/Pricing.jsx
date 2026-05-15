@@ -155,7 +155,7 @@ export default function Pricing() {
   /* ── MOBILE ── */
   if (isMobile) {
     return (
-      <section id="pricing" style={{
+      <section id="pricing" data-framer-appear-id="pricing-section" style={{
         width: '100%', backgroundColor: 'rgb(245,245,245)',
         padding: '60px 20px', boxSizing: 'border-box',
       }}>
@@ -225,7 +225,7 @@ export default function Pricing() {
 
   /* ── DESKTOP ── */
   return (
-    <section id="pricing" style={{
+    <section id="pricing" data-framer-appear-id="pricing-section" style={{
       width: '100%', backgroundColor: 'rgb(245,245,245)',
       padding: '80px 40px', boxSizing: 'border-box',
     }}>

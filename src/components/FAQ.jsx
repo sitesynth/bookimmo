@@ -27,7 +27,7 @@ export default function FAQ() {
   const [open, setOpen] = useState(null)
 
   return (
-    <section style={{
+    <section data-framer-appear-id="faq-section" style={{
       width: '100%',
       backgroundColor: 'rgb(245, 245, 245)',
       padding: '80px 40px',
