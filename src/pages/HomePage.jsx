@@ -7,6 +7,7 @@ import PROPERTIESINTHEAREA from '../components/PROPERTIESINTHEAREA.jsx'
 import Explore from '../components/Explore.jsx'
 import NewListing from '../components/NewListing.jsx'
 import FeaturedProperties from '../components/FeaturedProperties.jsx'
+import Pricing from '../components/Pricing.jsx'
 import FAQ from '../components/FAQ.jsx'
 import GETMORE from '../components/GETMORE.jsx'
 import REALESTATEAGENT from '../components/REALESTATEAGENT.jsx'
@@ -25,6 +26,7 @@ export default function HomePage() {
       <Explore />
       <NewListing />
       <FeaturedProperties />
+      <Pricing />
       <FAQ />
       <GETMORE />
       <REALESTATEAGENT />
