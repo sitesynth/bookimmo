@@ -15,7 +15,8 @@ import { execSync } from 'node:child_process'
 const DATA  = JSON.parse(await fs.readFile('react-app/src/computed-styles.json', 'utf-8'))
 const OUT   = path.resolve('react-app/src/components')
 const PAGES = path.resolve('react-app/src/pages')
-const ASSETS_DIR = path.resolve('react-app/public/assets/videos')
+const ASSETS_DIR        = path.resolve('react-app/public/assets/videos')
+const IMAGES_ASSETS_DIR = path.resolve('react-app/public/assets/images')
 
 // ── download Framer video assets locally ─────────────────────────────────────
 
@@ -52,6 +53,44 @@ async function downloadVideoAssets(allDataSources) {
   return urlMap
 }
 
+// ── download Framer image assets locally ─────────────────────────────────────
+
+/** Collect all framerusercontent image URLs from all page data, download, rewrite.
+ *  Strips query params (?scale-down-to=N) — we serve the original size locally.
+ */
+async function downloadImageAssets(allDataSources) {
+  const imageUrls = new Set()
+  const imageRe = /https:\/\/framerusercontent\.com\/images\/[A-Za-z0-9_-]+\.(png|jpg|jpeg|webp|svg)/gi
+  for (const src of allDataSources) {
+    const str = JSON.stringify(src)
+    let m
+    while ((m = imageRe.exec(str)) !== null) imageUrls.add(m[0])
+  }
+  if (imageUrls.size === 0) return {}
+  await fs.mkdir(IMAGES_ASSETS_DIR, { recursive: true })
+  const urlMap = {}
+  for (const url of imageUrls) {
+    const filename = url.split('/').pop()
+    const localPath = path.join(IMAGES_ASSETS_DIR, filename)
+    const publicUrl = `/assets/images/${filename}`
+    try {
+      await fs.access(localPath)
+      console.log(`  image already downloaded: ${filename}`)
+    } catch {
+      console.log(`  downloading image: ${filename}`)
+      try {
+        execSync(`curl -sL -o "${localPath}" "${url}"`, { timeout: 30000 })
+      } catch (e) {
+        console.error(`  WARN: failed to download ${url}:`, e.message)
+        continue
+      }
+    }
+    // Map both bare URL and URL with any query string to the local path
+    urlMap[url] = publicUrl
+  }
+  return urlMap
+}
+
 // Collect all data sources (homepage + per-page JSONs)
 const SRC_DIR_EARLY = path.resolve('react-app/src')
 const perPageFilesEarly = (await fs.readdir(SRC_DIR_EARLY)).filter(f => f.startsWith('computed-styles-') && f.endsWith('.json'))
@@ -60,6 +99,7 @@ for (const file of perPageFilesEarly) {
   try { allDataSources.push(JSON.parse(await fs.readFile(path.join(SRC_DIR_EARLY, file), 'utf-8'))) } catch {}
 }
 const VIDEO_URL_MAP = await downloadVideoAssets(allDataSources)
+const IMAGE_URL_MAP = await downloadImageAssets(allDataSources)
 
 // ── htmlToJsx (ported from migrate-v2.mjs) ────────────────────────────────────
 
@@ -292,6 +332,11 @@ function htmlToJsx(html) {
   for (const [remoteUrl, localUrl] of Object.entries(VIDEO_URL_MAP)) {
     processed = processed.replaceAll(remoteUrl, localUrl)
   }
+  // Rewrite framerusercontent image URLs (strip query params like ?scale-down-to=512)
+  processed = processed.replace(
+    /https:\/\/framerusercontent\.com\/images\/([A-Za-z0-9_-]+\.(png|jpg|jpeg|webp|svg))(?:\?[^"'\s]*)*/gi,
+    (_, filename) => `/assets/images/${filename}`
+  )
   const result = []
   let i = 0
   while (i < processed.length) {

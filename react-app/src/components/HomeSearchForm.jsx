@@ -14,12 +14,12 @@ const BUY_BUDGETS = [
 ]
 
 const RENT_BUDGETS = [
-  { label: 'Any',             min: null,  max: null  },
-  { label: 'Up to €800/mo',  min: null,  max: 800   },
-  { label: '€800–€1,500/mo', min: 800,   max: 1500  },
-  { label: '€1,500–€2,500/mo', min: 1500, max: 2500 },
-  { label: '€2,500–€4,000/mo', min: 2500, max: 4000 },
-  { label: 'Over €4,000/mo', min: 4000,  max: null  },
+  { label: 'Any',               min: null,  max: null  },
+  { label: 'Up to €800/mo',    min: null,  max: 800   },
+  { label: '€800–€1,500/mo',   min: 800,   max: 1500  },
+  { label: '€1,500–€2,500/mo', min: 1500,  max: 2500  },
+  { label: '€2,500–€4,000/mo', min: 2500,  max: 4000  },
+  { label: 'Over €4,000/mo',   min: 4000,  max: null  },
 ]
 
 const PROPERTY_TYPES = ['Apartment', 'House', 'Villa', 'New property', 'Land', 'Commercial', 'Office']
@@ -30,7 +30,7 @@ const SEP = () => (
   <div style={{width:1, alignSelf:'stretch', backgroundColor:'rgba(25,26,32,0.08)', margin:'8px 0', flexShrink:0}} />
 )
 
-function Select({ label, options, value, onChange, minWidth = 130 }) {
+function Select({ label, options, value, onChange, minWidth = 130, fullWidth = false }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
   useEffect(() => {
@@ -43,11 +43,14 @@ function Select({ label, options, value, onChange, minWidth = 130 }) {
   const displayLabel = active ? value : label
 
   return (
-    <div ref={ref} style={{position:'relative', display:'flex', alignItems:'stretch'}}>
+    <div ref={ref} style={{position:'relative', display:'flex', alignItems:'stretch', width: fullWidth ? '100%' : undefined}}>
       <button type="button" onClick={() => setOpen(o => !o)}
         style={{
           display:'flex', alignItems:'center', gap:6,
-          padding:'0 14px', minWidth, background:'none', border:'none', cursor:'pointer',
+          padding:'0 14px',
+          minWidth: fullWidth ? 0 : minWidth,
+          width: fullWidth ? '100%' : undefined,
+          background:'none', border:'none', cursor:'pointer',
           fontFamily:'"Lexend",sans-serif', fontSize:13,
           color: active ? 'rgb(255,102,37)' : 'rgb(25,26,32)',
           fontWeight: active ? 600 : 400,
@@ -63,7 +66,8 @@ function Select({ label, options, value, onChange, minWidth = 130 }) {
       {open && (
         <div style={{
           position:'absolute', top:'calc(100% + 4px)', left:0,
-          minWidth: Math.max(minWidth, 180),
+          minWidth: Math.max(fullWidth ? 0 : minWidth, 180),
+          width: fullWidth ? '100%' : undefined,
           backgroundColor:'white', borderRadius:12,
           boxShadow:'0 8px 32px rgba(25,26,32,0.16)',
           border:'1px solid rgba(25,26,32,0.08)',
@@ -92,7 +96,7 @@ function Select({ label, options, value, onChange, minWidth = 130 }) {
   )
 }
 
-function MultiSelect({ label, options, values, onChange, minWidth = 155 }) {
+function MultiSelect({ label, options, values, onChange, minWidth = 155, fullWidth = false }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
   useEffect(() => {
@@ -112,11 +116,14 @@ function MultiSelect({ label, options, values, onChange, minWidth = 155 }) {
     : label
 
   return (
-    <div ref={ref} style={{position:'relative', display:'flex', alignItems:'stretch'}}>
+    <div ref={ref} style={{position:'relative', display:'flex', alignItems:'stretch', width: fullWidth ? '100%' : undefined}}>
       <button type="button" onClick={() => setOpen(o => !o)}
         style={{
           display:'flex', alignItems:'center', gap:6,
-          padding:'0 14px', minWidth, background:'none', border:'none', cursor:'pointer',
+          padding:'0 14px',
+          minWidth: fullWidth ? 0 : minWidth,
+          width: fullWidth ? '100%' : undefined,
+          background:'none', border:'none', cursor:'pointer',
           fontFamily:'"Lexend",sans-serif', fontSize:13,
           color: active ? 'rgb(255,102,37)' : 'rgb(25,26,32)',
           fontWeight: active ? 600 : 400,
@@ -132,7 +139,8 @@ function MultiSelect({ label, options, values, onChange, minWidth = 155 }) {
       {open && (
         <div style={{
           position:'absolute', top:'calc(100% + 4px)', left:0,
-          minWidth: Math.max(minWidth, 200),
+          minWidth: Math.max(fullWidth ? 0 : minWidth, 200),
+          width: fullWidth ? '100%' : undefined,
           backgroundColor:'white', borderRadius:12,
           boxShadow:'0 8px 32px rgba(25,26,32,0.16)',
           border:'1px solid rgba(25,26,32,0.08)',
@@ -185,9 +193,49 @@ function MultiSelect({ label, options, values, onChange, minWidth = 155 }) {
   )
 }
 
+function useIsMobile() {
+  const [mobile, setMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
+  useEffect(() => {
+    const h = () => setMobile(window.innerWidth < 768)
+    window.addEventListener('resize', h)
+    return () => window.removeEventListener('resize', h)
+  }, [])
+  return mobile
+}
+
+const BookImmoLogo = () => (
+  <svg width="22" height="20" viewBox="0 0 28.5 25" style={{flexShrink:0}} xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="hsf-lg0" x1="14.1" y1="3.2" x2="14.1" y2="27.1" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stopColor="#ffb800"/><stop offset="1" stopColor="#ff8c00"/>
+      </linearGradient>
+      <linearGradient id="hsf-lg1" x1="7" y1="3.2" x2="7" y2="27.1" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stopColor="#ffb800"/><stop offset="1" stopColor="#ff8c00"/>
+      </linearGradient>
+    </defs>
+    <path d="M27.8,16.9c0,1.7-.5,3.7-1.2,5.5h0l-6-3.5v-3.4c0-.9-.7-1.5-1.5-1.5s-1.5.7-1.5,1.5v1.5l-8.3-4.9c-.2-.1-.5-.2-.8-.2h0c-.3,0-.6,0-.9.3L.5,16.3C.8,9,6.8,3.2,14.1,3.2s13.7,6.1,13.7,13.7Z" fill="url(#hsf-lg0)"/>
+    <path d="M2.8,24.6c-.9-1.4-1.6-2.9-1.9-4.5l7.6-4.7,4.7,2.8-10.4,6.5h0Z" fill="url(#hsf-lg1)"/>
+  </svg>
+)
+
+const ANIM_STYLE = `
+  @keyframes hsf-sweep {
+    0%   { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+`
+
+const BORDER_WRAP = {
+  padding: 1.5, borderRadius: 17,
+  background: 'linear-gradient(90deg, rgba(25,26,32,0.08) 0%, rgba(255,140,0,0.7) 40%, rgba(255,184,0,0.9) 50%, rgba(255,140,0,0.7) 60%, rgba(25,26,32,0.08) 100%)',
+  backgroundSize: '200% 100%',
+  animation: 'hsf-sweep 3s ease-in-out infinite',
+}
+
 export default function HomeSearchForm() {
   const navigate  = useNavigate()
   const { lang }  = useParams()
+  const isMobile  = useIsMobile()
 
   const [txType,      setTxType]      = useState('Buy')
   const [text,        setText]        = useState('')
@@ -198,9 +246,9 @@ export default function HomeSearchForm() {
   const [sizeMin,     setSizeMin]     = useState('')
   const [sizeMax,     setSizeMax]     = useState('')
   const [propCount,   setPropCount]   = useState(null)
+  const [showFilters, setShowFilters] = useState(false)
 
   const handleTxType = (t) => { setTxType(t); setBudget('') }
-
   const budgets = txType === 'Buy' ? BUY_BUDGETS : RENT_BUDGETS
 
   useEffect(() => {
@@ -227,143 +275,205 @@ export default function HomeSearchForm() {
     navigate(`/${lang || 'de'}/search?${params.toString()}`)
   }
 
-  return (
-    <div style={{
-      position:'relative',
-      marginTop:0, marginBottom:0,
-      width:1088,
-    }}>
-      <div>
-        <style>{`
-          @keyframes hsf-sweep {
-            0%   { background-position: 200% center; }
-            100% { background-position: -200% center; }
-          }
-        `}</style>
+  /* ── MOBILE LAYOUT ── */
+  if (isMobile) {
+    return (
+      <div style={{ position:'relative', width:'100%', boxSizing:'border-box' }}>
+        <style>{ANIM_STYLE}</style>
+        <div style={BORDER_WRAP}>
+          <div style={{ backgroundColor:'white', borderRadius:16 }}>
 
-        {/* Animated border wrapper */}
-        <div style={{
-          padding: 1.5,
-          borderRadius: 17,
-          background: 'linear-gradient(90deg, rgba(25,26,32,0.08) 0%, rgba(255,140,0,0.7) 40%, rgba(255,184,0,0.9) 50%, rgba(255,140,0,0.7) 60%, rgba(25,26,32,0.08) 100%)',
-          backgroundSize: '200% 100%',
-          animation: 'hsf-sweep 3s ease-in-out infinite',
-        }}>
-
-        {/* Unified card */}
-        <div style={{
-          backgroundColor:'white',
-          borderRadius:16,
-          overflow:'visible',
-        }}>
-          {/* Label row */}
-          <div style={{
-            padding:'12px 20px 0',
-            display:'flex', alignItems:'center', justifyContent:'space-between',
-          }}>
-            <div style={{display:'flex', alignItems:'center', gap:8}}>
-              <svg width="22" height="20" viewBox="0 0 28.5 25" style={{flexShrink:0}} xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="hsf-lg0" x1="14.1" y1="3.2" x2="14.1" y2="27.1" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" stopColor="#ffb800"/>
-                    <stop offset="1" stopColor="#ff8c00"/>
-                  </linearGradient>
-                  <linearGradient id="hsf-lg1" x1="7" y1="3.2" x2="7" y2="27.1" gradientUnits="userSpaceOnUse">
-                    <stop offset="0" stopColor="#ffb800"/>
-                    <stop offset="1" stopColor="#ff8c00"/>
-                  </linearGradient>
-                </defs>
-                <path d="M27.8,16.9c0,1.7-.5,3.7-1.2,5.5h0l-6-3.5v-3.4c0-.9-.7-1.5-1.5-1.5s-1.5.7-1.5,1.5v1.5l-8.3-4.9c-.2-.1-.5-.2-.8-.2h0c-.3,0-.6,0-.9.3L.5,16.3C.8,9,6.8,3.2,14.1,3.2s13.7,6.1,13.7,13.7Z" fill="url(#hsf-lg0)"/>
-                <path d="M2.8,24.6c-.9-1.4-1.6-2.9-1.9-4.5l7.6-4.7,4.7,2.8-10.4,6.5h0Z" fill="url(#hsf-lg1)"/>
-              </svg>
-              <span style={{fontFamily:'"Lexend",sans-serif', fontSize:12, fontWeight:500, color:'rgba(25,26,32,0.4)', letterSpacing:'0.06em', textTransform:'uppercase'}}>
-                Find your property
-              </span>
+            {/* Label row */}
+            <div style={{ padding:'12px 16px 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <div style={{display:'flex', alignItems:'center', gap:8}}>
+                <BookImmoLogo />
+                <span style={{fontFamily:'"Lexend",sans-serif', fontSize:11, fontWeight:500, color:'rgba(25,26,32,0.4)', letterSpacing:'0.06em', textTransform:'uppercase'}}>
+                  Find your property
+                </span>
+              </div>
+              {propCount != null && (
+                <span style={{fontFamily:'"Lexend",sans-serif', fontSize:11, fontWeight:600, color:'rgb(255,102,37)'}}>
+                  {propCount.toLocaleString()} listings
+                </span>
+              )}
             </div>
-            {propCount != null && (
-              <span style={{fontFamily:'"Lexend",sans-serif', fontSize:12, fontWeight:600, color:'rgb(255,102,37)'}}>
-                {propCount.toLocaleString()} listings
-              </span>
-            )}
-          </div>
 
-          <form onSubmit={handleSearch}>
+            <form onSubmit={handleSearch} style={{padding:'10px 12px 12px', display:'flex', flexDirection:'column', gap:8}}>
 
-            {/* ── Row 1 ── */}
-            <div style={{display:'flex', alignItems:'stretch', borderBottom:'1px solid rgba(25,26,32,0.07)', minHeight:56, margin:'0 8px'}}>
+              {/* Buy / Rent toggle */}
+              <div style={{display:'flex', gap:6}}>
+                {TX_TYPES.map(t => (
+                  <button key={t} type="button" onClick={() => handleTxType(t)}
+                    style={{
+                      flex:1, padding:'8px 0', borderRadius:8, border:'none', cursor:'pointer',
+                      fontFamily:'"Lexend",sans-serif', fontSize:13, fontWeight:600,
+                      backgroundColor: txType === t ? 'rgb(25,26,32)' : 'rgba(25,26,32,0.06)',
+                      color: txType === t ? 'white' : 'rgb(25,26,32)',
+                      transition:'background-color 0.15s',
+                    }}>
+                    {t}
+                  </button>
+                ))}
+              </div>
 
-              <Select label="Buy" options={TX_TYPES} value={txType} onChange={handleTxType} minWidth={80} />
-              <SEP />
-
-              <div style={{flex:'1 1 0', display:'flex', alignItems:'center', gap:10, padding:'0 14px', minWidth:0}}>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" style={{flexShrink:0, opacity:0.3}}>
+              {/* Location input */}
+              <div style={{
+                display:'flex', alignItems:'center', gap:10,
+                padding:'0 14px', height:48,
+                border:'1px solid rgba(25,26,32,0.1)', borderRadius:10,
+                backgroundColor:'rgba(25,26,32,0.03)',
+              }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style={{flexShrink:0, opacity:0.3}}>
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="rgb(25,26,32)" strokeWidth="1.5"/>
                   <circle cx="12" cy="10" r="3" stroke="rgb(25,26,32)" strokeWidth="1.5"/>
                 </svg>
                 <input value={text} onChange={e => setText(e.target.value)}
-                  placeholder="Region, municipality, locality, ref…"
-                  style={{flex:1, border:'none', outline:'none', fontFamily:'"Lexend",sans-serif', fontSize:13, color:'rgb(25,26,32)', background:'transparent', minWidth:0}} />
+                  placeholder="Region, municipality, locality…"
+                  style={{flex:1, border:'none', outline:'none', fontFamily:'"Lexend",sans-serif', fontSize:13, color:'rgb(25,26,32)', background:'transparent'}} />
               </div>
-              <SEP />
 
-              <MultiSelect label="All property types" options={PROPERTY_TYPES}
-                values={propTypes} onChange={setPropTypes} minWidth={155} />
-              <SEP />
+              {/* Filters toggle */}
+              <button type="button" onClick={() => setShowFilters(s => !s)}
+                style={{
+                  display:'flex', alignItems:'center', justifyContent:'center', gap:6,
+                  padding:'9px 0', borderRadius:10, border:'1px solid rgba(25,26,32,0.1)',
+                  background:'none', cursor:'pointer',
+                  fontFamily:'"Lexend",sans-serif', fontSize:13, fontWeight:500, color:'rgba(25,26,32,0.7)',
+                }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 6h18M7 12h10M11 18h2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+                {showFilters ? 'Hide filters' : 'More filters'}
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none"
+                  style={{transition:'transform 0.15s', transform: showFilters ? 'rotate(180deg)' : 'none'}}>
+                  <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
 
-              <Select label="Budget" options={budgets.map(b => b.label)}
-                value={budget} onChange={v => setBudget(v === 'Any' ? '' : v)} minWidth={150} />
-              <SEP />
+              {showFilters && (
+                <>
+                  <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:8}}>
+                    <div style={{border:'1px solid rgba(25,26,32,0.1)', borderRadius:10, backgroundColor:'rgba(25,26,32,0.03)', height:48}}>
+                      <MultiSelect label="Property type" options={PROPERTY_TYPES} values={propTypes} onChange={setPropTypes} fullWidth />
+                    </div>
+                    <div style={{border:'1px solid rgba(25,26,32,0.1)', borderRadius:10, backgroundColor:'rgba(25,26,32,0.03)', height:48}}>
+                      <Select label="Budget" options={budgets.map(b => b.label)} value={budget} onChange={v => setBudget(v === 'Any' ? '' : v)} fullWidth />
+                    </div>
+                  </div>
+                  <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:8}}>
+                    <div style={{border:'1px solid rgba(25,26,32,0.1)', borderRadius:10, backgroundColor:'rgba(25,26,32,0.03)', height:48}}>
+                      <Select label="Min Beds" options={BED_OPTS} value={bedroomsMin} onChange={v => setBedroomsMin(v === 'Any' ? '' : v)} fullWidth />
+                    </div>
+                    <div style={{border:'1px solid rgba(25,26,32,0.1)', borderRadius:10, backgroundColor:'rgba(25,26,32,0.03)', height:48}}>
+                      <Select label="Max Beds" options={BED_OPTS} value={bedroomsMax} onChange={v => setBedroomsMax(v === 'Any' ? '' : v)} fullWidth />
+                    </div>
+                  </div>
+                  <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:8}}>
+                    <div style={{border:'1px solid rgba(25,26,32,0.1)', borderRadius:10, backgroundColor:'rgba(25,26,32,0.03)', height:48}}>
+                      <Select label="Min Size" options={SIZE_OPTS} value={sizeMin} onChange={v => setSizeMin(v === 'Any' ? '' : v)} fullWidth />
+                    </div>
+                    <div style={{border:'1px solid rgba(25,26,32,0.1)', borderRadius:10, backgroundColor:'rgba(25,26,32,0.03)', height:48}}>
+                      <Select label="Max Size" options={SIZE_OPTS} value={sizeMax} onChange={v => setSizeMax(v === 'Any' ? '' : v)} fullWidth />
+                    </div>
+                  </div>
+                </>
+              )}
 
               <button type="submit" style={{
-                margin:'10px 8px',
-                padding:'0 32px',
-                backgroundColor:'rgb(25,26,32)',
-                border:'none', cursor:'pointer',
-                fontFamily:'"Lexend",sans-serif', fontSize:14, fontWeight:500, color:'white',
-                flexShrink:0, borderRadius:10, transition:'background-color 0.2s',
-              }}
-                onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(25,26,32,0.82)'}
-                onMouseLeave={e => e.currentTarget.style.backgroundColor = 'rgb(25,26,32)'}>
+                width:'100%', padding:'14px 0', borderRadius:10, border:'none', cursor:'pointer',
+                backgroundColor:'rgb(25,26,32)', color:'white',
+                fontFamily:'"Lexend",sans-serif', fontSize:14, fontWeight:600,
+              }}>
                 Search
               </button>
-            </div>
 
-            {/* ── Row 2 ── */}
-            <div style={{display:'flex', alignItems:'stretch', minHeight:44, margin:'0 8px'}}>
-              <Select label="Min Bedrooms" options={BED_OPTS}
-                value={bedroomsMin} onChange={v => setBedroomsMin(v === 'Any' ? '' : v)} minWidth={130} />
-              <SEP />
-              <Select label="Max Bedrooms" options={BED_OPTS}
-                value={bedroomsMax} onChange={v => setBedroomsMax(v === 'Any' ? '' : v)} minWidth={130} />
-              <SEP />
-              <Select label="Min Size" options={SIZE_OPTS}
-                value={sizeMin} onChange={v => setSizeMin(v === 'Any' ? '' : v)} minWidth={110} />
-              <SEP />
-              <Select label="Max Size" options={SIZE_OPTS}
-                value={sizeMax} onChange={v => setSizeMax(v === 'Any' ? '' : v)} minWidth={110} />
-
-              <div style={{flex:1}} />
-
-              <button type="button"
-                onClick={() => navigate(`/${lang || 'de'}/search?map=1`)}
-                style={{
-                  display:'flex', alignItems:'center', gap:8,
-                  padding:'0 20px', background:'none',
-                  border:'none', borderLeft:'1px solid rgba(25,26,32,0.07)',
-                  cursor:'pointer', fontFamily:'"Lexend",sans-serif',
-                  fontSize:13, fontWeight:500, color:'rgba(25,26,32,0.6)', flexShrink:0,
-                }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
-                  <path d="M9 3v15M15 6v15" stroke="currentColor" strokeWidth="1.5"/>
-                </svg>
-                Map search
-              </button>
-            </div>
-
-          </form>
+            </form>
+          </div>
         </div>
-        </div>{/* end animated border wrapper */}
+      </div>
+    )
+  }
+
+  /* ── DESKTOP LAYOUT ── */
+  return (
+    <div style={{ position:'relative', marginTop:0, marginBottom:0, width:1088 }}>
+      <div>
+        <style>{ANIM_STYLE}</style>
+        <div style={BORDER_WRAP}>
+          <div style={{ backgroundColor:'white', borderRadius:16, overflow:'visible' }}>
+
+            <div style={{ padding:'12px 20px 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <div style={{display:'flex', alignItems:'center', gap:8}}>
+                <BookImmoLogo />
+                <span style={{fontFamily:'"Lexend",sans-serif', fontSize:12, fontWeight:500, color:'rgba(25,26,32,0.4)', letterSpacing:'0.06em', textTransform:'uppercase'}}>
+                  Find your property
+                </span>
+              </div>
+              {propCount != null && (
+                <span style={{fontFamily:'"Lexend",sans-serif', fontSize:12, fontWeight:600, color:'rgb(255,102,37)'}}>
+                  {propCount.toLocaleString()} listings
+                </span>
+              )}
+            </div>
+
+            <form onSubmit={handleSearch}>
+              <div style={{display:'flex', alignItems:'stretch', borderBottom:'1px solid rgba(25,26,32,0.07)', minHeight:56, margin:'0 8px'}}>
+                <Select label="Buy" options={TX_TYPES} value={txType} onChange={handleTxType} minWidth={80} />
+                <SEP />
+                <div style={{flex:'1 1 0', display:'flex', alignItems:'center', gap:10, padding:'0 14px', minWidth:0}}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" style={{flexShrink:0, opacity:0.3}}>
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="rgb(25,26,32)" strokeWidth="1.5"/>
+                    <circle cx="12" cy="10" r="3" stroke="rgb(25,26,32)" strokeWidth="1.5"/>
+                  </svg>
+                  <input value={text} onChange={e => setText(e.target.value)}
+                    placeholder="Region, municipality, locality, ref…"
+                    style={{flex:1, border:'none', outline:'none', fontFamily:'"Lexend",sans-serif', fontSize:13, color:'rgb(25,26,32)', background:'transparent', minWidth:0}} />
+                </div>
+                <SEP />
+                <MultiSelect label="All property types" options={PROPERTY_TYPES} values={propTypes} onChange={setPropTypes} minWidth={155} />
+                <SEP />
+                <Select label="Budget" options={budgets.map(b => b.label)} value={budget} onChange={v => setBudget(v === 'Any' ? '' : v)} minWidth={150} />
+                <SEP />
+                <button type="submit" style={{
+                  margin:'10px 8px', padding:'0 32px',
+                  backgroundColor:'rgb(25,26,32)', border:'none', cursor:'pointer',
+                  fontFamily:'"Lexend",sans-serif', fontSize:14, fontWeight:500, color:'white',
+                  flexShrink:0, borderRadius:10, transition:'background-color 0.2s',
+                }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(25,26,32,0.82)'}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = 'rgb(25,26,32)'}>
+                  Search
+                </button>
+              </div>
+
+              <div style={{display:'flex', alignItems:'stretch', minHeight:44, margin:'0 8px'}}>
+                <Select label="Min Bedrooms" options={BED_OPTS} value={bedroomsMin} onChange={v => setBedroomsMin(v === 'Any' ? '' : v)} minWidth={130} />
+                <SEP />
+                <Select label="Max Bedrooms" options={BED_OPTS} value={bedroomsMax} onChange={v => setBedroomsMax(v === 'Any' ? '' : v)} minWidth={130} />
+                <SEP />
+                <Select label="Min Size" options={SIZE_OPTS} value={sizeMin} onChange={v => setSizeMin(v === 'Any' ? '' : v)} minWidth={110} />
+                <SEP />
+                <Select label="Max Size" options={SIZE_OPTS} value={sizeMax} onChange={v => setSizeMax(v === 'Any' ? '' : v)} minWidth={110} />
+                <div style={{flex:1}} />
+                <button type="button"
+                  onClick={() => navigate(`/${lang || 'de'}/search?map=1`)}
+                  style={{
+                    display:'flex', alignItems:'center', gap:8,
+                    padding:'0 20px', background:'none',
+                    border:'none', borderLeft:'1px solid rgba(25,26,32,0.07)',
+                    cursor:'pointer', fontFamily:'"Lexend",sans-serif',
+                    fontSize:13, fontWeight:500, color:'rgba(25,26,32,0.6)', flexShrink:0,
+                  }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+                    <path d="M9 3v15M15 6v15" stroke="currentColor" strokeWidth="1.5"/>
+                  </svg>
+                  Map search
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   )
