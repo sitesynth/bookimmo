@@ -142,7 +142,7 @@ function PropertyCard({ property, index }) {
 }
 
 const CATEGORIES = ["Apartment","Houses","Duplex","Industrial","Offices","Land"]
-const LOCATIONS  = ["Pleasantville","West Side","Capitol Hill","Greenville","Jersey City","Catskills"]
+const LOCATIONS  = ["Germany","France","Netherlands","Spain","Italy","Great Britain"]
 const TYPES      = ["Sales","Lease","Rent"]
 const BEDROOMS   = ["1 Room","2 Rooms","3 Rooms","4+ Rooms"]
 const PRICE_RANGES = [{"label":"< $1k","priceMin":null,"priceMax":1},{"label":"$1.1K - $5K","priceMin":1100,"priceMax":5000},{"label":"$5.1K - $10K","priceMin":5100,"priceMax":10000},{"label":"$10.1K - $250K","priceMin":10100,"priceMax":250000},{"label":"$251K - $500K","priceMin":251000,"priceMax":500000},{"label":"$501K - $1M","priceMin":501000,"priceMax":1000000},{"label":"$1.01M - $5M","priceMin":1010000,"priceMax":5000000},{"label":">$10M","priceMin":10000000,"priceMax":null}]
