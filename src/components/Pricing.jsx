@@ -12,8 +12,9 @@ function useIsMobile() {
 
 const STEPS = [
   {
-    label: 'Search',
-    sub: 'We find your match',
+    label: 'Matching',
+    billing: '/ month',
+    sub: 'Monthly subscription',
     price: '€49',
     features: [
       'Criteria profile setup (budget, type, zone)',
@@ -22,33 +23,35 @@ const STEPS = [
       'Shortlist of best-fit properties',
       'Market comparison report',
     ],
-    delivery: '24 – 48 h',
+    delivery: 'Ongoing — cancel anytime',
   },
   {
-    label: 'Viewing Booking',
-    sub: 'We secure your slot',
-    price: '€79',
+    label: 'Appointment',
+    billing: 'per visit',
+    sub: 'One-time, per booking',
+    price: '€29',
     features: [
-      'Automatic slot request on your behalf',
+      'Automatic appointment request on your behalf',
       'Confirmation & calendar invite sent to you',
       'Priority access before public listings',
-      'Rescheduling handled if needed',
+      'Rescheduling handled if visit falls through',
       'Agent contact details provided',
     ],
-    delivery: '1 – 3 days',
+    delivery: 'Within 1 – 3 days',
   },
   {
-    label: 'Result',
-    sub: 'We close the deal',
+    label: 'Success Fee',
+    billing: 'on signing',
+    sub: 'Only if you sign a lease',
     price: '€129',
     features: [
-      'Offer strategy & negotiation support',
-      'Document checklist & guidance',
-      'Liaison with notary or landlord',
+      'Paid only when your lease is signed',
+      'Document checklist & signing guidance',
+      'Liaison with landlord or notary',
       'Final walkthrough coordination',
-      'Move-in confirmation',
+      'Move-in confirmation support',
     ],
-    delivery: '1 – 2 weeks',
+    delivery: 'Due on contract signature',
   },
 ]
 
@@ -169,28 +172,36 @@ export default function Pricing() {
             return (
               <button key={i} onClick={() => setSelected(i)} style={{
                 flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
-                gap: 2, padding: '14px 8px',
+                justifyContent: 'space-between',
+                padding: '14px 8px',
+                minHeight: 96,
                 background: active ? 'rgb(25,26,32)' : 'none',
                 border: 'none',
                 borderRight: i < STEPS.length - 1 ? '1px solid rgba(25,26,32,0.08)' : 'none',
                 cursor: 'pointer', transition: 'background 0.2s',
               }}>
+                {/* top: number + label */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                  <span style={{
+                    fontFamily: '"Lexend", sans-serif', fontSize: 10, fontWeight: 700,
+                    letterSpacing: '0.06em', textTransform: 'uppercase',
+                    color: 'rgb(255,102,37)',
+                  }}>
+                    {`0${i + 1}`}
+                  </span>
+                  <span style={{
+                    fontFamily: '"Lexend", sans-serif', fontSize: 11, fontWeight: 600,
+                    color: active ? 'white' : 'rgb(25,26,32)',
+                    textAlign: 'center', lineHeight: 1.3,
+                  }}>
+                    {s.label}
+                  </span>
+                </div>
+                {/* bottom: price always pinned */}
                 <span style={{
-                  fontFamily: '"Lexend", sans-serif', fontSize: 10, fontWeight: 700,
-                  letterSpacing: '0.06em', textTransform: 'uppercase',
-                  color: 'rgb(255,102,37)',
-                }}>
-                  {`0${i + 1}`}
-                </span>
-                <span style={{
-                  fontFamily: '"Lexend", sans-serif', fontSize: 12, fontWeight: 600,
-                  color: active ? 'white' : 'rgb(25,26,32)',
-                }}>
-                  {s.label}
-                </span>
-                <span style={{
-                  fontFamily: '"Bricolage Grotesque", sans-serif', fontSize: 16, fontWeight: 600,
-                  color: active ? 'rgba(255,255,255,0.85)' : 'rgb(25,26,32)',
+                  fontFamily: '"Bricolage Grotesque", sans-serif', fontSize: 17, fontWeight: 600,
+                  color: active ? 'rgba(255,255,255,0.9)' : 'rgb(25,26,32)',
+                  marginTop: 6,
                 }}>
                   {s.price}
                 </span>
@@ -240,20 +251,12 @@ export default function Pricing() {
                   borderBottom: i < STEPS.length - 1 ? '1px solid rgba(25,26,32,0.08)' : 'none',
                   cursor: 'pointer', textAlign: 'left', transition: 'background 0.2s',
                 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
-                    <span style={{
-                      fontFamily: '"Lexend", sans-serif', fontSize: 13, fontWeight: 700,
-                      letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgb(255,102,37)',
-                    }}>
-                      {`0${i + 1}`}
-                    </span>
-                    <span style={{
-                      fontFamily: '"Bricolage Grotesque", sans-serif', fontSize: 20,
-                      fontWeight: 600, color: active ? 'white' : 'rgb(25,26,32)',
-                    }}>
-                      {s.price}
-                    </span>
-                  </div>
+                  <span style={{
+                    fontFamily: '"Lexend", sans-serif', fontSize: 11, fontWeight: 700,
+                    letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgb(255,102,37)',
+                  }}>
+                    {`0${i + 1}`}
+                  </span>
                   <span style={{
                     fontFamily: '"Lexend", sans-serif', fontSize: 15, fontWeight: 600,
                     color: active ? 'white' : 'rgb(25,26,32)',
@@ -261,11 +264,25 @@ export default function Pricing() {
                     {s.label}
                   </span>
                   <span style={{
-                    fontFamily: '"Lexend", sans-serif', fontSize: 12,
-                    color: active ? 'rgba(255,255,255,0.5)' : 'rgba(25,26,32,0.45)',
+                    fontFamily: '"Lexend", sans-serif', fontSize: 11,
+                    color: active ? 'rgba(255,255,255,0.45)' : 'rgba(25,26,32,0.4)',
                   }}>
                     {s.sub}
                   </span>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginTop: 6 }}>
+                    <span style={{
+                      fontFamily: '"Bricolage Grotesque", sans-serif', fontSize: 22,
+                      fontWeight: 600, color: active ? 'white' : 'rgb(25,26,32)',
+                    }}>
+                      {s.price}
+                    </span>
+                    <span style={{
+                      fontFamily: '"Lexend", sans-serif', fontSize: 11,
+                      color: active ? 'rgba(255,255,255,0.45)' : 'rgba(25,26,32,0.4)',
+                    }}>
+                      {s.billing}
+                    </span>
+                  </div>
                 </button>
               )
             })}
