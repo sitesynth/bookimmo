@@ -1,20 +1,30 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import WaitlistModal from './WaitlistModal.jsx'
 
 export default function AnnouncementBar() {
   const [visible, setVisible] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
+  const [barHeight, setBarHeight] = useState(41)
+  const innerRef = useRef(null)
 
   useEffect(() => {
     document.body.classList.toggle('bar-visible', visible)
     return () => document.body.classList.remove('bar-visible')
   }, [visible])
 
+  useEffect(() => {
+    if (!innerRef.current) return
+    const measure = () => setBarHeight(innerRef.current.getBoundingClientRect().height)
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [])
+
   return (
     <>
-      {/* Spacer keeps normal-flow space so Framer content isn't hidden under the fixed bar */}
+      {/* Spacer matches actual bar height so content below isn't hidden under the fixed bar */}
       <div style={{
-        maxHeight: visible ? '41px' : '0px',
+        maxHeight: visible ? `${barHeight}px` : '0px',
         transition: 'max-height 0.4s ease',
         overflow: 'hidden',
         flexShrink: 0,
@@ -32,7 +42,7 @@ export default function AnnouncementBar() {
         opacity: visible ? 1 : 0,
         transition: 'max-height 0.4s ease, opacity 0.35s ease',
       }}>
-      <div style={{
+      <div ref={innerRef} className="bar-inner" style={{
         width: '100%',
         backgroundColor: 'rgb(25, 26, 32)',
         borderBottom: '1px solid rgba(255,102,37,0.3)',
@@ -43,7 +53,7 @@ export default function AnnouncementBar() {
         gap: 12,
         position: 'relative',
       }}>
-        <span style={{
+        <span className="bar-dot" style={{
           width: 8, height: 8,
           borderRadius: '50%',
           background: 'rgb(255,102,37)',
@@ -61,17 +71,18 @@ export default function AnnouncementBar() {
           textAlign: 'center',
           lineHeight: 1.5,
         }}>
-          🚀 <strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Launching in June!</strong>
-          {' '}The first <strong style={{ color: '#fff', fontWeight: 600 }}>200 users</strong> get free apartment matching —{' '}
-          <button
-            onClick={() => setModalOpen(true)}
-            style={{
-              background: 'none', border: 'none', padding: 0,
-              cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit',
-              color: 'rgb(255,102,37)', fontWeight: 600,
-              textDecoration: 'underline', textUnderlineOffset: 3,
-            }}
-          >join now</button>.
+          {/* Desktop */}
+          <span className="bar-text-desktop">
+            🚀 <strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Launching in June!</strong>
+            {' '}The first <strong style={{ color: '#fff', fontWeight: 600 }}>200 users</strong> get free apartment matching —{' '}
+            <button onClick={() => setModalOpen(true)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'rgb(255,102,37)', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: 3 }}>join now</button>.
+          </span>
+          {/* Mobile — one line */}
+          <span className="bar-text-mobile">
+            🚀 <strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Launching June!</strong>
+            {' '}<strong style={{ color: '#fff', fontWeight: 600 }}>200</strong> free spots —{' '}
+            <button onClick={() => setModalOpen(true)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'rgb(255,102,37)', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: 3 }}>join now</button>.
+          </span>
         </p>
 
         <button

@@ -12670,6 +12670,13 @@ html body { background: var(--token-8162f168-ed62-49f3-b338-425fedfa1e6f, rgb(25
 body.bar-visible .framer-2u9hi5-container {
   top: 41px !important;
 }
+/* Announcement bar — mobile single-line layout */
+.bar-text-mobile { display: none; }
+@media (max-width: 809px) {
+  .bar-text-desktop { display: none; }
+  .bar-text-mobile  { display: inline; }
+  .bar-inner { padding: 10px 44px 10px 16px !important; gap: 8px !important; font-size: 11px !important; }
+}
 
 /* Announcement bar dot pulse */
 @keyframes barDotPulse {
