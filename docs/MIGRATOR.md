@@ -196,6 +196,7 @@ CSS собирается в один файл в строго определён
 | `react-app/src/framer-styles.css` | Весь CSS сайта |
 | `react-app/src/computed-styles.json` | HTML-секции homepage (из extract-computed) |
 | `react-app/src/computed-styles-{slug}.json` | HTML-секции каждой страницы |
+| `react-app/src/framer-directus-field-map.json` | Маппинг полей Framer CMS → Directus (генерируется если найдены CMS-коллекции) |
 | `react-app/public/assets/images/*.{png,jpg,webp,svg}` | Все изображения (скачаны локально generate-components) |
 | `react-app/public/assets/videos/*.mp4` | Все видео (скачаны локально generate-components) |
 
