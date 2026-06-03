@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&display=block" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    background: #191a20;
+    font-family: 'Bricolage Grotesque', -apple-system, 'Segoe UI', sans-serif;
+    position: relative;
+  }
+
+  /* Large orange circle bleeding off the right edge */
+  .circle {
+    position: absolute;
+    right: -160px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ffaf8d, #ff6625);
+  }
+
+  /* House illustration inside the circle */
+  .house {
+    position: absolute;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 260px;
+    height: 260px;
+  }
+
+  /* Left content panel */
+  .content {
+    position: absolute;
+    left: 0; top: 0;
+    width: 700px; height: 630px;
+    padding: 64px 64px 64px 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  /* Logo row */
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .logo-icon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+  }
+  .logo-name {
+    font-size: 26px;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+  }
+
+  /* Main headline */
+  .headline {
+    font-size: 80px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.05;
+    letter-spacing: -3px;
+    margin-top: -8px;
+  }
+  .headline em {
+    font-style: normal;
+    color: #ff6625;
+  }
+
+  /* Subline */
+  .sub {
+    font-size: 22px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.55;
+    letter-spacing: -0.2px;
+    max-width: 520px;
+  }
+
+  /* Bottom domain pill */
+  .domain {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 100px;
+    padding: 8px 18px;
+    font-size: 16px;
+    color: rgba(255,255,255,0.45);
+    font-weight: 400;
+    width: fit-content;
+  }
+  .domain-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #ff6625;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+  <!-- Decorative circle (right side) -->
+  <div class="circle"></div>
+
+  <!-- House illustration inside circle area -->
+  <svg class="house" viewBox="0 0 260 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- House body -->
+    <path d="M130 40L218 118H194V210H66V118H42L130 40Z" fill="white" fill-opacity="0.9"/>
+    <!-- Door -->
+    <rect x="106" y="152" width="48" height="58" rx="5" fill="#ff6625"/>
+    <!-- Left window -->
+    <rect x="74" y="128" width="34" height="30" rx="4" fill="white" fill-opacity="0.3"/>
+    <!-- Right window -->
+    <rect x="152" y="128" width="34" height="30" rx="4" fill="white" fill-opacity="0.3"/>
+  </svg>
+
+  <!-- Content panel -->
+  <div class="content">
+    <!-- Logo -->
+    <div class="logo">
+      <svg class="logo-icon" viewBox="0 0 28.5 25" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="og-lg0" x1="14.1" y1="3.2" x2="14.1" y2="27.1" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ffb800"/><stop offset="1" stop-color="#ff8c00"/>
+          </linearGradient>
+          <linearGradient id="og-lg1" x1="7" y1="3.2" x2="7" y2="27.1" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ffb800"/><stop offset="1" stop-color="#ff8c00"/>
+          </linearGradient>
+        </defs>
+        <path d="M27.8,16.9c0,1.7-.5,3.7-1.2,5.5h0l-6-3.5v-3.4c0-.9-.7-1.5-1.5-1.5s-1.5.7-1.5,1.5v1.5l-8.3-4.9c-.2-.1-.5-.2-.8-.2h0c-.3,0-.6,0-.9.3L.5,16.3C.8,9,6.8,3.2,14.1,3.2s13.7,6.1,13.7,13.7Z" fill="url(#og-lg0)"/>
+        <path d="M2.8,24.6c-.9-1.4-1.6-2.9-1.9-4.5l7.6-4.7,4.7,2.8-10.4,6.5h0Z" fill="url(#og-lg1)"/>
+      </svg>
+      <span class="logo-name">BookImmo</span>
+    </div>
+
+    <!-- Headline -->
+    <div class="headline">
+      Find the<br><em>perfect</em><br>property.
+    </div>
+
+    <!-- Subline -->
+    <p class="sub">
+      Viewings booked automatically,<br>before the crowd.
+    </p>
+
+    <!-- Domain pill -->
+    <div class="domain">
+      <span class="domain-dot"></span>
+      book.immo
+    </div>
+  </div>
+
+</body>
+</html>
