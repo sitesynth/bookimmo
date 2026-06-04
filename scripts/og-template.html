@@ -13,37 +13,45 @@
     position: relative;
   }
 
-  /* Large orange circle bleeding off the right edge */
-  .circle {
+  /* House illustration: right half bleeds off canvas */
+  .house-wrap {
     position: absolute;
-    right: -160px;
+    /* SVG is 800×500. We want it tall enough to fill 630px height,
+       then shift right so only the right ~half shows.
+       Scale factor: 630/500 = 1.26 → rendered width = 800*1.26 = 1008px
+       We push it right so ~480px is off-screen to the left (half of 1008 ≈ 504px) */
+    right: -60px;
     top: 50%;
     transform: translateY(-50%);
-    width: 600px;
-    height: 600px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #ffaf8d, #ff6625);
+    width: 1008px;
+    height: 630px;
+  }
+  .house-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: left center;
   }
 
-  /* House illustration inside the circle */
-  .house {
+  /* Gradient fade: blends house into dark bg on the left edge */
+  .house-fade {
     position: absolute;
-    right: 30px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 260px;
-    height: 260px;
+    right: 0; top: 0;
+    width: 600px; height: 630px;
+    background: linear-gradient(to right, #191a20 0%, #191a20 30%, transparent 75%);
+    pointer-events: none;
   }
 
   /* Left content panel */
   .content {
     position: absolute;
     left: 0; top: 0;
-    width: 700px; height: 630px;
+    width: 680px; height: 630px;
     padding: 64px 64px 64px 72px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    z-index: 2;
   }
 
   /* Logo row */
@@ -52,11 +60,7 @@
     align-items: center;
     gap: 14px;
   }
-  .logo-icon {
-    width: 44px;
-    height: 44px;
-    flex-shrink: 0;
-  }
+  .logo-icon { width: 36px; height: 32px; flex-shrink: 0; }
   .logo-name {
     font-size: 26px;
     font-weight: 600;
@@ -66,12 +70,11 @@
 
   /* Main headline */
   .headline {
-    font-size: 80px;
+    font-size: 82px;
     font-weight: 700;
     color: #ffffff;
     line-height: 1.05;
     letter-spacing: -3px;
-    margin-top: -8px;
   }
   .headline em {
     font-style: normal;
@@ -84,10 +87,10 @@
     color: rgba(255,255,255,0.5);
     line-height: 1.55;
     letter-spacing: -0.2px;
-    max-width: 520px;
+    max-width: 480px;
   }
 
-  /* Bottom domain pill */
+  /* Domain pill */
   .domain {
     display: inline-flex;
     align-items: center;
@@ -98,7 +101,6 @@
     padding: 8px 18px;
     font-size: 16px;
     color: rgba(255,255,255,0.45);
-    font-weight: 400;
     width: fit-content;
   }
   .domain-dot {
@@ -111,24 +113,16 @@
 </head>
 <body>
 
-  <!-- Decorative circle (right side) -->
-  <div class="circle"></div>
+  <!-- House image: right half visible, left bleeds off -->
+  <div class="house-wrap">
+    <img src="modern-house.svg" alt="">
+  </div>
 
-  <!-- House illustration inside circle area -->
-  <svg class="house" viewBox="0 0 260 260" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- House body -->
-    <path d="M130 40L218 118H194V210H66V118H42L130 40Z" fill="white" fill-opacity="0.9"/>
-    <!-- Door -->
-    <rect x="106" y="152" width="48" height="58" rx="5" fill="#ff6625"/>
-    <!-- Left window -->
-    <rect x="74" y="128" width="34" height="30" rx="4" fill="white" fill-opacity="0.3"/>
-    <!-- Right window -->
-    <rect x="152" y="128" width="34" height="30" rx="4" fill="white" fill-opacity="0.3"/>
-  </svg>
+  <!-- Gradient mask over left edge of house -->
+  <div class="house-fade"></div>
 
-  <!-- Content panel -->
+  <!-- Text content -->
   <div class="content">
-    <!-- Logo -->
     <div class="logo">
       <svg class="logo-icon" viewBox="0 0 28.5 25" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -145,17 +139,14 @@
       <span class="logo-name">BookImmo</span>
     </div>
 
-    <!-- Headline -->
     <div class="headline">
       Find the<br><em>perfect</em><br>property.
     </div>
 
-    <!-- Subline -->
     <p class="sub">
       Viewings booked automatically,<br>before the crowd.
     </p>
 
-    <!-- Domain pill -->
     <div class="domain">
       <span class="domain-dot"></span>
       book.immo
