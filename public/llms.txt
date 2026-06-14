@@ -1,0 +1,27 @@
+# BookImmo
+
+> Find the perfect property. Viewings booked automatically, before the crowd.
+
+BookImmo is a property discovery and booking platform that automatically schedules viewings for buyers and renters. The most sought-after properties disappear within hours — BookImmo gets users in first.
+
+## Core offering
+
+- Automatic viewing requests submitted the moment a matching listing appears
+- Real-time alerts for new properties matching saved search criteria
+- Connects buyers and renters with local real estate agents
+- Available in English, French, German, Dutch, and Italian markets
+
+## Pages
+
+- [Home](https://book.immo/): Main landing page — waitlist sign-up, product overview, agent directory
+- [Search](https://book.immo/search): Property search with filters (price, size, location, type)
+- [Agents](https://book.immo/agent): Directory of partner real estate agents
+
+## Contact
+
+Email: hello@book.immo
+Website: https://book.immo
+
+## Status
+
+Currently in early access — join the waitlist at https://book.immo to be notified at launch.

@@ -31,6 +31,58 @@
     <meta name="twitter:description" content="Viewings booked automatically, before the crowd. Buy or rent." />
     <meta name="twitter:image" content="https://book.immo/og-image.png" />
 
+    <!-- Canonical + hreflang -->
+    <link rel="canonical" href="https://book.immo/" />
+    <link rel="alternate" hreflang="en" href="https://book.immo/" />
+    <link rel="alternate" hreflang="fr" href="https://book.immo/fr/" />
+    <link rel="alternate" hreflang="de" href="https://book.immo/de/" />
+    <link rel="alternate" hreflang="nl" href="https://book.immo/nl/" />
+    <link rel="alternate" hreflang="it" href="https://book.immo/it/" />
+    <link rel="alternate" hreflang="x-default" href="https://book.immo/" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://book.immo/#organization",
+          "name": "BookImmo",
+          "url": "https://book.immo/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://book.immo/apple-touch-icon.png",
+            "width": 180,
+            "height": 180
+          },
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "hello@book.immo",
+            "contactType": "customer support"
+          },
+          "sameAs": []
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://book.immo/#website",
+          "url": "https://book.immo/",
+          "name": "BookImmo",
+          "description": "The most sought-after properties are gone within hours. BookImmo gets you in first — viewings booked automatically, before the crowd.",
+          "publisher": { "@id": "https://book.immo/#organization" },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://book.immo/search?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
+    }
+    </script>
+
     <script src="https://getlaunchlist.com/js/widget-diy.js" defer></script>
   </head>
   <body>

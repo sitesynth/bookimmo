@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <url>
+    <loc>https://book.immo/</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://book.immo/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://book.immo/fr/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://book.immo/de/"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://book.immo/nl/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://book.immo/it/"/>
+  </url>
+
+  <url>
+    <loc>https://book.immo/search</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://book.immo/agent</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://book.immo/privacy-policy</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://book.immo/terms-of-service</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+</urlset>
