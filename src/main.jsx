@@ -5,10 +5,18 @@ import './index.css'
 import './i18n/config.js'
 import App from './App.jsx'
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+const root = document.getElementById('root')
+const app = (
   <React.StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
   </React.StrictMode>
 )
+
+// Use hydrateRoot when the shell was server-prerendered (avoids FOUC)
+if (root.hasChildNodes()) {
+  ReactDOM.hydrateRoot(root, app)
+} else {
+  ReactDOM.createRoot(root).render(app)
+}
