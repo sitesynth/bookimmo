@@ -2,41 +2,91 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
+  <!-- Home pages — prerendered, full HTML, each with its own canonical -->
   <url>
-    <loc>https://book.immo/</loc>
+    <loc>https://book.immo/en/</loc>
     <lastmod>2026-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://book.immo/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://book.immo/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://book.immo/en/"/>
     <xhtml:link rel="alternate" hreflang="de" href="https://book.immo/de/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://book.immo/fr/"/>
     <xhtml:link rel="alternate" hreflang="nl" href="https://book.immo/nl/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://book.immo/it/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://book.immo/en/"/>
   </url>
-
   <url>
-    <loc>https://book.immo/search</loc>
+    <loc>https://book.immo/de/</loc>
     <lastmod>2026-06-14</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://book.immo/en/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://book.immo/de/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://book.immo/fr/"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://book.immo/nl/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://book.immo/it/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://book.immo/en/"/>
+  </url>
+  <url>
+    <loc>https://book.immo/fr/</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://book.immo/en/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://book.immo/de/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://book.immo/fr/"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://book.immo/nl/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://book.immo/it/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://book.immo/en/"/>
+  </url>
+  <url>
+    <loc>https://book.immo/nl/</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://book.immo/en/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://book.immo/de/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://book.immo/fr/"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://book.immo/nl/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://book.immo/it/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://book.immo/en/"/>
+  </url>
+  <url>
+    <loc>https://book.immo/it/</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://book.immo/en/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://book.immo/de/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://book.immo/fr/"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://book.immo/nl/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://book.immo/it/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://book.immo/en/"/>
   </url>
 
+  <!-- Agent directory — prerendered -->
   <url>
-    <loc>https://book.immo/agent</loc>
+    <loc>https://book.immo/en/agent/</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://book.immo/de/agent/</loc>
     <lastmod>2026-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
+  <!-- Legal pages -->
   <url>
-    <loc>https://book.immo/privacy-policy</loc>
+    <loc>https://book.immo/en/privacy-policy/</loc>
     <lastmod>2026-06-14</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
-
   <url>
-    <loc>https://book.immo/terms-of-service</loc>
+    <loc>https://book.immo/en/terms-of-service/</loc>
     <lastmod>2026-06-14</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>

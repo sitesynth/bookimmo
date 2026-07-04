@@ -95,7 +95,17 @@ for (const route of ROUTES) {
     // Give React + i18n a moment to fully render
     await new Promise(r => setTimeout(r, 600))
 
-    const html = await page.content()
+    let html = await page.content()
+
+    // Patch canonical to the actual URL of this page (index.html has a
+    // single static canonical that would otherwise mark every prerendered
+    // page as a duplicate of /en/).
+    const canonicalUrl = `https://book.immo${route}/`
+    html = html.replace(
+      /<link rel="canonical"[^>]*>/,
+      `<link rel="canonical" href="${canonicalUrl}" />`
+    )
+
     const segments = route.slice(1).split('/').filter(Boolean) // '/en' → ['en']
     const outDir = path.join(DIST, ...segments)
     mkdirSync(outDir, { recursive: true })
