@@ -8,13 +8,15 @@
     "build": "vite build",
     "preview": "vite preview",
     "prerender": "node scripts/prerender.mjs",
-    "build:ssg": "vite build && node scripts/prerender.mjs"
+    "build:ssg": "vite build && npx puppeteer browsers install chrome --with-deps 2>/dev/null || true && node scripts/prerender.mjs"
   },
   "dependencies": {
     "@directus/sdk": "^17.0.0",
     "@supabase/supabase-js": "^2.105.3",
     "framer-motion": "^12.38.0",
     "i18next": "^23.0.0",
+    "leaflet": "^1.9.4",
+    "lz-string": "^1.5.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "react-i18next": "^15.0.0",
