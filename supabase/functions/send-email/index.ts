@@ -41,12 +41,12 @@ const LOGO_URL = `${DEFAULT_APP_URL.replace(/\/$/, '')}/apple-touch-icon.png`
 const COPY = {
   en: {
     brand: 'Bookimmo',
-    footer: 'Bookimmo rental workflow',
+    footer: 'Bookimmo real estate workspace',
     signup: {
       preview: 'Confirm your Bookimmo account',
       subject: 'Confirm your Bookimmo account',
       title: 'Confirm your email',
-      intro: 'Your rental workspace is almost ready. Confirm your email address to activate your Bookimmo account.',
+      intro: 'Your Bookimmo real estate workspace is almost ready. Confirm your email address to activate your account.',
       cta: 'Confirm account',
       otpLabel: 'Confirmation code',
     },
@@ -96,12 +96,12 @@ const COPY = {
   },
   de: {
     brand: 'Bookimmo',
-    footer: 'Bookimmo Mietworkflow',
+    footer: 'Bookimmo Immobilien-Workspace',
     signup: {
       preview: 'Bestaetige dein Bookimmo Konto',
       subject: 'Bestaetige dein Bookimmo Konto',
       title: 'E-Mail bestaetigen',
-      intro: 'Dein Mieter-Workspace ist fast bereit. Bestaetige deine E-Mail-Adresse, um dein Bookimmo Konto zu aktivieren.',
+      intro: 'Dein Bookimmo Immobilien-Workspace ist fast bereit. Bestaetige deine E-Mail-Adresse, um dein Konto zu aktivieren.',
       cta: 'Konto bestaetigen',
       otpLabel: 'Bestaetigungscode',
     },

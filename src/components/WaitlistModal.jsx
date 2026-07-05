@@ -57,7 +57,7 @@ export default function WaitlistModal({ onClose }) {
               background: 'rgb(255,102,37)',
               animation: 'barDotPulse 1.4s ease-in-out infinite',
             }} />
-            Launching June 2025
+            Launching July 2026
           </span>
         </div>
 
