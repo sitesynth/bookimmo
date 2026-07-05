@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
+import { detectPreferredLanguage, getPathLanguage, normalizeLanguage } from '../lib/language.js'
 
 const INPUT_STYLE = {
   width: '100%', padding: '12px 16px', borderRadius: '8px',
@@ -108,8 +109,8 @@ export default function SupabaseAuthForm({ mode = 'signup' }) {
   const [message, setMessage]   = useState('')
   const [passwordVisible, setPasswordVisible] = useState(false)
   const [confirmVisible, setConfirmVisible] = useState(false)
-  const lang = /^\/(de|en|fr|it|nl)(\/|$)/.exec(location.pathname)?.[1] || 'de'
-  const signupConfirmHref = `${window.location.origin}/${lang}/dashboard-home`
+  const pathLanguage = getPathLanguage(location.pathname)
+  const lang = normalizeLanguage(pathLanguage, 'en')
   const dashboardHref = `/${lang}/dashboard-home`
   const updatePasswordHref = `${window.location.origin}/${lang}/update-password`
 
@@ -122,21 +123,25 @@ export default function SupabaseAuthForm({ mode = 'signup' }) {
       if (password !== confirm) {
         setStatus('error'); setMessage('Passwords do not match.'); return
       }
+      const preferredLanguage = await detectPreferredLanguage()
+      const authLanguage = normalizeLanguage(pathLanguage || preferredLanguage, 'en')
+      const signupRedirectHref = `${window.location.origin}/${authLanguage}/dashboard-home`
+      const postSignupDashboardHref = `/${authLanguage}/dashboard-home`
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: signupConfirmHref,
+          emailRedirectTo: signupRedirectHref,
           data: {
             profile: {
-              preferredLanguage: lang,
+              preferredLanguage: authLanguage,
             },
           },
         },
       })
       if (error) { setStatus('error'); setMessage(error.message) }
       else if (data?.session?.user) {
-        setStatus('success'); setMessage('Account created. Redirecting to your dashboard…'); setTimeout(() => navigate(dashboardHref), 700)
+        setStatus('success'); setMessage('Account created. Redirecting to your dashboard…'); setTimeout(() => navigate(postSignupDashboardHref), 700)
       }
       else { setStatus('success'); setMessage('Check your email to confirm your account.') }
 

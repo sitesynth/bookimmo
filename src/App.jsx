@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Routes, Route, Navigate, Outlet, useNavigate, useParams } from 'react-router-dom'
+import { detectPreferredLanguage } from './lib/language.js'
 
 function RedirectWithSlug({ base }) {
   const { slug } = useParams()
-  return <Navigate to={`/de/${base}/${slug}`} replace />
+  return <Navigate to={`/en/${base}/${slug}`} replace />
 }
 import { useTranslation } from 'react-i18next'
 import HomePage from './pages/HomePage.jsx'
@@ -23,7 +24,29 @@ import NotFoundPage from './pages/_404Page.jsx'
 import PropertyDetailPage from './pages/PropertyDetailPage.jsx'
 import AgentDetailPage from './pages/AgentDetailPage.jsx'
 
-const LANGS = ['de', 'en', 'fr', 'it', 'nl']
+function GeoLanguageRedirect({ path = '' }) {
+  const navigate = useNavigate()
+  const [resolved, setResolved] = useState(false)
+
+  useEffect(() => {
+    let active = true
+
+    detectPreferredLanguage()
+      .then((lang) => {
+        if (!active) return
+        navigate(`/${lang}${path}`, { replace: true })
+      })
+      .finally(() => {
+        if (active) setResolved(true)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [navigate, path])
+
+  return resolved ? null : null
+}
 
 function LangWrapper({ lang }) {
   const { i18n } = useTranslation()
@@ -34,19 +57,19 @@ function LangWrapper({ lang }) {
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/de" replace />} />
-      <Route path="/dashboard-home" element={<Navigate to="/de/dashboard-home" replace />} />
-      <Route path="/search" element={<Navigate to="/de/search" replace />} />
-      <Route path="/applications" element={<Navigate to="/de/applications" replace />} />
-      <Route path="/agent" element={<Navigate to="/de/agent" replace />} />
-      <Route path="/sign-up" element={<Navigate to="/de/sign-up" replace />} />
-      <Route path="/log-in" element={<Navigate to="/de/log-in" replace />} />
-      <Route path="/privacy-policy" element={<Navigate to="/de/privacy-policy" replace />} />
-      <Route path="/terms-of-service" element={<Navigate to="/de/terms-of-service" replace />} />
-      <Route path="/Bookmark" element={<Navigate to="/de/Bookmark" replace />} />
-      <Route path="/account" element={<Navigate to="/de/account" replace />} />
-      <Route path="/forgot-password" element={<Navigate to="/de/forgot-password" replace />} />
-      <Route path="/update-password" element={<Navigate to="/de/update-password" replace />} />
+      <Route path="/" element={<GeoLanguageRedirect />} />
+      <Route path="/dashboard-home" element={<GeoLanguageRedirect path="/dashboard-home" />} />
+      <Route path="/search" element={<GeoLanguageRedirect path="/search" />} />
+      <Route path="/applications" element={<GeoLanguageRedirect path="/applications" />} />
+      <Route path="/agent" element={<GeoLanguageRedirect path="/agent" />} />
+      <Route path="/sign-up" element={<GeoLanguageRedirect path="/sign-up" />} />
+      <Route path="/log-in" element={<GeoLanguageRedirect path="/log-in" />} />
+      <Route path="/privacy-policy" element={<GeoLanguageRedirect path="/privacy-policy" />} />
+      <Route path="/terms-of-service" element={<GeoLanguageRedirect path="/terms-of-service" />} />
+      <Route path="/Bookmark" element={<GeoLanguageRedirect path="/Bookmark" />} />
+      <Route path="/account" element={<GeoLanguageRedirect path="/account" />} />
+      <Route path="/forgot-password" element={<GeoLanguageRedirect path="/forgot-password" />} />
+      <Route path="/update-password" element={<GeoLanguageRedirect path="/update-password" />} />
       <Route path="/Property-Details/:slug" element={<RedirectWithSlug base="Property-Details" />} />
       <Route path="/agent-details/:slug" element={<RedirectWithSlug base="agent-details" />} />
       <Route path="/agents-details/:slug" element={<RedirectWithSlug base="agents-details" />} />
@@ -140,7 +163,7 @@ export default function App() {
         <Route path="agent-details/:slug" element={<AgentDetailPage />} />
         <Route path="agents-details/:slug" element={<AgentDetailPage />} />
       </Route>
-      <Route path="*" element={<Navigate to="/de" replace />} />
+      <Route path="*" element={<Navigate to="/en" replace />} />
     </Routes>
   )
 }
