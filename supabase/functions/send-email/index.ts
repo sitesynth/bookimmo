@@ -36,6 +36,7 @@ const HOOK_SECRET = (Deno.env.get('SEND_EMAIL_HOOK_SECRET') || '').replace('v1,w
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || ''
 const DEFAULT_APP_URL = Deno.env.get('BOOKIMMO_APP_URL') || 'https://book.immo'
 const FROM_EMAIL = Deno.env.get('BOOKIMMO_FROM_EMAIL') || 'Bookimmo <noreply@book.immo>'
+const LOGO_URL = `${DEFAULT_APP_URL.replace(/\/$/, '')}/apple-touch-icon.png`
 
 const COPY = {
   en: {
@@ -90,6 +91,7 @@ const COPY = {
       otpLabel: 'Verification code',
     },
     secondary: 'If the button does not open, use this direct link:',
+    directLinkLabel: 'Open secure Bookimmo confirmation',
     ignore: 'If you did not request this email, you can safely ignore it.',
   },
   de: {
@@ -144,6 +146,7 @@ const COPY = {
       otpLabel: 'Verifizierungscode',
     },
     secondary: 'Falls der Button nicht funktioniert, nutze bitte diesen direkten Link:',
+    directLinkLabel: 'Sichere Bookimmo-Bestaetigung oeffnen',
     ignore: 'Wenn du diese E-Mail nicht angefordert hast, kannst du sie ignorieren.',
   },
 } as const
@@ -233,7 +236,10 @@ function renderEmailHtml({
       <div style="max-width:640px;margin:0 auto;padding:40px 20px;">
         <div style="background:#ffffff;border:1px solid rgba(25,26,32,0.08);border-radius:24px;overflow:hidden;box-shadow:0 24px 64px rgba(25,26,32,0.08);">
           <div style="padding:32px 32px 20px;background:linear-gradient(135deg,#fffaf0 0%,#efe7d8 100%);border-bottom:1px solid rgba(25,26,32,0.08);">
-            <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(25,26,32,0.54);">${baseCopy.brand}</div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <img src="${LOGO_URL}" alt="${baseCopy.brand}" width="44" height="44" style="display:block;width:44px;height:44px;border-radius:12px;" />
+              <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(25,26,32,0.54);">${baseCopy.brand}</div>
+            </div>
             <h1 style="margin:12px 0 0;font-size:30px;line-height:1.1;font-family:'Bricolage Grotesque',Inter,Arial,sans-serif;font-weight:600;color:#191a20;">${copy.title}</h1>
           </div>
           <div style="padding:28px 32px 32px;">
@@ -242,8 +248,8 @@ function renderEmailHtml({
               ${copy.cta}
             </a>
             <p style="margin:24px 0 10px;font-size:13px;line-height:1.6;color:rgba(25,26,32,0.6);">${baseCopy.secondary}</p>
-            <p style="margin:0 0 24px;font-size:13px;line-height:1.6;word-break:break-word;">
-              <a href="${verifyUrl}" style="color:#191a20;">${verifyUrl}</a>
+            <p style="margin:0 0 24px;font-size:13px;line-height:1.6;">
+              <a href="${verifyUrl}" style="color:#191a20;font-weight:600;text-decoration:underline;">${baseCopy.directLinkLabel}</a>
             </p>
             <div style="padding:18px 20px;border-radius:18px;background:#f8f6f1;border:1px solid rgba(25,26,32,0.08);">
               <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.08em;color:rgba(25,26,32,0.52);margin-bottom:8px;">${copy.otpLabel}</div>
