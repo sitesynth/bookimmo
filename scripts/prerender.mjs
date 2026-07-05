@@ -16,7 +16,7 @@
  * over the catch-all rewrite in vercel.json), giving crawlers full HTML.
  * For routes without a prerendered file, the SPA rewrite kicks in as usual.
  */
-import puppeteer from 'puppeteer'
+import puppeteer from 'puppeteer-core'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -75,11 +75,34 @@ const ROUTES = [
   '/en/terms-of-service', '/de/terms-of-service',
 ]
 
+// ── Chrome detection ──────────────────────────────────────────────────────────
+// Local: use system Chrome. CI/Vercel: use @sparticuz/chromium which is a
+// statically-compiled Chromium that needs no system shared libraries.
+
+const LOCAL_CHROME_PATHS = [
+  '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+  '/Applications/Chromium.app/Contents/MacOS/Chromium',
+  '/usr/bin/google-chrome',
+  '/usr/bin/google-chrome-stable',
+  '/usr/bin/chromium-browser',
+]
+
+let executablePath = LOCAL_CHROME_PATHS.find(p => existsSync(p))
+let launchArgs = ['--no-sandbox', '--disable-setuid-sandbox', '--hide-scrollbars']
+
+if (!executablePath) {
+  const { default: chromium } = await import('@sparticuz/chromium')
+  executablePath = await chromium.executablePath()
+  launchArgs = [...chromium.args, '--hide-scrollbars']
+  console.log('ℹ  no system Chrome found — using @sparticuz/chromium')
+}
+
 // ── Puppeteer ─────────────────────────────────────────────────────────────────
 
 const browser = await puppeteer.launch({
-  headless: 'new',
-  args: ['--no-sandbox', '--disable-setuid-sandbox', '--hide-scrollbars'],
+  executablePath,
+  headless: true,
+  args: launchArgs,
 })
 
 let ok = 0, fail = 0

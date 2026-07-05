@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "prerender": "node scripts/prerender.mjs",
-    "build:ssg": "vite build && npx puppeteer browsers install chrome --with-deps 2>/dev/null || true && node scripts/prerender.mjs"
+    "build:ssg": "vite build && node scripts/prerender.mjs"
   },
   "dependencies": {
     "@directus/sdk": "^17.0.0",
@@ -26,9 +26,9 @@
     "@vitejs/plugin-react": "^4.3.0",
     "autoprefixer": "^10.4.0",
     "postcss": "^8.4.0",
-    "puppeteer": "^25.1.0",
     "puppeteer-core": "^25.1.0",
     "tailwindcss": "^3.4.0",
-    "vite": "^5.4.0"
+    "vite": "^5.4.0",
+    "@sparticuz/chromium": "^149.0.0"
   }
 }
