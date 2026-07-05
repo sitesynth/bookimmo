@@ -29,6 +29,7 @@ type EmailJob = {
   tokenHash: string
   actionType: string
   redirectTo: string
+  language: SupportedLanguage
 }
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') || ''
@@ -36,7 +37,7 @@ const HOOK_SECRET = (Deno.env.get('SEND_EMAIL_HOOK_SECRET') || '').replace('v1,w
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || ''
 const DEFAULT_APP_URL = Deno.env.get('BOOKIMMO_APP_URL') || 'https://book.immo'
 const FROM_EMAIL = Deno.env.get('BOOKIMMO_FROM_EMAIL') || 'Bookimmo <noreply@book.immo>'
-const LOGO_URL = `${DEFAULT_APP_URL.replace(/\/$/, '')}/apple-touch-icon.png`
+const LOGO_URL = `${DEFAULT_APP_URL.replace(/\/$/, '')}/email-logo.png`
 
 const COPY = {
   en: {
@@ -208,12 +209,12 @@ function resolveRedirectTo({
 
 function buildVerifyUrl(job: EmailJob) {
   const params = new URLSearchParams({
-    token: job.tokenHash,
+    token_hash: job.tokenHash,
     type: job.actionType,
     redirect_to: job.redirectTo,
   })
 
-  return `${SUPABASE_URL}/auth/v1/verify?${params.toString()}`
+  return buildAppUrl(`/${job.language}/auth/callback?${params.toString()}`)
 }
 
 function buildEmailJobs(payload: HookPayload): EmailJob[] {
@@ -232,6 +233,7 @@ function buildEmailJobs(payload: HookPayload): EmailJob[] {
       tokenHash: payload.email_data.token_hash,
       actionType,
       redirectTo,
+      language,
     }]
   }
 
@@ -244,6 +246,7 @@ function buildEmailJobs(payload: HookPayload): EmailJob[] {
       tokenHash: payload.email_data.token_hash_new,
       actionType,
       redirectTo,
+      language,
     })
   }
 
@@ -254,6 +257,7 @@ function buildEmailJobs(payload: HookPayload): EmailJob[] {
       tokenHash: payload.email_data.token_hash,
       actionType,
       redirectTo,
+      language,
     })
   }
 
@@ -286,10 +290,7 @@ function renderEmailHtml({
       <div style="max-width:640px;margin:0 auto;padding:40px 20px;">
         <div style="background:#ffffff;border:1px solid rgba(25,26,32,0.08);border-radius:24px;overflow:hidden;box-shadow:0 24px 64px rgba(25,26,32,0.08);">
           <div style="padding:32px 32px 20px;background:linear-gradient(135deg,#fffaf0 0%,#efe7d8 100%);border-bottom:1px solid rgba(25,26,32,0.08);">
-            <div style="display:flex;align-items:center;gap:12px;">
-              <img src="${LOGO_URL}" alt="${baseCopy.brand}" width="44" height="44" style="display:block;width:44px;height:44px;border-radius:12px;" />
-              <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(25,26,32,0.54);">${baseCopy.brand}</div>
-            </div>
+            <img src="${LOGO_URL}" alt="${baseCopy.brand}" width="315" height="44" style="display:block;width:220px;height:auto;" />
             <h1 style="margin:12px 0 0;font-size:30px;line-height:1.1;font-family:'Bricolage Grotesque',Inter,Arial,sans-serif;font-weight:600;color:#191a20;">${copy.title}</h1>
           </div>
           <div style="padding:28px 32px 32px;">

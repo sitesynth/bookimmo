@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { detectPreferredLanguage, getPathLanguage, normalizeLanguage } from '../lib/language.js'
@@ -113,6 +113,23 @@ export default function SupabaseAuthForm({ mode = 'signup' }) {
   const lang = normalizeLanguage(pathLanguage, 'en')
   const dashboardHref = `/${lang}/dashboard-home`
   const updatePasswordHref = `${window.location.origin}/${lang}/update-password`
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const authError = params.get('authError')
+    const authNotice = params.get('authNotice')
+
+    if (authError) {
+      setStatus('error')
+      setMessage(authError)
+      return
+    }
+
+    if (authNotice) {
+      setStatus('success')
+      setMessage(authNotice)
+    }
+  }, [location.search])
 
   async function handleSubmit(e) {
     e.preventDefault()

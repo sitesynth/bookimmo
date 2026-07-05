@@ -20,6 +20,7 @@ import BookmarkPage from './pages/BookmarkPage.jsx'
 import AccountPage from './pages/AccountPage.jsx'
 import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx'
 import UpdatePasswordPage from './pages/UpdatePasswordPage.jsx'
+import AuthCallbackPage from './pages/AuthCallbackPage.jsx'
 import NotFoundPage from './pages/_404Page.jsx'
 import PropertyDetailPage from './pages/PropertyDetailPage.jsx'
 import AgentDetailPage from './pages/AgentDetailPage.jsx'
@@ -87,6 +88,7 @@ export default function App() {
         <Route path="account" element={<AccountPage />} />
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
         <Route path="update-password" element={<UpdatePasswordPage />} />
+        <Route path="auth/callback" element={<AuthCallbackPage />} />
         <Route path="Property-Details/:slug" element={<PropertyDetailPage />} />
         <Route path="agent-details/:slug" element={<AgentDetailPage />} />
         <Route path="agents-details/:slug" element={<AgentDetailPage />} />
@@ -105,6 +107,7 @@ export default function App() {
         <Route path="account" element={<AccountPage />} />
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
         <Route path="update-password" element={<UpdatePasswordPage />} />
+        <Route path="auth/callback" element={<AuthCallbackPage />} />
         <Route path="Property-Details/:slug" element={<PropertyDetailPage />} />
         <Route path="agent-details/:slug" element={<AgentDetailPage />} />
         <Route path="agents-details/:slug" element={<AgentDetailPage />} />
@@ -123,6 +126,7 @@ export default function App() {
         <Route path="account" element={<AccountPage />} />
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
         <Route path="update-password" element={<UpdatePasswordPage />} />
+        <Route path="auth/callback" element={<AuthCallbackPage />} />
         <Route path="Property-Details/:slug" element={<PropertyDetailPage />} />
         <Route path="agent-details/:slug" element={<AgentDetailPage />} />
         <Route path="agents-details/:slug" element={<AgentDetailPage />} />
@@ -141,6 +145,7 @@ export default function App() {
         <Route path="account" element={<AccountPage />} />
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
         <Route path="update-password" element={<UpdatePasswordPage />} />
+        <Route path="auth/callback" element={<AuthCallbackPage />} />
         <Route path="Property-Details/:slug" element={<PropertyDetailPage />} />
         <Route path="agent-details/:slug" element={<AgentDetailPage />} />
         <Route path="agents-details/:slug" element={<AgentDetailPage />} />
@@ -159,6 +164,7 @@ export default function App() {
         <Route path="account" element={<AccountPage />} />
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
         <Route path="update-password" element={<UpdatePasswordPage />} />
+        <Route path="auth/callback" element={<AuthCallbackPage />} />
         <Route path="Property-Details/:slug" element={<PropertyDetailPage />} />
         <Route path="agent-details/:slug" element={<AgentDetailPage />} />
         <Route path="agents-details/:slug" element={<AgentDetailPage />} />

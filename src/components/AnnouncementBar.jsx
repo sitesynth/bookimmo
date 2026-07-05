@@ -73,13 +73,13 @@ export default function AnnouncementBar() {
         }}>
           {/* Desktop */}
           <span className="bar-text-desktop">
-            🚀 <strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Launching in June!</strong>
+            🚀 <strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Launching in July!</strong>
             {' '}The first <strong style={{ color: '#fff', fontWeight: 600 }}>200 users</strong> get free apartment matching —{' '}
             <button onClick={() => setModalOpen(true)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'rgb(255,102,37)', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: 3 }}>join now</button>.
           </span>
           {/* Mobile — one line */}
           <span className="bar-text-mobile">
-            🚀 <strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Launching June!</strong>
+            🚀 <strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Launching July!</strong>
             {' '}<strong style={{ color: '#fff', fontWeight: 600 }}>200</strong> free spots —{' '}
             <button onClick={() => setModalOpen(true)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'rgb(255,102,37)', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: 3 }}>join now</button>.
           </span>
