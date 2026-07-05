@@ -9,6 +9,20 @@ function describeAuthError(errorCode, fallbackDescription) {
   return fallbackDescription || 'We could not complete this sign-in link.'
 }
 
+function readToken(search, hash) {
+  const tokenKeys = ['token', 'verification_token', 'confirmation_token', 'token_hash', 'code']
+
+  for (const key of tokenKeys) {
+    const searchValue = search.get(key)
+    if (searchValue) return searchValue
+
+    const hashValue = hash.get(key)
+    if (hashValue) return hashValue
+  }
+
+  return ''
+}
+
 export default function AuthCallbackPage() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -30,7 +44,7 @@ export default function AuthCallbackPage() {
       }
     }
 
-    const token = search.get('token')
+    const token = readToken(search, hash)
     if (!token) {
       navigate(`/${lang}/log-in?authError=${encodeURIComponent('This confirmation link is incomplete. Please request a new one.')}`, { replace: true })
       return () => {
