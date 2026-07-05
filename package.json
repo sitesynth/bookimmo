@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@directus/sdk": "^17.0.0",
+    "express": "^4.21.2",
     "framer-motion": "^12.38.0",
     "i18next": "^23.0.0",
     "leaflet": "^1.9.4",

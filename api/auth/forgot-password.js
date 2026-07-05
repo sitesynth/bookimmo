@@ -1,4 +1,5 @@
 import crypto from 'node:crypto'
+import { proxyToBridge } from '../_lib/bridge.js'
 import { query, sha256, withClient } from '../_lib/db.js'
 import { sendPasswordResetEmail } from '../_lib/email-auth.js'
 
@@ -7,6 +8,7 @@ function alwaysSuccess(res) {
 }
 
 export default async function handler(req, res) {
+  if (await proxyToBridge(req, res)) return
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const { email = '', preferredLanguage = 'en' } = req.body || {}

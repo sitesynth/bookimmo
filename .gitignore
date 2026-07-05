@@ -6,3 +6,4 @@ dist/
 
 # Framer static assets (served locally during dev, bundled at build time)
 public/_local/
+.vercel

@@ -1,7 +1,9 @@
 import { createSession, setSessionCookie } from '../_lib/auth.js'
+import { proxyToBridge } from '../_lib/bridge.js'
 import { query, sha256, withClient } from '../_lib/db.js'
 
 export default async function handler(req, res) {
+  if (await proxyToBridge(req, res)) return
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const { token = '' } = req.body || {}
