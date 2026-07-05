@@ -7,13 +7,31 @@ loadLocalEnv()
 let pool
 let schemaPromise
 
+function resolveSslConfig() {
+  const sslMode = String(
+    process.env.DB_SSLMODE
+    || process.env.PGSSLMODE
+    || '',
+  ).toLowerCase()
+
+  if (sslMode === 'disable') return false
+  if (sslMode === 'verify-full') return { rejectUnauthorized: true }
+  if (sslMode === 'require' || sslMode === 'prefer' || sslMode === 'allow') {
+    return { rejectUnauthorized: false }
+  }
+
+  // Default to tolerant SSL for hosted/self-signed Postgres unless explicitly disabled.
+  return { rejectUnauthorized: false }
+}
+
 function readConfig() {
   const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL || ''
+  const ssl = resolveSslConfig()
 
   if (connectionString) {
     return {
       connectionString,
-      ssl: process.env.DB_SSLMODE === 'disable' ? false : undefined,
+      ssl,
     }
   }
 
@@ -23,7 +41,7 @@ function readConfig() {
     database: process.env.DB_NAME || 'bookimmo_backend',
     user: process.env.DB_USER || 'bookimmo_backend',
     password: process.env.DB_PASSWORD || '',
-    ssl: process.env.DB_SSLMODE ? { rejectUnauthorized: false } : undefined,
+    ssl,
   }
 }
 
