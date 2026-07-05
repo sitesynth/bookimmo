@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase.js'
 import { detectPreferredLanguage, getPathLanguage, normalizeLanguage } from '../lib/language.js'
+import { apiRequest } from '../lib/api.js'
 
 const INPUT_STYLE = {
   width: '100%', padding: '12px 16px', borderRadius: '8px',
@@ -112,7 +112,6 @@ export default function SupabaseAuthForm({ mode = 'signup' }) {
   const pathLanguage = getPathLanguage(location.pathname)
   const lang = normalizeLanguage(pathLanguage, 'en')
   const dashboardHref = `/${lang}/dashboard-home`
-  const updatePasswordHref = `${window.location.origin}/${lang}/update-password`
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
@@ -142,45 +141,57 @@ export default function SupabaseAuthForm({ mode = 'signup' }) {
       }
       const preferredLanguage = await detectPreferredLanguage()
       const authLanguage = normalizeLanguage(pathLanguage || preferredLanguage, 'en')
-      const signupRedirectHref = `${window.location.origin}/${authLanguage}/dashboard-home`
-      const postSignupDashboardHref = `/${authLanguage}/dashboard-home`
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: signupRedirectHref,
-          data: {
-            profile: {
-              preferredLanguage: authLanguage,
-            },
-          },
-        },
-      })
-      if (error) { setStatus('error'); setMessage(error.message) }
-      else if (data?.session?.user) {
-        setStatus('success'); setMessage('Account created. Redirecting to your dashboard…'); setTimeout(() => navigate(postSignupDashboardHref), 700)
+      try {
+        await apiRequest('/api/auth/register', {
+          method: 'POST',
+          body: JSON.stringify({
+            email,
+            password,
+            preferredLanguage: authLanguage,
+          }),
+        })
+        setStatus('success'); setMessage('Check your email to confirm your account.')
+      } catch (error) {
+        setStatus('error'); setMessage(error.message)
       }
-      else { setStatus('success'); setMessage('Check your email to confirm your account.') }
 
     } else if (mode === 'login') {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) { setStatus('error'); setMessage(error.message) }
-      else { setStatus('success'); setMessage('Signed in! Redirecting…'); setTimeout(() => navigate(dashboardHref), 700) }
+      try {
+        await apiRequest('/api/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({ email, password }),
+        })
+        window.dispatchEvent(new Event('bookimmo-auth-changed'))
+        setStatus('success'); setMessage('Signed in! Redirecting…'); setTimeout(() => navigate(dashboardHref), 700)
+      } catch (error) {
+        setStatus('error'); setMessage(error.message)
+      }
 
     } else if (mode === 'reset') {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: updatePasswordHref,
-      })
-      if (error) { setStatus('error'); setMessage(error.message) }
-      else { setStatus('success'); setMessage('Password reset email sent. Check your inbox.') }
+      try {
+        await apiRequest('/api/auth/forgot-password', {
+          method: 'POST',
+          body: JSON.stringify({ email, preferredLanguage: lang }),
+        })
+        setStatus('success'); setMessage('Password reset email sent. Check your inbox.')
+      } catch (error) {
+        setStatus('error'); setMessage(error.message)
+      }
 
     } else if (mode === 'update') {
       if (password !== confirm) {
         setStatus('error'); setMessage('Passwords do not match.'); return
       }
-      const { error } = await supabase.auth.updateUser({ password })
-      if (error) { setStatus('error'); setMessage(error.message) }
-      else { setStatus('success'); setMessage('Password updated! Redirecting…'); setTimeout(() => navigate(dashboardHref), 900) }
+      const resetToken = new URLSearchParams(location.search).get('token') || ''
+      try {
+        await apiRequest('/api/auth/reset-password', {
+          method: 'POST',
+          body: JSON.stringify({ token: resetToken, password }),
+        })
+        setStatus('success'); setMessage('Password updated! Redirecting…'); setTimeout(() => navigate(`/${lang}/log-in?authNotice=${encodeURIComponent('Password updated. You can sign in now.')}`), 900)
+      } catch (error) {
+        setStatus('error'); setMessage(error.message)
+      }
     }
   }
 

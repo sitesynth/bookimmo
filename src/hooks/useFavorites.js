@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { supabase } from '../lib/supabase.js'
+import { apiRequest } from '../lib/api.js'
 import { useAuthUser } from './useAuthUser.js'
 
 const STORAGE_KEY = 'bookimmo_favorites'
@@ -39,19 +39,10 @@ export function useFavorites() {
     let active = true
     setLoading(true)
 
-    supabase
-      .from('favorites')
-      .select('property_id')
-      .eq('user_id', user.id)
-      .then(({ data, error }) => {
+    apiRequest('/api/favorites')
+      .then(({ items = [] }) => {
         if (!active) return
-        if (error) {
-          setFavoriteIds(loadLocalFavorites())
-          setLoading(false)
-          return
-        }
-
-        const ids = (data || []).map((item) => String(item.property_id))
+        const ids = items.map((item) => String(item.property_id))
         setFavoriteIds(ids)
         setLoading(false)
       })
@@ -84,13 +75,11 @@ export function useFavorites() {
     }
 
     if (currentlyFavorite) {
-      const { error } = await supabase
-        .from('favorites')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('property_id', id)
-
-      if (error) {
+      try {
+        await apiRequest(`/api/favorites?propertyId=${encodeURIComponent(id)}`, {
+          method: 'DELETE',
+        })
+      } catch (error) {
         return { ok: false, error: error.message, isFavorite: true }
       }
 
@@ -98,15 +87,12 @@ export function useFavorites() {
       return { ok: true, isFavorite: false }
     }
 
-    const { error } = await supabase
-      .from('favorites')
-      .upsert({
-        user_id: user.id,
-        property_id: id,
-        created_at: new Date().toISOString(),
+    try {
+      await apiRequest('/api/favorites', {
+        method: 'POST',
+        body: JSON.stringify({ propertyId: id }),
       })
-
-    if (error) {
+    } catch (error) {
       return { ok: false, error: error.message, isFavorite: false }
     }
 

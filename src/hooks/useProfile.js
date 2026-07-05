@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { supabase } from '../lib/supabase.js'
+import { apiRequest } from '../lib/api.js'
 import { useAuthUser } from './useAuthUser.js'
 
 const DEFAULT_PROFILE = {
@@ -76,30 +76,40 @@ function mergeProfiles(primaryRow = {}, metadataRow = {}) {
   })
 }
 
-async function loadProfileRow(userId) {
-  return supabase
-    .from('profiles')
-    .select('first_name,last_name,phone,preferred_language,current_city,move_in_date,max_budget,about_me')
-    .eq('user_id', userId)
-    .maybeSingle()
+async function loadProfileRow() {
+  return apiRequest('/api/profile')
 }
 
 async function saveProfileRow(userId, profile) {
-  return supabase
-    .from('profiles')
-    .upsert({
+  return apiRequest('/api/profile', {
+    method: 'PUT',
+    body: JSON.stringify({
       id: userId,
-      user_id: userId,
-      first_name: profile.firstName || null,
-      last_name: profile.lastName || null,
-      phone: profile.phone || null,
-      preferred_language: profile.preferredLanguage || null,
-      current_city: profile.currentCity || null,
-      move_in_date: profile.moveInDate || null,
-      max_budget: profile.maxBudget ? Number(profile.maxBudget) : null,
-      about_me: profile.aboutMe || null,
-      updated_at: new Date().toISOString(),
-    })
+      profile: {
+        first_name: profile.firstName || null,
+        last_name: profile.lastName || null,
+        phone: profile.phone || null,
+        preferred_language: profile.preferredLanguage || null,
+        current_city: profile.currentCity || null,
+        current_address: profile.currentAddress || null,
+        move_in_date: profile.moveInDate || null,
+        max_budget: profile.maxBudget ? Number(profile.maxBudget) : null,
+        about_me: profile.aboutMe || null,
+        occupation: profile.occupation || null,
+        employment_status: profile.employmentStatus || null,
+        monthly_net_income: profile.monthlyNetIncome || null,
+        adults_count: profile.adultsCount ? Number(profile.adultsCount) : null,
+        children_count: profile.childrenCount ? Number(profile.childrenCount) : null,
+        pets: profile.pets || null,
+        shared_apartment: profile.sharedApartment || null,
+        nationality: profile.nationality || null,
+        profile_image: profile.profileImage || null,
+        preferred_districts: profile.preferredDistricts || null,
+        cover_letter_template: profile.coverLetterTemplate || null,
+        documents: profile.documents || [],
+      },
+    }),
+  })
 }
 
 export function useProfile() {
@@ -124,19 +134,13 @@ export function useProfile() {
     setError('')
     setNotice('')
 
-    loadProfileRow(user.id)
-      .then(({ data, error: dbError }) => {
+    loadProfileRow()
+      .then(({ profile: profileRow }) => {
         if (!active) return
         const metadataProfile = user.user_metadata?.profile || {}
 
-        if (data) {
-          setProfile(mergeProfiles(data, metadataProfile))
-          setLoading(false)
-          return
-        }
-
-        if (dbError) {
-          setProfile(normalizeProfile(metadataProfile))
+        if (profileRow) {
+          setProfile(mergeProfiles(profileRow, metadataProfile))
           setLoading(false)
           return
         }
@@ -206,17 +210,8 @@ export function useProfile() {
     setNotice('')
 
     try {
-      const { error: dbError } = await saveProfileRow(user.id, profile)
-
-      const { error: authError } = await supabase.auth.updateUser({
-        data: { profile },
-      })
-
-      if (dbError && authError) {
-        throw authError
-      }
-
-      setNotice(dbError ? 'Profile saved to auth metadata.' : 'Bewerbermappe profile saved.')
+      await saveProfileRow(user.id, profile)
+      setNotice('Bewerbermappe profile saved.')
       setSaving(false)
       return true
     } catch (err) {

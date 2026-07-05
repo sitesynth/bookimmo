@@ -1,8 +1,8 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { supabase } from '../../lib/supabase.js'
 import { useAuthUser } from '../../hooks/useAuthUser.js'
 import CabinetSidebar from './CabinetSidebar.jsx'
+import { apiRequest } from '../../lib/api.js'
 
 function readLang(pathname) {
   return /^\/(de|en|fr|it|nl)(\/|$)/.exec(pathname)?.[1] || 'de'
@@ -15,7 +15,8 @@ export default function CabinetLayout({ title, subtitle, children, aside = null 
   const lang = readLang(location.pathname)
 
   async function handleSignOut() {
-    await supabase.auth.signOut()
+    await apiRequest('/api/auth/logout', { method: 'POST' })
+    window.dispatchEvent(new Event('bookimmo-auth-changed'))
     navigate(`/${lang}`)
   }
 

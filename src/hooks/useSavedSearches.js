@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase.js'
+import { apiRequest } from '../lib/api.js'
 import { useAuthUser } from './useAuthUser.js'
 
 const STORAGE_KEY = 'bookimmo_workspace_saved_searches_v1'
@@ -58,22 +58,10 @@ export function useSavedSearches() {
     let active = true
     setLoading(true)
 
-    supabase
-      .from('saved_searches')
-      .select('id,name,filters,notifications_enabled,created_at,updated_at')
-      .eq('user_id', user.id)
-      .order('updated_at', { ascending: false })
-      .limit(MAX_SAVED_SEARCHES)
-      .then(({ data, error }) => {
+    apiRequest('/api/saved-searches')
+      .then(({ items = [] }) => {
         if (!active) return
-
-        if (error) {
-          setSavedSearches(loadLocalSavedSearches())
-          setLoading(false)
-          return
-        }
-
-        setSavedSearches((data || []).map(normalizeSavedSearch))
+        setSavedSearches(items.map(normalizeSavedSearch))
         setLoading(false)
       })
       .catch(() => {
@@ -120,26 +108,28 @@ export function useSavedSearches() {
     }
 
     const payload = {
-      user_id: user.id,
       name,
       filters: normalizedFilters,
       notifications_enabled: notificationsEnabled,
-      updated_at: now,
     }
 
     if (searchId) {
       payload.id = searchId
-    } else {
-      payload.created_at = now
     }
 
-    const { data, error } = await supabase
-      .from('saved_searches')
-      .upsert(payload)
-      .select('id,name,filters,notifications_enabled,created_at,updated_at')
-      .single()
-
-    if (error) {
+    let data
+    try {
+      const response = await apiRequest('/api/saved-searches', {
+        method: 'POST',
+        body: JSON.stringify({
+          id: payload.id,
+          name: payload.name,
+          filters: payload.filters,
+          notificationsEnabled,
+        }),
+      })
+      data = response.item
+    } catch {
       const fallbackItem = normalizeSavedSearch({
         id: searchId || `fallback-search-${Date.now()}`,
         name,
@@ -174,13 +164,11 @@ export function useSavedSearches() {
       return { ok: true, requiresAuth: true }
     }
 
-    const { error } = await supabase
-      .from('saved_searches')
-      .delete()
-      .eq('id', searchId)
-      .eq('user_id', user.id)
-
-    if (error) {
+    try {
+      await apiRequest(`/api/saved-searches?id=${encodeURIComponent(searchId)}`, {
+        method: 'DELETE',
+      })
+    } catch {
       const next = loadLocalSavedSearches().filter((item) => String(item.id) !== String(searchId))
       saveLocalSavedSearches(next)
       setSavedSearches((current) => current.filter((item) => String(item.id) !== String(searchId)))

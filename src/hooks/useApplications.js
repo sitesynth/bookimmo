@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { supabase } from '../lib/supabase.js'
+import { apiRequest } from '../lib/api.js'
 import { useAuthUser } from './useAuthUser.js'
 
 const STORAGE_KEY = 'bookimmo_application_drafts'
@@ -53,21 +53,10 @@ export function useApplications() {
     let active = true
     setLoading(true)
 
-    supabase
-      .from('applications')
-      .select('id,property_id,status,cover_message,source_channel,created_at,updated_at')
-      .eq('user_id', user.id)
-      .order('updated_at', { ascending: false })
-      .then(({ data, error }) => {
+    apiRequest('/api/applications')
+      .then(({ items = [] }) => {
         if (!active) return
-
-        if (error) {
-          setApplications(loadLocalDrafts().map(normalizeApplication))
-          setLoading(false)
-          return
-        }
-
-        setApplications((data || []).map(normalizeApplication))
+        setApplications(items.map(normalizeApplication))
         setLoading(false)
       })
       .catch(() => {
@@ -103,22 +92,20 @@ export function useApplications() {
     }
 
     const payload = {
-      user_id: user.id,
-      property_id: propertyId,
+      propertyId,
       status: 'draft',
-      cover_message: null,
-      source_channel: 'client_cabinet_search',
-      created_at: now,
-      updated_at: now,
+      coverMessage: null,
+      sourceChannel: 'client_cabinet_search',
     }
 
-    const { data, error } = await supabase
-      .from('applications')
-      .upsert(payload)
-      .select('id,property_id,status,cover_message,source_channel,created_at,updated_at')
-      .single()
-
-    if (error) {
+    let data
+    try {
+      const response = await apiRequest('/api/applications', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      })
+      data = response.item
+    } catch {
       const drafts = loadLocalDrafts().map(normalizeApplication)
       const nextDraft = {
         id: `fallback-${propertyId}`,
@@ -168,13 +155,16 @@ export function useApplications() {
       updated_at: now,
     }
 
-    const { error } = await supabase
-      .from('applications')
-      .update(payload)
-      .eq('id', applicationId)
-      .eq('user_id', user.id)
-
-    if (error) {
+    try {
+      await apiRequest('/api/applications', {
+        method: 'PUT',
+        body: JSON.stringify({
+          id: applicationId,
+          status: payload.status,
+          coverMessage: payload.cover_message,
+        }),
+      })
+    } catch {
       const next = localUpdater(loadLocalDrafts().map(normalizeApplication))
       saveLocalDrafts(next)
       setApplications(next)

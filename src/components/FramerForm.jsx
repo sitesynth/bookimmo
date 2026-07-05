@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import { supabase } from '../lib/supabase.js'
+import { apiRequest } from '../lib/api.js'
 
 /**
  * FramerForm — universal wrapper for Framer-generated forms.
- * Collects all named inputs (skips honeypots), submits to Supabase.
+ * Collects all named inputs (skips honeypots), submits through our API.
  *
  * Props:
- *   tableName  — Supabase table to insert into (default: 'leads')
+ *   tableName  — Directus collection to insert into (default: 'leads')
  *   children   — the Framer form fields / buttons
  *   ...rest    — forwarded to <form> (className, style, etc.)
  */
@@ -26,13 +26,18 @@ export default function FramerForm({ tableName = 'leads', children, ...rest }) {
       if (value) data[key] = value
     }
 
-    const { error } = await supabase.from(tableName).insert([data])
-
-    if (error) {
+    try {
+      await apiRequest('/api/forms/submit', {
+        method: 'POST',
+        body: JSON.stringify({
+          tableName,
+          data,
+        }),
+      })
+      setStatus('success')
+    } catch (error) {
       console.error('Form submit error:', error)
       setStatus('error')
-    } else {
-      setStatus('success')
     }
   }
 

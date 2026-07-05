@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase.js'
 import { getPathLanguage, normalizeLanguage } from '../lib/language.js'
+import { apiRequest } from '../lib/api.js'
 
 function describeAuthError(errorCode, fallbackDescription) {
   if (errorCode === 'otp_expired') return 'This email link has expired. Request a fresh one and try again.'
@@ -30,51 +30,21 @@ export default function AuthCallbackPage() {
       }
     }
 
-    const tokenHash = search.get('token_hash')
-    const type = search.get('type')
-    const redirectTo = search.get('redirect_to')
-
-    if (!tokenHash || !type) {
+    const token = search.get('token')
+    if (!token) {
       navigate(`/${lang}/log-in?authError=${encodeURIComponent('This confirmation link is incomplete. Please request a new one.')}`, { replace: true })
       return () => {
         active = false
       }
     }
 
-    supabase.auth.verifyOtp({
-      token_hash: tokenHash,
-      type,
-    }).then(({ error }) => {
+    apiRequest('/api/auth/verify-email', {
+      method: 'POST',
+      body: JSON.stringify({ token }),
+    }).then(() => {
       if (!active) return
-
-      if (error) {
-        const authError = describeAuthError(error.code, error.message)
-        navigate(`/${lang}/log-in?authError=${encodeURIComponent(authError)}`, { replace: true })
-        return
-      }
-
-      const fallbackPath = type === 'recovery'
-        ? `/${lang}/update-password`
-        : `/${lang}/dashboard-home`
-
-      if (!redirectTo) {
-        navigate(fallbackPath, { replace: true })
-        return
-      }
-
-      try {
-        const target = new URL(redirectTo)
-        const currentOrigin = window.location.origin
-
-        if (target.origin === currentOrigin) {
-          navigate(`${target.pathname}${target.search}${target.hash}`, { replace: true })
-          return
-        }
-      } catch {
-        // Fall back to internal route when redirectTo is malformed.
-      }
-
-      navigate(fallbackPath, { replace: true })
+      window.dispatchEvent(new Event('bookimmo-auth-changed'))
+      navigate(`/${lang}/dashboard-home`, { replace: true })
     }).catch((error) => {
       if (!active) return
       const authError = describeAuthError('', String(error))

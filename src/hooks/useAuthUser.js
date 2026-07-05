@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase.js'
+import { apiRequest } from '../lib/api.js'
 
 export function useAuthUser() {
   const [user, setUser] = useState(null)
@@ -8,8 +8,10 @@ export function useAuthUser() {
   useEffect(() => {
     let mounted = true
 
-    supabase.auth.getUser()
-      .then(({ data }) => {
+    const loadUser = () => {
+      setLoading(true)
+      apiRequest('/api/auth/me')
+      .then((data) => {
         if (!mounted) return
         setUser(data?.user ?? null)
         setLoading(false)
@@ -19,16 +21,15 @@ export function useAuthUser() {
         setUser(null)
         setLoading(false)
       })
+    }
 
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!mounted) return
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+    loadUser()
+    const handleAuthChange = () => loadUser()
+    window.addEventListener('bookimmo-auth-changed', handleAuthChange)
 
     return () => {
       mounted = false
-      data?.subscription?.unsubscribe?.()
+      window.removeEventListener('bookimmo-auth-changed', handleAuthChange)
     }
   }, [])
 
