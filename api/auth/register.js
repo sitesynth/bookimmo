@@ -1,4 +1,4 @@
-import { createSession, hashPassword, setSessionCookie } from '../_lib/auth.js'
+import { hashPassword } from '../_lib/auth.js'
 import { newId, query, sha256, withClient } from '../_lib/db.js'
 import { sendVerifyEmail } from '../_lib/email-auth.js'
 
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
       await client.query(
         `INSERT INTO public.app_users (id, email, password_hash, name, preferred_language, email_verified)
          VALUES ($1, $2, $3, $4, $5, FALSE)`,
-        [userId, normalizedEmail, hashPassword(String(password)), String(name || normalizedEmail.split('@')[0]), preferredLanguage, preferredLanguage],
+        [userId, normalizedEmail, hashPassword(String(password)), String(name || normalizedEmail.split('@')[0]), preferredLanguage],
       )
       await client.query(
         `INSERT INTO public.email_verification_tokens (token_hash, user_id, expires_at)
