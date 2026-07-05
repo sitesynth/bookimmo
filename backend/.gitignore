@@ -1,0 +1,22 @@
+# Environment & secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Logs
+*.log
+
+# Runtime data
+.telegram_report_message_id
+.telegram_subscribers.json
+contact_sent_tracking.json
+telegram_history.json
+
+# Large data files
+apartments_processed.jsonl
+apartments_seen_history.json
+apartments_timeline.jsonl
+contact_submissions.jsonl

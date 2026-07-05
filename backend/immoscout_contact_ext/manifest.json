@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "ImmoScout24 Contact Auto-Logger",
+  "version": "1.0.0",
+  "description": "Автоматически логирует отправку контактов на immobilienscout24",
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://www.immobilienscout24.de/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.immobilienscout24.de/expose/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://www.immobilienscout24.de/meinkonto/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://www.immobilienscout24.de/messenger/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "ImmoScout Contact Logger"
+  }
+}

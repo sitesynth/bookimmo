@@ -6,6 +6,7 @@
 - React Router v6 (lang-prefixed routes: /de, /en, /fr, /it, /nl)
 - react-i18next (translations)
 - @directus/sdk (data source)
+- @supabase/supabase-js (client auth + cabinet state)
 
 ## Detected from Framer export
 - **Languages**: de, en, fr, it, nl
@@ -24,8 +25,21 @@
 ## Getting started
 ```bash
 npm install
-cp .env.example .env   # Directus URL and token auto-detected
 npm run dev
+```
+
+Frontend local auth config lives in `.env.local`:
+
+```bash
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_ANON_KEY=...
+```
+
+Backend automation runtime lives in `backend/` and now uses PostgreSQL directly.
+Oracle bootstrap script:
+
+```bash
+backend/init_oracle_postgres.sh
 ```
 
 ## Workflow

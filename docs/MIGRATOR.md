@@ -7,14 +7,14 @@
 ## Быстрый старт (TL;DR)
 
 ```bash
-# 1. Скачать HTML + JS-чанки с опубликованного Framer сайта
-node sync-framer-site-chunks.mjs --url https://your-site.framer.website --out ./framer-export
+# 1. Скачать HTML + JS-чанки, извлечь CSS + токены, найти все страницы через sitemap
+node sync-framer-site-chunks.mjs --url https://your-site.framer.website
 
-# 2. Снять computed DOM (запустить в браузере или через Puppeteer)
-node extract-computed.mjs --url https://your-site.framer.website
-# или вручную: вставить extract-computed-console.js в DevTools Console
+# 2. Снять computed DOM со всех страниц автоматически (через Puppeteer)
+node extract-computed.mjs --url https://your-site.framer.website --all-pages
+# или вручную для одной страницы: вставить extract-computed-console.js в DevTools Console
 
-# 3. Сгенерировать полный React проект (все 10 шагов)
+# 3. Сгенерировать React компоненты
 node generate-components.mjs
 
 # 4. Запустить dev сервер
@@ -22,11 +22,13 @@ cd react-app && npm run dev
 ```
 
 Готово! ✅ Мигратор автоматически:
-- ✅ Генерирует все React компоненты
-- ✅ Создаёт App.jsx с многоязычной маршрутизацией
-- ✅ Настраивает Vite с прокси для Directus
-- ✅ Генерирует Vercel functions для API
-- ✅ Извлекает дизайн-токены
+- ✅ Находит все страницы сайта через `sitemap.xml`
+- ✅ Снимает computed DOM с каждой страницы
+- ✅ **Извлекает Framer Motion анимации** через React Fiber (`whileHover`, `whileInView`, `whileTap`, `initial→animate`, `transition`, `variants`)
+- ✅ Генерирует JSX компонент на каждую секцию (с `motion.*` тегами где нужно)
+- ✅ Создаёт `HomePage.jsx` и страницы для всех маршрутов
+- ✅ Скачивает медиафайлы → `react-app/public/assets/`
+- ✅ Извлекает CSS → `framer-styles.css` и токены → `tokens.js`
 - ✅ **Никогда не перезаписывает существующие файлы**
 
 ---
@@ -36,190 +38,224 @@ cd react-app && npm run dev
 Мигратор состоит из трёх скриптов, которые запускаются последовательно:
 
 ```
-1. node sync-framer-site-chunks.mjs   →  скачивает HTML + JS-чанки с опубликованного сайта
-2. node extract-computed.mjs          →  снимает computed DOM через Puppeteer → computed-styles.json
-   (или extract-computed-console.js   →  тот же снимок вручную через DevTools Console)
-3. node generate-components.mjs       →  генерирует React-компоненты
+1. node sync-framer-site-chunks.mjs   →  HTML + JS-чанки + CSS + токены + список страниц из sitemap
+2. node extract-computed.mjs          →  computed DOM + анимации → JSON (все страницы авто или одна вручную)
+   (или extract-computed-console.js   →  тот же снимок одной страницы через DevTools Console)
+3. node generate-components.mjs       →  JSX компоненты (с motion.*) + страницы
 ```
 
 Входные данные — URL опубликованного Framer-сайта.  
-Выходные данные — полный набор `.jsx` компонентов + `framer-styles.css` в `react-app/src/`.
+Выходные данные — полный набор `.jsx` компонентов (с `framer-motion` анимациями) + `framer-styles.css` + `tokens.js` в `react-app/src/`.
 
 ---
 
 ## Шаг 1 — `sync-framer-site-chunks.mjs`
 
-### Что делает
+### Что делает (6 шагов внутри)
 
-Скачивает HTML и все JS/MJS/JSON чанки с опубликованного Framer сайта. Автоматически определяет `siteId` из HTML страницы — ничего не нужно хардкодить.
+| # | Шаг | Результат |
+|---|-----|-----------|
+| 1 | Авто-находит `siteId` из HTML | кэш в `framer-export/.framer-site-id` |
+| 2 | Сохраняет `index.html` | `framer-export/index.html` |
+| 3 | Скачивает все JS/MJS/JSON чанки | `framer-export/_local/static/sites/{siteId}/` |
+| 4 | Извлекает CSS | `react-app/src/framer-styles.css` |
+| 5 | Извлекает дизайн-токены | `react-app/src/tokens.js` (не перезаписывает) |
+| 6 | Находит все страницы из `sitemap.xml` | `framer-export/.framer-pages.json` |
 
 ### Запуск
 
 ```bash
-# Базовый запуск — siteId определяется автоматически
-node sync-framer-site-chunks.mjs --url https://your-site.framer.website --out ./framer-export
-
-# Повторный запуск (siteId уже кэширован в framer-export/.framer-site-id)
 node sync-framer-site-chunks.mjs --url https://your-site.framer.website
+# повторный запуск — siteId и pages кэшированы, только обновит чанки
 ```
 
-### Выходные файлы
+### Пошаговая работа sync-framer-site-chunks.mjs
 
-| Файл | Описание |
-|------|----------|
-| `framer-export/index.html` | Главная страница сайта |
-| `framer-export/_local/static/sites/{siteId}/*.mjs` | JS-чанки Framer |
-| `framer-export/.framer-site-id` | Кэш siteId для повторных запусков |
+#### Шаг 1.1 — Определение `siteId`
+
+Скрипт делает `fetch(siteUrl)` и парсит HTML в поиске Framer site ID.
+
+Паттерны поиска (в порядке приоритета):
+```
+static/sites/{siteId}/
+framercms.plus/sites/{siteId}/
+framerusercontent.com/sites/{siteId}/
+"siteId": "{siteId}"
+/sites/{siteId}/
+```
+
+`siteId` — уникальный идентификатор сайта на Framer CDN. Все JS-чанки, шрифты и стили живут под этим ID. Кэшируется в `framer-export/.framer-site-id` чтобы не парсить HTML повторно.
+
+#### Шаг 1.2 — Сохранение `index.html`
+
+HTML сохраняется с rewrite URL:
+- `https://static/sites/` → `/_local/static/sites/` (для локальных чанков)
+- Origin-ссылки → относительные пути
+
+#### Шаг 1.3 — Скачивание JS/MJS/JSON чанков
+
+Рекурсивный crawler: начинает с `src`/`href` ссылок из HTML, скачивает каждый `.mjs`/`.js`/`.json` файл, парсит его содержимое в поиске новых ссылок, и продолжает пока не обойдёт все.
+
+Базовые URL для скачивания (пробует по очереди):
+```
+https://static/sites/{siteId}/
+https://app.framerstatic.com/sites/{siteId}/
+https://framerusercontent.com/sites/{siteId}/
+```
+
+Все файлы сохраняются в `framer-export/_local/static/sites/{siteId}/`.
+
+**Зачем скачивать JS?** Framer CDN может удалить или обновить чанки. Локальная копия — insurance. Также из чанков можно извлечь animation configs, route maps и другие метаданные при необходимости.
+
+#### Шаг 1.4 — Извлечение CSS (SSR fallback)
+
+Парсит `<style>` теги из скачанного `index.html`:
+- `@font-face` декларации шрифтов
+- Breakpoint классы (`hidden-*` для адаптивности)
+- Global SSR CSS (reset, текстовая система, CSS-токены)
+
+Добавляет **runtime patches** в конец:
+- `:root { --framer-canvas-fixed-position: fixed; }` — без этого fixed-position элементы ломаются
+- `[data-framer-appear-id]` — scroll-appear анимации (opacity: 0 → 1, translateY)
+- `@keyframes framerTickerScroll` — ticker/marquee анимации
+
+> ⚠️ Это **fallback CSS**. Если `extract-computed.mjs` уже записал более полный CSS через `document.styleSheets`, этот шаг автоматически пропускается (проверяет наличие `"extract-computed.mjs"` в файле).
+
+#### Шаг 1.5 — Извлечение дизайн-токенов
+
+Парсит `framer-styles.css` в поиске `--token-*` CSS-переменных:
+
+```
+Regex: /--(token-[a-f0-9-]{36})\s*:\s*(#hex|rgba?(...)|named)/g
+```
+
+Framer хранит цвета в CSS-переменных вида `--token-5c28b080-63a4-416d-b638-2f3867ab529e: #ff6625`. Скрипт извлекает их и записывает в `tokens.js` с ключами из первых 8 символов UUID.
+
+Также извлекает все `font-family` из `@font-face` деклараций.
+
+Результат:
+```js
+// react-app/src/tokens.js (авто)
+export const colors = {
+  '5c28b080': '#ff6625',
+  '7bd8e2a9': '#fff8f4',
+}
+export const fonts = [
+  '"Bricolage Grotesque", sans-serif',
+  '"Inter", sans-serif',
+]
+```
+
+> Файл **не перезаписывается** — можно добавить семантические алиасы (`primary: '#ff6625'`) и они сохранятся.
+
+#### Шаг 1.6 — Обнаружение страниц из `sitemap.xml`
+
+Все опубликованные Framer сайты имеют `sitemap.xml`. Скрипт:
+1. Fetch `{origin}/sitemap.xml`
+2. Парсит все `<loc>` теги
+3. Конвертирует URL → slug (`https://site.com/pricing` → `pricing`, `/` → `home`)
+4. Фильтрует динамические роуты (`:`, `*`, `?`) и `404`
+5. Дедуплицирует
+6. Сохраняет в `framer-export/.framer-pages.json`
+
+Этот список используется `extract-computed.mjs --all-pages` для обхода всех страниц.
 
 ---
 
-## Шаг 1.5 — `extract-computed.mjs` / `extract-computed-console.js`
+## Шаг 2 — `extract-computed.mjs` / `extract-computed-console.js`
 
 ### Что делает
 
-Снимает полностью hydrated DOM с живого сайта — это источник HTML для генерации компонентов.
+Снимает полностью hydrated DOM с живого сайта + **извлекает Framer Motion анимации** через React Fiber tree. Это источник HTML и анимаций для генерации компонентов.
 
-### Вариант A: Puppeteer (автоматически)
+### Вариант A: Все страницы автоматически (рекомендуется)
+
+```bash
+# Читает framer-export/.framer-pages.json (созданный на шаге 1) и обходит все страницы
+node extract-computed.mjs --url https://your-site.framer.website --all-pages
+```
+
+Сохраняет:
+- `react-app/src/computed-styles.json` — главная (`/`)
+- `react-app/src/computed-styles-pricing.json` — `/pricing`
+- `react-app/src/computed-styles-blog-my-post.json` — `/blog/my-post`
+- и т.д. для каждой страницы из sitemap
+
+Каждый JSON содержит `_animations` — карту Framer Motion props (`whileHover`, `whileInView`, `initial`, `animate`, `transition`, `variants`) извлечённых через React Fiber tree.
+
+### Вариант B: Одна страница (Puppeteer)
 
 ```bash
 node extract-computed.mjs --url https://your-site.framer.website
+node extract-computed.mjs --url https://your-site.framer.website/pricing --out react-app/src/computed-styles-pricing.json
 ```
 
-### Вариант B: DevTools Console (вручную)
+### Вариант C: DevTools Console (без Puppeteer)
 
-1. Открой сайт в Chrome
+1. Открой страницу в Chrome
 2. `Cmd+Option+J` → Console
 3. Вставь содержимое `extract-computed-console.js`
-4. Файл `computed-styles.json` скачается автоматически
-5. Положи его в `react-app/src/computed-styles.json`
+4. Скачаются `computed-styles.json` (DOM + анимации) и `framer-styles.css` (CSS) — положи оба в `react-app/src/`
 
-### Пошаговая работа
+### Пошаговая работа extract-computed.mjs
 
-#### Шаг 1 — Парсинг route map из бандла
+Для каждой страницы `extractPage()` выполняет:
 
-Скрипт загружает `script_main.mjs` (сначала из локального кэша `_local/static/sites/<id>/`, потом с CDN).
+1. **Навигация** — `page.goto(url, { waitUntil: 'networkidle2' })` + ожидание `[data-framer-name]` элементов
+2. **Scroll** — прокрутка всей страницы для запуска lazy-loaded секций, затем обратно
+3. **Извлечение анимаций** (`INJECT_MOTION_IDS_FN`) — обход всего DOM через `TreeWalker`:
+   - Для каждого элемента находит React Fiber (`__reactFiber$`)
+   - Поднимается по Fiber tree (до 12 уровней) ища motion props
+   - Извлекает: `whileHover`, `whileInView`, `whileTap`, `whileDrag`, `whileFocus`, `initial`, `animate`, `exit`, `variants`, `transition`
+   - **Резолвит variant-based жесты** (`resolveVariantGestures`): Framer хранит hover/tap как варианты с суффиксами `"-hover"`, `"-pressed"` в ID (напр. `"lNk6HaDEU-hover"`). Функция находит дельту между base и gesture вариантами → конвертирует в прямые `whileHover`/`whileTap` props. На membria.ai: **103 whileHover + 9 whileTap** резолвлено из 202 variant-only элементов
+   - Оставшиеся `variants` (без `-hover`/`-pressed` суффиксов) — это responsive breakpoint переключения, не жесты
+   - Функции сериализуются в `null`, объекты/числа/строки сохраняются
+   - Помечает элемент `data-motion-id="m0"`, сохраняет props в карту `_animations`
+   - **Запускается ДО** снятия outerHTML чтобы `data-motion-id` попал в HTML
+4. **Извлечение DOM** (`EXTRACT_FN`) — для каждого `[data-framer-name]`:
+   - Определяет `isTopLevel` (нет parent с `data-framer-name`)
+   - Снимает `getBoundingClientRect()` + `getComputedStyle()` (position, zIndex)
+   - Сохраняет `outerHTML` (уже с `data-motion-id` атрибутами)
+   - Отдельно захватывает `<nav>` без `data-framer-name` (fixed navbar)
+5. **Извлечение CSS** (`EXTRACT_CSS_FN`) — `document.styleSheets` API даёт полный hydrated CSS (включая динамически инжектированные стили Framer runtime)
+6. **Запись** — JSON с секциями + `_animations` карта, CSS аккумулируется из всех страниц
 
-Из бандла парсится карта маршрутов:
-```
-/            → chunk-abc.mjs   (homepage)
-/search      → chunk-def.mjs   (search)
-/property/*  → chunk-ghi.mjs   (property details)
-```
+#### CSS: `document.styleSheets` vs `<style>` tag parsing
 
-Также определяется `siteId` — уникальный идентификатор сайта на Framer CDN.
+| Метод | Источник | Полнота |
+|-------|----------|---------|
+| `document.styleSheets` (extract-computed) | Puppeteer/Console | ✅ Полный — включает runtime-injected стили |
+| `<style>` tags (sync Step 4) | SSR HTML | ⚠️ Частичный fallback — только SSR CSS |
 
-#### Шаг 1.5 — CSS из статических HTML-файлов
-
-Из `index.html` проекта извлекаются три категории CSS:
-- **`@font-face`** — декларации шрифтов
-- **Breakpoint CSS** — классы `hidden-*` для адаптивности
-- **Global SSR CSS** — reset, текстовая система, CSS-токены
-
-#### Шаг 2 — CSS из JS-бандлов
-
-Каждый `.mjs` чанк содержит CSS в виде template literals (backtick-строк).  
-Скрипт обходит все бандлы и извлекает:
-- Чистые CSS-блоки (`.framer-XXX { ... }`)
-- Breakpoint-правила (`@media (max-width: 809px) { .hidden-XXX { display:none } }`)
-- Смешанные блоки с `${bodyClassName}` — очищаются через bracket-aware парсер
-
-Особенности:
-- Строки с JS-ключевыми словами (`const`, `function`, `return`, ...) отбрасываются
-- HTML-теги в backtick-строках отбрасываются
-- Дубли удаляются через `Set`
-
-#### Шаг 3 — Chrome page visits
-
-Для каждого маршрута Chrome (headless) открывает страницу в **SSR-режиме** (JS страницы отключён через CDP).
-
-Почему JS отключён:
-- Framer клиент-сайд роутер после гидрации заменяет "приватные" страницы на 404
-- SSR HTML содержит полный контент для всех страниц
-- CDP `Runtime.evaluate` при этом работает — только `<script>` тегов страницы нет
-
-Для каждой страницы:
-1. Навигация + ожидание `networkIdle` + 2.5с буфер
-2. Скролл до середины страницы (для ленивого контента) + обратно
-3. Проверка: есть ли `[data-framer-root]` и хотя бы 1 секция
-4. Извлечение HTML секций через `extractPageHTML`
-5. Извлечение CSS через `extractPageCSS` (adoptedStyleSheets + regular sheets)
-
-**JS-гидрация (иконки и логотипы)**
-
-После SSR-прохода скрипт проверяет наличие пустых `display:contents` контейнеров — это mount-точки для React-компонентов (иконки Phosphor, логотипы и т.д.).
-
-Если есть пустые mount-точки — делается второй проход **с включённым JS**:
-- Ждёт 3 секунды гидрации React
-- Проверяет, что страница не стала 404
-- Перевыбирает HTML (теперь иконки/логотипы на месте)
-- Повторно извлекает CSS (дополнительные runtime-стили)
-
-#### Шаг 4 — Запись `framer-styles.css`
-
-CSS собирается в один файл в строго определённом порядке:
-1. `@font-face` из HTML
-2. Breakpoint классы из HTML  
-3. Global SSR CSS из HTML
-4. Уникальные правила из JS-бандлов (после дедупликации)
-5. Chrome-захваченный CSS (runtime computed)
-6. **Auto-fix**: добавляет `transform: translateX(-50%)` для `left: 50%; position: absolute` правил без transform
-7. **Runtime patches**: scroll-appear анимации, ticker/marquee, sidebar fix
-
-#### Шаг 5 — Completeness Report
-
-Выводит таблицу: какие маршруты успешно извлечены, какие недоступны (приватные).
-
-#### Шаг 6 — Directus CMS sync
-
-Анализирует `.mjs`-чанки на предмет Framer CMS схем (паттерн `type:t.String`, `type:t.Image` и т.д.).
-
-Для каждой найденной коллекции:
-- Создаёт коллекцию в Directus (если не существует)
-- Добавляет недостающие поля (с маппингом типов Framer → Directus)
-- Сохраняет `framer-directus-field-map.json` для использования в React
-
-Маппинг типов:
-| Framer      | Directus  |
-|-------------|-----------|
-| String      | string    |
-| RichText    | text      |
-| Image       | uuid      |
-| Number      | float     |
-| Boolean     | boolean   |
-| Date        | date      |
-| Enum        | string    |
+sync Step 4 автоматически пропускается если extract-computed уже записал более полный CSS (проверяет наличие `"extract-computed.mjs"` в файле).
 
 ### Выходные файлы
 
 | Файл | Описание |
 |------|----------|
-| `react-app/src/framer-styles.css` | Весь CSS сайта |
-| `react-app/src/computed-styles.json` | HTML-секции homepage (из extract-computed) |
-| `react-app/src/computed-styles-{slug}.json` | HTML-секции каждой страницы |
-| `react-app/src/framer-directus-field-map.json` | Маппинг полей Framer CMS → Directus ⚠️ **не реализовано в текущих скриптах** — было в старом `framer-extract-smart.mjs`, в `extract-computed.mjs` не перенесено |
+| `react-app/src/framer-styles.css` | Весь CSS сайта (через `document.styleSheets`) |
+| `react-app/src/computed-styles.json` | HTML-секции + анимации homepage |
+| `react-app/src/computed-styles-{slug}.json` | HTML-секции + анимации каждой страницы |
 | `react-app/public/assets/images/*.{png,jpg,webp,svg}` | Все изображения (скачаны локально generate-components) |
 | `react-app/public/assets/videos/*.mp4` | Все видео (скачаны локально generate-components) |
 
 ---
 
-## Шаг 2 — `generate-components.mjs`
+## Шаг 3 — `generate-components.mjs`
 
 ### Что делает
 
-Полный 10-этапный pipeline:
-1. **Шаги 1-4** — Генерация компонентов и страниц (основной функционал)
-2. **Шаги 5-10** — Автоматическая генерация инфраструктуры (универсальный scaffolding)
+Читает `computed-styles*.json` (с DOM + анимациями) и генерирует React JSX компоненты:
+1. Скачивает медиа-ассеты (видео + изображения) локально
+2. Конвертирует HTML → JSX (с Framer Motion анимациями из `_animations`)
+3. Генерирует страницы (HomePage + per-page) с секциями в правильном z-order
+4. Cleanup устаревших файлов от предыдущих запусков
 
 ### Запуск
 
 ```bash
 cd /path/to/your-project
 node generate-components.mjs
-```
-
-Для переборки только одной страницы:
-```bash
-node generate-components.mjs --only=search
 ```
 
 ### Пошаговая работа
@@ -247,9 +283,10 @@ node generate-components.mjs --only=search
 
 Каждый HTML-блок проходит через цепочку трансформаций:
 
-**a) `stripFramerCredits`**
+**a) `stripFramerCredits`** (depth-aware)
 - Удаляет `<div data-framer-name="Template by ...">` — кредиты автора шаблона
 - Удаляет `<a href="framer.com/marketplace/...">` — ссылки на маркетплейс
+- Использует подсчёт глубины вложенности (не regex `.*?`) — корректно обрабатывает вложенные div/a внутри блоков
 
 **b) `addTickerAnimation`**  
 Framer ticker (бесконечный скролл) в SSR рендерится как `<ul style="flex-direction:column">` без анимации (JS-only в оригинале).  
@@ -270,6 +307,7 @@ Framer ticker (бесконечный скролл) в SSR рендерится 
 | `muted=""` | `muted` (boolean) |
 | `loop=""` | `loop` (boolean) |
 | `data-framer-*` | удаляется (кроме `appear-id`, `ticker`) |
+| `data-motion-id` | удаляется (используется только для lookup анимаций) |
 | `tabindex="-1"` | `tabIndex={-1}` |
 
 Дополнительные правила:
@@ -283,6 +321,25 @@ Framer ticker (бесконечный скролл) в SSR рендерится 
 - `preload="none"` → `preload="auto"` (SSR не добавляет autoplay)
 - Добавляется `autoPlay` (Framer добавляет его через JS)
 - Добавляется `ref={el => { if (el) { el.muted = true; el.play?.().catch(() => {}) } }}` — обход известного бага React с `muted` пропом
+
+**e) Motion tag conversion** (Framer Motion анимации)
+
+Когда элемент имеет `data-motion-id` (добавленный extract-computed через React Fiber):
+1. Ищет ID в карте `ANIMATIONS` (загружена из `_animations` в computed-styles.json)
+2. Конвертирует тег: `<div>` → `<motion.div>`, `<a>` → `<motion.a>` и т.д.
+3. Добавляет animation props как JSX: `whileHover={...}`, `whileInView={...}` и т.д.
+4. Tag stack отслеживает ВСЕ открывающие теги — закрывающие `</div>` → `</motion.div>` корректно матчатся даже с вложенными обычными тегами того же типа
+5. Автоматически добавляет `import { motion } from 'framer-motion'` в компоненты с анимациями
+
+Пример:
+```jsx
+// До (Framer SSR): <div data-motion-id="m3" class="framer-abc">...</div>
+// После:
+<motion.div className="framer-abc"
+  whileHover={{scale: 1.05}}
+  transition={{type: "spring", damping: 20, stiffness: 80}}
+>...</motion.div>
+```
 
 #### 3 — `injectAppearIds`
 
@@ -322,7 +379,7 @@ export default function Hero() {
 
 ##### 7 — Генерация страниц
 
-`HomePage.jsx` — импортирует все секции в порядке y-позиции:
+`HomePage.jsx` и все per-page страницы — импортируют секции, отсортированные по zIndex → position → y-позиции (фоновые декоративные слои рендерятся первыми, контент поверх):
 
 ```jsx
 export default function HomePage() {
@@ -348,229 +405,82 @@ export default function HomePage() {
 
 ---
 
-#### Шаги 5-10: Универсальная инфраструктура (Scaffold Generation)
+#### Что НЕ генерируется (создаётся вручную один раз)
 
-Эти шаги **полностью автоматические** и не требуют ручного кодирования. Мигратор **никогда не перезаписывает** существующие файлы — использует функцию `scaffold()` которая пропускает файлы, если они уже есть.
+Хуки, конфиги и инфраструктура **не генерируются автоматически** — настраиваются один раз при создании проекта:
 
-##### 5 — Обнаружение языков и страниц
+| Файл | Описание |
+|------|----------|
+| `src/hooks/useFramerAppear.js` | IntersectionObserver для scroll-appear анимаций |
+| `src/hooks/useDirectus.js` | Fetcher для Directus коллекций |
+| `src/api/directus.js` | Directus SDK клиент + `directusAsset()` |
+| `vite.config.js` | Порт, прокси `/api/directus` |
+| `vercel.json` | SPA rewrites + API route |
+| `main.jsx`, `index.css` | Точки входа |
 
-Сканирует проект для определения конфигурации:
+> `App.jsx` с роутером, i18n, `LangWrapper` — были в старом `migrate-to-react.mjs`, в текущих скриптах не создаются.
 
-**Обнаружение языков:**
-- Проверяет `react-app/src/i18n/` на наличие `{lang}.json` файлов
-- Если i18n не найден — пытается определить языки из Framer HTML навигации
-- Пример: если найдены файлы `de.json`, `en.json`, `fr.json` — то языки = `['de', 'en', 'fr']`
+#### Дизайн-токены
 
-**Обнаружение страниц:**
-- Сканирует все файлы `computed-styles-*.json` в `react-app/src/`
-- Из имён файлов извлекает slugs страниц
-- Разделяет на статические (без `:`) и динамические (с `:` в имени)
-- Пример: `computed-styles-Property-Details-:hgGxadhfR.json` → динамическая страница с параметром `slug`
+`sync-framer-site-chunks.mjs` (Шаг 5) **автоматически** извлекает `--token-*` CSS-переменные и `@font-face` шрифты в `react-app/src/tokens.js`. Файл **не перезаписывается** при повторном запуске.
+
+#### Directus CMS интеграция
+
+Directus подключается **runtime** (не build-time) — данные загружаются через React хуки прямо из CMS:
 
 ```
-Найдено:
-  Статические: 12 страниц (HomePage, SearchPage, AccountPage, ...)
-  Динамические: 2 страницы (PropertyDetailPage с параметром :slug)
-  Языки: [de, en, fr, it, nl]
+Browser → React (useDirectus) → /api/directus proxy → cms.book.immo
 ```
 
-##### 6 — Генерация App.jsx с многоязычной маршрутизацией
+**Готовые компоненты:**
 
-Если обнаружены языки и i18n файлы — генерируется `App.jsx` с полной поддержкой React Router:
-
-```jsx
-// Автоматически сгенерируется структура для каждого языка
-<Route path="/de" element={<LangWrapper lang="de" />}>
-  <Route index element={<HomePage />} />
-  <Route path="search" element={<SearchPage />} />
-  <Route path="Property-Details/:slug" element={<PropertyDetailPage />} />
-  {/* ... для каждой найденной страницы */}
-</Route>
-
-<Route path="/en" element={<LangWrapper lang="en" />}>
-  {/* аналогичная структура для английского */}
-</Route>
-
-// Остальные языки: /fr, /it, /nl
-```
-
-**LangWrapper компонент:**
-- Переключает язык i18next при изменении URL
-- Показывает языковой переключатель в углу страницы
-- Сохраняет навигационное состояние при смене языка
-
-##### 7 — Генерация основных хуков и утилит
-
-Создаёт набор стандартных React хуков (если не существуют):
-
-| Файл | Описание | Строк |
-|------|----------|-------|
-| `src/hooks/useFramerAppear.js` | IntersectionObserver для scroll-appear анимаций | 26 |
-| `src/hooks/useDirectus.js` | Генерический fetcher для Directus коллекций | 43 |
-| `src/hooks/useDirectusSearch.js` | Поиск с фильтрами (category, location, type, bedrooms, price) | 41 |
-| `src/components/FramerForm.jsx` | Универсальная форма на Supabase с honeypot защитой | 65 |
-| `src/lib/supabase.js` | Supabase клиент с graceful fallback | 20 |
-| `src/api/directus.js` | Инициализация Directus SDK | 14 |
-
-##### 8 — Генерация конфигов и точек входа
-
-Создаёт конфигурационные файлы для сборки и запуска приложения:
-
-| Файл | Описание | Строк |
-|------|----------|-------|
-| `src/main.jsx` | React entry point с BrowserRouter и i18n | 14 |
-| `src/index.html` | HTML с языковой детекцией | 12 |
-| `src/index.css` | Tailwind + reset CSS | 18 |
-| `src/postcss.config.js` | PostCSS конфигурация | 6 |
-| `src/tailwind.config.js` | Tailwind конфигурация | 25 |
-| `vite.config.js` | Vite с прокси Directus и static файлов Framer | 121 |
-
-**vite.config.js особенности:**
-- Настраивает dev сервер на уникальный порт проекта (bookimmo: 3010, membria.ai: 3020 — см. `~/.claude/launch.json`)
-- Добавляет middleware для прокси `/api/directus` → Directus API
-- Настраивает static file serving из `react-app/public/`
-- Поддерживает видео-ассеты (`.mp4`)
-
-##### 9 — Генерация API функций (Vercel serverless)
-
-Создаёт serverless functions для production deployment:
-
-| Файл | Описание | Строк |
-|------|----------|-------|
-| `api/directus.js` | Прокси для Directus API с CORS | 61 |
-| `api/asset.js` | Прокси для статических ассетов | 48 |
-
-**Зачем нужны:**
-- **directus.js** — проксирует запросы к Directus API от фронтенда (проходит CORS)
-- **asset.js** — кэширует и переправляет статические файлы (видео, изображения)
-
-##### 10 — Генерация конфигов развёртывания и дизайн-токенов
-
-Создаёт конфигурацию для Vercel и извлекает дизайн-токены из CSS:
-
-**vercel.json:**
-```json
-{
-  "rewrites": [
-    // Переписывает /api/* → api/* functions
-    { "source": "/api/:path*", "destination": "/api/:path*" }
-  ],
-  "headers": [
-    // CORS headers для всех endpoints
-    {
-      "source": "/api/:path*",
-      "headers": [{"key": "Access-Control-Allow-Origin", "value": "*"}]
-    }
-  ]
-}
-```
-
-**Извлечение дизайн-токенов** из `framer-styles.css`:
-- Ищет все CSS переменные `--token-*`
-- Извлекает значения цветов (RGB, HEX)
-- Извлекает семейства шрифтов из `font-family`
-- Генерирует `src/tokens.js`:
-
-```javascript
-export const colors = {
-  // --token-primary-blue
-  'primary-blue': 'rgb(25, 130, 209)',
-  // --token-secondary-gray
-  'secondary-gray': 'rgb(155, 160, 170)',
-}
-
-export const fonts = [
-  'Inter',
-  'Playfair Display',
-]
-```
-
----
-
-#### Функция `scaffold(filePath, content, label)`
-
-Все 22 файла генерируются через единую функцию, которая **никогда не перезаписывает**:
-
-```javascript
-async function scaffold(filePath, content, label) {
-  try {
-    // Проверяем, существует ли файл
-    await fs.access(filePath)
-    console.log(`skip ${label} (exists)`)  // ← не перезаписываем
-  } catch {
-    // Файла нет → создаём директорию и пишем
-    await fs.mkdir(path.dirname(filePath), { recursive: true })
-    await fs.writeFile(filePath, content, 'utf-8')
-    console.log(`write ${label}`)
-  }
-}
-```
-
-**Преимущества этого подхода:**
-- Можно запускать migrator многократно
-- Ручные правки остаются нетронутыми
-- Обновления структуры не сломают custom код
-- "Снимок" состояния при каждом запуске
-
----
-
-
-
----
-
-## Полный список генерируемых файлов (22 файла)
-
-После запуска `node generate-components.mjs` создаются:
-
-### Компоненты (динамически, зависит от Framer)
-| Файл | Что это | Создание |
-|------|--------|----------|
-| `src/components/SvgSprites.jsx` | Все SVG иконки со всех страниц | ВСЕГДА |
-| `src/components/{SectionName}.jsx` | По одному на каждую section Framer | По количеству секций |
-| `src/pages/{PageName}Page.jsx` | По одному на каждую страницу Framer | По количеству страниц |
-
-### Хуки и утилиты (всегда создаются, если не существуют)
-| Файл | Назначение | Размер |
-|------|-----------|--------|
-| `src/hooks/useFramerAppear.js` | Scroll-appear анимации (IntersectionObserver) | 26 строк |
-| `src/hooks/useDirectus.js` | Fetch любой Directus коллекции | 43 строки |
-| `src/hooks/useDirectusSearch.js` | Search + filters для PropertyList | 41 строка |
-| `src/components/FramerForm.jsx` | Универсальная форма на Supabase | 65 строк |
-| `src/lib/supabase.js` | Supabase клиент инициализация | 20 строк |
-| `src/api/directus.js` | Directus SDK wrapper | 14 строк |
-
-### Конфигурация (ВСЕГДА создаются)
-| Файл | Назначение | Примечание |
-|------|-----------|-----------|
-| `src/main.jsx` | React entry point с BrowserRouter | 14 строк |
-| `src/index.html` | HTML с language detection | 12 строк |
-| `src/index.css` | Tailwind + reset CSS | 18 строк |
-| `src/postcss.config.js` | PostCSS конфигурация | 6 строк |
-| `src/tailwind.config.js` | Tailwind конфигурация | 25 строк |
-| `src/App.jsx` | React Router с многоязычностью | АВТО-генерируется |
-| `vite.config.js` | Vite сервер конфигурация | 121 строка |
-
-### i18n (если есть языки)
-| Файл | Назначение |
+| Файл | Что делает |
 |------|-----------|
-| `src/i18n/config.js` | i18next инициализация | АВТО-генерируется |
-| `src/i18n/{lang}.json` | Переводы для каждого языка | Пусто, нужно заполнить |
+| `src/api/directus.js` | SDK клиент (`@directus/sdk`), `directusAsset()` для картинок |
+| `src/hooks/useDirectus.js` | Универсальный fetcher для любой коллекции |
+| `src/hooks/useDirectusSearch.js` | Поиск properties с фильтрами (цена, город, тип, спальни) |
+| `api/directus.js` | Vercel serverless прокси (Bearer auth + CORS) |
+| `vite.config.js` | Dev прокси `/api/directus` → `cms.book.immo` |
 
-### API Functions (для Vercel)
-| Файл | Назначение | Размер |
-|------|-----------|--------|
-| `api/directus.js` | Serverless прокси для Directus API | 61 строка |
-| `api/asset.js` | Serverless прокси для статических файлов | 48 строк |
+**Коллекции в CMS:** `properties`, `agents`, `blog_posts`, `leads`
 
-### Deployment
-| Файл | Назначение |
-|------|-----------|
-| `vercel.json` | Vercel конфигурация (rewrites, headers) | АВТО-генерируется |
-| `src/tokens.js` | Design tokens из framer-styles.css | Если CSS существует |
+**Env-переменные:** `VITE_DIRECTUS_URL` + `VITE_DIRECTUS_TOKEN` (или хардкод `cms.book.immo`)
 
-**Итого:** 22 файла базовой инфраструктуры + компоненты и страницы по количеству в Framer.
+> Build-time sync (предгенерация страниц из CMS при деплое) не реализован. Весь контент загружается на клиенте. Для SSG/ISR нужен дополнительный скрипт.
 
-**Важно:** ✅ Все файлы создаются функцией `scaffold()` которая **НИКОГДА не перезаписывает**. Можно запускать мигратор многократно.
+---
+
+## Полный список генерируемых файлов
+
+### Что генерирует pipeline
+
+| Скрипт | Файл | Описание |
+|--------|------|----------|
+| sync | `react-app/src/framer-styles.css` | CSS (fallback, перезаписывается extract-computed) |
+| sync | `react-app/src/tokens.js` | Дизайн-токены (не перезаписывает) |
+| sync | `framer-export/.framer-pages.json` | Список страниц из sitemap |
+| extract-computed | `react-app/src/computed-styles*.json` | DOM + анимации каждой страницы |
+| extract-computed | `react-app/src/framer-styles.css` | Полный CSS (document.styleSheets) |
+| generate | `src/components/{SectionName}.jsx` | По одному на секцию (с `motion.*` если есть анимации) |
+| generate | `src/components/SvgSprites.jsx` | SVG-спрайты со всех страниц |
+| generate | `src/components/Nav.jsx` | Fixed navbar (если найден) |
+| generate | `src/pages/HomePage.jsx` | Главная страница |
+| generate | `src/pages/{Slug}Page.jsx` | Доп. страницы |
+| generate | `public/assets/images/*` | Скачанные изображения |
+| generate | `public/assets/videos/*` | Скачанные видео |
+
+### Что НЕ генерируется (создаётся вручную один раз)
+
+| Файл | Описание |
+|------|----------|
+| `src/hooks/useFramerAppear.js` | IntersectionObserver для scroll-appear |
+| `src/hooks/useDirectus.js` | Fetcher для Directus коллекций |
+| `src/api/directus.js` | Directus SDK клиент |
+| `vite.config.js` | Порты, прокси |
+| `vercel.json` | SPA rewrites + API route |
+| `main.jsx`, `App.jsx` | Точки входа, роутер |
+
+**Важно:** `generate-components.mjs` **перезаписывает** компоненты при повторном запуске. Файлы с `// manual` или `/* manual */` не удаляются при cleanup.
 
 ---
 
@@ -678,18 +588,20 @@ const resetButton = findElement(
 
 ### Классификация анимаций: что выживает при миграции
 
-Framer использует два принципиально разных механизма анимаций:
-
 | Тип | Механизм в Framer | После миграции |
 |-----|-------------------|----------------|
-| Scroll-appear секций | JS IntersectionObserver | ✅ Работает — заменяем своим хуком |
-| Бесконечный тикер | JS-only CSS animation | ✅ Работает — `addTickerAnimation` + CSS |
-| Текстовые `:hover` ссылки | CSS `:hover` | ✅ Работает — в `framer-styles.css` |
-| Hover на карточках (scale, shadow) | `framer-motion` `whileHover` JS | ❌ Теряется — нет в SSR CSS |
-| Hover на кнопках (scale, glow) | `framer-motion` `whileHover` JS | ❌ Теряется — нет в SSR CSS |
-| Transition при смене состояния | `framer-motion` animate | ❌ Теряется — JS-only |
+| Scroll-appear секций | JS IntersectionObserver | ✅ `useFramerAppear` хук + CSS |
+| Бесконечный тикер | JS-only CSS animation | ✅ `addTickerAnimation` + CSS keyframes |
+| Текстовые `:hover` ссылки | CSS `:hover` | ✅ В `framer-styles.css` |
+| Hover на карточках (scale, shadow) | `framer-motion` `whileHover` | ✅ **Извлекается через React Fiber** → `motion.div` |
+| Hover на кнопках (scale, glow) | `framer-motion` `whileHover` | ✅ **Извлекается через React Fiber** → `motion.div` |
+| whileInView (появление при скролле) | `framer-motion` `whileInView` | ✅ **Извлекается через React Fiber** → `motion.div` |
+| whileTap (нажатие) | `framer-motion` `whileTap` | ✅ **Извлекается через React Fiber** → `motion.div` |
+| Transition при смене состояния | `framer-motion` `animate` | ✅ **Извлекается через React Fiber** → `motion.div` |
+| Drag анимации | `framer-motion` `whileDrag` | ✅ **Извлекается** (требует `drag` prop вручную) |
+| Page transitions (exit/enter) | `framer-motion` `AnimatePresence` | ⚠️ Props извлекаются, но `AnimatePresence` wrapper — вручную |
 
-**Почему hover теряется:** Framer применяет hover-эффекты через JavaScript (`whileHover={{ scale: 1.02 }}`). В SSR HTML присутствует только `will-change: transform` и `cursor: pointer` — без самого transform и transition. CSS `:hover` для компонентных анимаций в бандлах отсутствует.
+**Как это работает:** `extract-computed.mjs` обходит DOM через `TreeWalker`, для каждого элемента находит React Fiber (`__reactFiber$`), поднимается по Fiber tree и извлекает motion props. Framer часто хранит hover/tap не как прямые `whileHover`/`whileTap`, а как варианты с суффиксами в ID (`"baseId-hover"`, `"baseId-pressed"`). `resolveVariantGestures()` вычисляет дельту → конвертирует в прямые gesture props. Элемент помечается `data-motion-id`, props сохраняются в `_animations`. При генерации JSX тег конвертируется в `motion.{tag}` с props.
 
 ---
 
@@ -737,49 +649,46 @@ IntersectionObserver для scroll-appear анимаций:
 
 ---
 
-### Восстановление hover-анимаций (framer-motion → CSS)
+### Framer Motion анимации — автоматическое извлечение
 
-Hover-эффекты карточек и кнопок нужно добавлять вручную в `framer-styles.css` как CSS-патчи, так как они не извлекаются из Framer.
+Hover, tap, scroll-in-view и другие Framer Motion анимации **автоматически извлекаются** через React Fiber tree и конвертируются в `motion.*` компоненты с соответствующими props.
 
-**Паттерн: карточки со `cursor: pointer` + `will-change: transform`**
+**Что происходит автоматически:**
+1. `extract-computed.mjs` — находит все `motion.div`/`motion.a` через React Fiber, извлекает props, помечает `data-motion-id`
+2. **Резолв variant-based жестов** — Framer хранит hover/tap не как прямые `whileHover` props, а как варианты с суффиксами в ID:
+   - `"lNk6HaDEU"` — base variant (стиль по умолчанию)
+   - `"lNk6HaDEU-hover"` — hover variant (стиль при наведении)
+   - `"lNk6HaDEU-pressed"` — pressed variant (стиль при нажатии)
+   
+   `resolveVariantGestures()` вычисляет дельту между base и gesture вариантами → конвертирует в `whileHover`/`whileTap`.
+   Оставшиеся `variants` без gesture-суффиксов — responsive breakpoint переключения (не жесты).
+3. `generate-components.mjs` — при встрече `data-motion-id` конвертирует `<div>` → `<motion.div>` + добавляет props
 
-Framer добавляет `cursor: pointer` и `will-change: var(--framer-will-change-override, transform)` на все интерактивные карточки. Этот признак используем для применения hover:
+**Результат:**
+```jsx
+import { motion } from 'framer-motion'
+
+// Автоматически сгенерировано (из variant resolution):
+<motion.div
+  whileHover={{backgroundColor: "rgb(72, 143, 250)"}}
+  whileTap={{backgroundColor: "rgb(72, 143, 250)", filter: "brightness(0.7)"}}
+  transition={{delay: 0, duration: 0.3, ease: [0.44, 0, 0.56, 1], type: "tween"}}
+  className="framer-abc"
+>
+  {/* содержимое кнопки */}
+</motion.div>
+```
+
+**Ручные CSS-патчи** больше не нужны для hover-эффектов — они извлекаются из Framer автоматически. Если на каком-то элементе анимация не извлеклась (React Fiber не доступен или элемент вне дерева), можно добавить CSS-патч вручную:
 
 ```css
-/* framer-styles.css — патч для card hover */
-[style*="cursor: pointer"][style*="will-change"],
-div[tabindex="0"] {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-[style*="cursor: pointer"][style*="will-change"]:hover,
-div[tabindex="0"]:hover {
+/* Fallback: ручной hover для элементов где motion extraction не сработал */
+[style*="cursor: pointer"][style*="will-change"]:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 ```
-
-> ⚠️ Слишком широкий селектор может зацепить nav-элементы. Проверяй в браузере, сужай до нужного контейнера:
-> ```css
-> .framer-1bxsx5l div[tabindex="0"]:hover,   /* New Listing */
-> .framer-sc2163 div[tabindex="0"]:hover {    /* Featured Properties */
->   transform: translateY(-3px);
-> }
-> ```
-
-**Паттерн: кнопки**
-
-Framer-кнопки используют классы вида `.framer-XXXXX` с `cursor: pointer`. Добавляй transition напрямую:
-
-```css
-/* Пример для конкретных кнопок проекта — найти классы через DevTools */
-.framer-XXXXX:hover {
-  filter: brightness(1.08);
-  transform: translateY(-1px);
-  transition: filter 0.15s, transform 0.15s;
-}
-```
-
-**Где искать классы:** DevTools → Inspect кнопки → смотришь `.framer-XXXXX` ближайший контейнер с `cursor: pointer`.
 
 ---
 
@@ -791,83 +700,46 @@ Framer URL (опубликованный сайт)
     ▼
 sync-framer-site-chunks.mjs           ← автоопределение siteId
     ├── index.html                    →  framer-export/index.html
-    └── *.mjs chunks                  →  framer-export/_local/static/sites/{id}/
+    ├── *.mjs chunks                  →  framer-export/_local/static/sites/{id}/
+    ├── CSS (fallback)                →  react-app/src/framer-styles.css
+    ├── tokens.js                     →  react-app/src/tokens.js
+    └── sitemap.xml                   →  framer-export/.framer-pages.json
     │
     ▼
-extract-computed.mjs                  ← Puppeteer / DevTools Console
-    ├── Chrome (SSR)     →  HTML секций
-    ├── Chrome (JS)      →  иконки/логотипы (hydration pass)
-    └── framer-styles.css →  CSS из JS-бандлов + Chrome runtime
+extract-computed.mjs --all-pages       ← Puppeteer + React Fiber
+    ├── DOM (hydrated outerHTML)       →  computed-styles*.json
+    ├── Анимации (React Fiber)         →  _animations в каждом JSON
+    └── CSS (document.styleSheets)     →  framer-styles.css (полный)
     │
     ▼
-computed-styles.json
-computed-styles-{slug}.json
-framer-styles.css
+generate-components.mjs
     │
-    ▼
-generate-components.mjs (10 шагов)
-    │
-    ├─ Шаги 1-4: Генерация компонентов
-    │   ├── скачивает видео
-    │   ├── stripFramerCredits  →  удаляет "Template by..."
-    │   ├── addTickerAnimation  →  дублирует li + data-framer-ticker
-    │   ├── htmlToJsx           →  class→className, style→объект, boolean attrs
-    │   ├── injectAppearIds     →  data-framer-appear-id на карточки
-    │   └── SvgSprites + Pages
-    │
-    └─ Шаги 5-10: Универсальный Scaffold (инфраструктура)
-        ├── Обнаружение языков и страниц
-        ├── App.jsx (многоязычная маршрутизация)
-        ├── Хуки и утилиты (useFramerAppear, useDirectus, FramerForm, etc.)
-        ├── Конфиги сборки (vite.config.js, tailwind, postcss)
-        ├── API functions (directus.js, asset.js прокси)
-        ├── Vercel конфигурация (vercel.json)
-        └── Design tokens (tokens.js)
+    ├─ Скачивание ассетов (видео + изображения)
+    ├─ HTML → JSX трансформация
+    │   ├── stripFramerCredits    →  удаляет "Template by..." (depth-aware)
+    │   ├── addTickerAnimation    →  дублирует li + data-framer-ticker
+    │   ├── htmlToJsx             →  class→className, style→объект, boolean attrs
+    │   ├── motion.* conversion   →  data-motion-id → motion.div + whileHover/etc
+    │   └── injectAppearIds       →  data-framer-appear-id на карточки
+    ├─ SvgSprites (merge all pages)
+    ├─ Секции (sorted: zIndex → position → y)
+    ├─ HomePage.jsx + {Slug}Page.jsx
+    └─ Cleanup orphaned .jsx files
     │
     ▼
 react-app/src/
     ├── components/
-    │   ├── SvgSprites.jsx
-    │   ├── Hero.jsx
-    │   ├── PROPERTIESINTHEAREA.jsx
+    │   ├── SvgSprites.jsx                     ← авто
+    │   ├── Hero.jsx (import { motion })       ← авто (с framer-motion если нужно)
     │   └── ... (1 файл на секцию)
     │
     ├── pages/
-    │   ├── HomePage.jsx
-    │   ├── SearchPage.jsx
-    │   ├── PropertyDetailPage.jsx (с Directus интеграцией)
-    │   └── ... (для каждой найденной страницы)
+    │   ├── HomePage.jsx                       ← авто
+    │   └── {Slug}Page.jsx                     ← авто
     │
-    ├── hooks/
-    │   ├── useFramerAppear.js
-    │   ├── useDirectus.js
-    │   └── useDirectusSearch.js
-    │
-    ├── lib/
-    │   ├── supabase.js
-    │   └── directus.js
-    │
-    ├── i18n/
-    │   ├── config.js (автогенерируется)
-    │   └── {lang}.json (для каждого языка)
-    │
-    ├── App.jsx (автогенерируется с маршрутами для каждого языка)
-    ├── main.jsx
-    ├── index.html
-    ├── index.css
-    ├── tokens.js
-    ├── tailwind.config.js
-    ├── postcss.config.js
-    ├── vite.config.js
-    └── framer-styles.css
-    │
-    ├── components/FramerForm.jsx
-    │
-api/
-    ├── directus.js (Vercel serverless)
-    └── asset.js (Vercel serverless)
-    │
-vercel.json (автогенерируется)
+    ├── hooks/useFramerAppear.js               ← вручную
+    ├── framer-styles.css                      ← авто (extract-computed)
+    └── tokens.js                              ← авто (sync) + ручные алиасы
 ```
 
 ---
@@ -887,7 +759,7 @@ vercel.json (автогенерируется)
 | Кастомная секция не отображается на Vercel | Компонент не добавлен в `src/pages/HomePage.jsx` (production) | Добавить `import` + JSX и синхронизировать worktree → production через `cp` |
 | Заголовок секции выглядит иначе | `letterSpacing` не соответствует Framer-токенам | h2: `letterSpacing: '-2px'`, `fontWeight: 500`, `fontSize: 40` |
 | Изображения не загружаются после деплоя | `framerusercontent.com` ссылки — внешняя зависимость от Framer CDN | `generate-components.mjs` автоматически скачивает все изображения в `public/assets/images/` |
-| Hover на карточках не работает | `whileHover` в Framer = JS-only, не попадает в SSR CSS | Добавить CSS-патч в `framer-styles.css` (см. раздел "Восстановление hover-анимаций") |
+| Hover на карточках не работает | `motion.*` не сгенерирован или `framer-motion` не установлен | Проверить `_animations` в JSON, `npm install framer-motion` |
 | Секции появляются без анимации | `rootMargin` слишком большой — анимация заканчивается вне viewport | Использовать `rootMargin: '0px 0px -40px 0px'` в `useFramerAppear.js` |
 | Scroll-анимация не видна на кастомной секции | `data-framer-appear-id` не добавлен на `<section>` | Добавить атрибут: `<section data-framer-appear-id="my-section-name">` |
 
@@ -897,69 +769,50 @@ vercel.json (автогенерируется)
 
 Процесс полностью **автоматизирован**:
 
-### Для полносью нового проекта:
+### Для полностью нового проекта:
 
-1. **Скачать сайт и снять DOM:**
-   ```bash
-   node sync-framer-site-chunks.mjs --url https://new-template.framer.website --out ./framer-export
-   node extract-computed.mjs --url https://new-template.framer.website
-   ```
-   Создаст: `framer-export/index.html`, JS-чанки, `computed-styles.json`, `framer-styles.css`.
+```bash
+# 1. Скачать сайт: HTML, JS-чанки, CSS, токены, список страниц
+node sync-framer-site-chunks.mjs --url https://new-template.framer.website
 
-2. **Сгенерировать весь React проект:**
-   ```bash
-   node generate-components.mjs
-   ```
-   Это создаст все 22 файла автоматически:
-   - ✅ Все компоненты секций
-   - ✅ Все страницы
-   - ✅ App.jsx с многоязычными маршрутами (если есть i18n)
-   - ✅ Все хуки и утилиты
-   - ✅ Конфиги (vite, tailwind, postcss)
-   - ✅ API functions
-   - ✅ Vercel конфигурация
-   - ✅ Design tokens
+# 2. Снять DOM + анимации со всех страниц
+node extract-computed.mjs --url https://new-template.framer.website --all-pages
 
-3. **Запустить dev сервер:**
-   ```bash
-   cd react-app
-   npm run dev
-   ```
+# 3. Сгенерировать React компоненты (с motion.* анимациями)
+node generate-components.mjs
+
+# 4. Установить зависимости и запустить
+cd react-app && npm install framer-motion && npm run dev
+```
+
+Создаст:
+- ✅ JSX-компонент на каждую секцию (с `motion.*` где есть анимации)
+- ✅ `SvgSprites.jsx` + `Nav.jsx`
+- ✅ `HomePage.jsx` + страницы для всех маршрутов
+- ✅ Скачает медиафайлы в `public/assets/`
+- ✅ `framer-styles.css` + `tokens.js`
 
 ### Обновление существующего проекта:
 
-Если нужно переборать компоненты с одной страницы (например, после правок в Framer):
+После правок в Framer — перезапустить полный pipeline:
 
 ```bash
-# Переборать только SearchPage
-node generate-components.mjs --only=search
-
-# Переборать PropertyDetails
-node generate-components.mjs --only=property-details
+node extract-computed.mjs --url https://your-site.framer.website --all-pages
+node generate-components.mjs
 ```
 
-**Безопасно:** 
-- Существующие файлы **никогда не перезаписываются**
-- Ручные правки в `.jsx` файлах остаются нетронутыми
-- Можно запускать многократно без потери данных
+> ⚠️ Компоненты перезаписываются. Файлы с `// manual` защищены от cleanup.
 
 ### Что нужно сделать вручную:
 
 После автоматической генерации:
 
-1. **Наполнить i18n переводы** (если многоязычный проект):
-   - Отредактировать `src/i18n/{lang}.json` для каждого языка
-   - Использовать ключи из Framer текстов
+1. **Заполнить Directus данными** (если есть CMS страницы):
+   - Создать нужные коллекции в Directus
+   - Подключить через `useDirectus` хук в компонентах
+   - Прописать `VITE_DIRECTUS_URL` и `VITE_DIRECTUS_TOKEN` в `.env`
 
-2. **Заполнить Directus данными** (если есть CMS страницы):
-   - Создать коллекцию `properties` в Directus
-   - Добавить тестовые данные
-
-3. **Настроить Supabase** (если есть auth форм):
-   - Установить VITE_SUPABASE_URL и VITE_SUPABASE_ANON_KEY в `.env`
-   - Настроить Email Templates в Supabase
-
-4. **Развернуть на Vercel:**
+2. **Развернуть на Vercel:**
    ```bash
    vercel --prod
    ```
@@ -1021,20 +874,29 @@ const NAV_LINKS = [
 
 ### 3 — Типографика (дизайн-токены проекта)
 
-Все кастомные секции должны использовать те же токены, что и Framer-секции. Токены автоматически извлекаются в `src/tokens.js` при запуске `generate-components.mjs`:
+`sync-framer-site-chunks.mjs` **автоматически** генерирует `react-app/src/tokens.js` (Шаг 5) — извлекает все `--token-*` переменные из `framer-styles.css` и список шрифтов из `@font-face`.
 
-```jsx
-import { colors, fonts } from '../tokens.js'
+Ключи — первые 8 символов UUID токена. Файл **не перезаписывается** при повторном запуске, чтобы не затереть семантические алиасы.
 
-// Использование:
-// colors['primary']   → основной цвет проекта (из --token-* CSS переменных)
-// fonts[0]            → основной шрифт проекта
+```js
+// react-app/src/tokens.js — авто-генерируется, затем можно дополнить алиасами
+export const colors = {
+  'ef341a45': '#84b9ef',   // ← raw из Framer
+  'primary': '#ff6625',    // ← добавить вручную после генерации
+}
+export const fonts = [
+  '"Fragment Mono", sans-serif',
+  '"Inter", sans-serif',
+]
 ```
 
-Для ручной проверки актуальных токенов — смотри `react-app/src/tokens.js` (генерируется из `framer-styles.css`) или `react-app/src/framer-styles.css` (ищи `:root { --token-* }`).
+Использование:
+```jsx
+import { colors, fonts } from '../tokens.js'
+// style={{ color: colors.primary, fontFamily: fonts[1] }}
+```
 
-> **bookimmo**: `rgb(255,102,37)` (orange), `"Bricolage Grotesque"` + `"Lexend"`  
-> Для других проектов токены будут другими — всегда смотри `tokens.js`.
+> **bookimmo**: `#ff6625` (orange), `"Bricolage Grotesque"` + `"Lexend"` — см. `src/tokens.js`
 
 ### 4 — useIsMobile (адаптивность кастомных компонентов)
 
@@ -1087,51 +949,42 @@ Breakpoint: `< 768px` = мобильный.
 
 ## Опциональные шаги: Search Filters и Auth
 
+> Эти компоненты **не генерируются автоматически** — создаются вручную по образцу ниже.
+
 ### Search Filters (поиск + фильтры)
 
-Мигратор **автоматически** распознаёт страницы с фильтрами свойств и генерирует полнофункциональный компонент, подключённый к Directus.
+Паттерн для страниц с фильтрами недвижимости, подключённых к Directus.
 
-**Условия срабатывания:**  
-- HTML содержит ≥3 ключевых слова из списка: `Apartment`, `Houses`, `Duplex`, `Sales`, `Lease`, `Rent`, `PROPERTY CATEGORY`, `Featured Property`, `Bedroom`, и т.д.  
-- HTML содержит ссылки на `/Property-Details/`
+**Структура `SearchMain.jsx`:**
+- `useState` для фильтров (category, location, type, featured, bedrooms)
+- хук `useDirectusSearch` для запроса к Directus с фильтрами
+- динамический рендер карточек свойств
+- onClick на каждой кнопке фильтра
+- визуальная индикация активного фильтра (`data-filter-active`)
 
-**Что генерируется:**
-- `SearchMain.jsx` с:
-  - `useState` для фильтров (category, location, type, featured, bedrooms)
-  - хуком `useDirectusSearch` для запроса к Directus с фильтрами
-  - динамическим рендером карточек свойств
-  - onClick на каждой кнопке фильтра
-  - визуальной индикацией активного фильтра (`data-filter-active`)
-- `src/hooks/useDirectusSearch.js` — хук, который нужно создать вручную (или он уже есть)
-
-**CSS для активных фильтров** (в `framer-styles.css`):
+**CSS для активных фильтров** (добавить в `framer-styles.css`):
 ```css
 [data-filter-active="true"] .framer-V3Hf0 { background-color: rgba(25, 26, 32, 0.08) !important; }
 [data-filter-active="true"] .framer-z6Ez9 { background-color: rgba(25, 26, 32, 0.08) !important; }
 .framer-LzZXo[data-filter-active="true"] { background-color: rgb(25, 26, 32) !important; }
 ```
 
-**Данные в Directus** — коллекция `properties` должна иметь поля:
+**Коллекция `properties` в Directus** — нужные поля:
 - `property_category` — `Apartment | Houses | Duplex | Industrial | Offices | Land`
 - `listing_type` — `Sales | Lease | Rent`
-- `city_slug` — `Pleasantville | West Side | Capitol Hill | Greenville | Jersey City | Catskills`
+- `city_slug` — slug города
 - `is_featured` — boolean
 - `bedrooms` — integer
 
 ### Auth Pages (аутентификация)
 
-Мигратор **автоматически** распознаёт страницы sign-in/sign-up и генерирует функциональный компонент на Supabase Auth.
+Паттерн для страниц sign-in/sign-up на Supabase Auth.
 
-**Условия срабатывания:**  
-- HTML содержит ≥2 слова из: `sign up`, `sign in`, `log in`, `register`, `email address`, `password`  
-- HTML содержит `<form` или `<input`
-
-**Что генерируется:**
-- `SignUp.jsx` / `SignIn.jsx` с:
-  - формой email + password
-  - `supabase.auth.signUp()` / `signInWithPassword()` / `resetPasswordForEmail()`
-  - переключением между режимами: Sign In / Create Account / Forgot Password
-  - показом ошибок и успешных сообщений
+**`SignUp.jsx` / `SignIn.jsx`:**
+- форма email + password
+- `supabase.auth.signUp()` / `signInWithPassword()` / `resetPasswordForEmail()`
+- переключение между режимами: Sign In / Create Account / Forgot Password
+- показ ошибок и успешных сообщений
 
 **Требования:**
 - `src/lib/supabase.js` с настроенным Supabase клиентом
@@ -1150,52 +1003,32 @@ Breakpoint: `< 768px` = мобильный.
 | **Duplicate style error** | tabIndex div уже имеет style | Не добавлять `style` в onClick injection |
 | **Auth форма не работает** | Email не подтверждён | Проверить Supabase Auth settings → Confirm Email |
 | **Vercel deployment fails** | VITE_* переменные не задали | Добавить в Vercel Project Settings → Environment Variables |
-| **CSS переменные не найдены** | framer-styles.css не существует | Убедиться что `framer-extract-smart.mjs` успешно завершился |
+| **CSS переменные не найдены** | framer-styles.css не существует | Убедиться что `extract-computed.mjs` успешно завершился |
 
 ---
 
 ## FAQ
 
-### Почему мигратор не перезаписывает файлы?
+### Как сохранить ручные правки в компоненте?
 
-**Ответ:** Это защита от потери ручных правок. Если вы сделали кастомизацию:
-```javascript
-// ваша правка в SearchPage.jsx
-export default function SearchPage() {
-  // ... custom hooks, state, logic
-}
-```
+`generate-components.mjs` **перезаписывает** компоненты при повторном запуске. Чтобы защитить файл от cleanup:
+- Добавь `// manual` или `/* manual */` в начало файла — скрипт не удалит его
 
-При переборке новые версии не перезапишут ваш код. Если нужно обновить:
-1. Удалите файл: `rm react-app/src/pages/SearchPage.jsx`
-2. Переборайте: `node generate-components.mjs --only=search`
-3. Вернёте свои правки
+Для полной защиты от перезаписи: переименуй файл или перенеси логику в обёртку.
 
-### Как добавить новый язык?
-
-1. Создайте `src/i18n/{lang}.json`:
-   ```json
-   {
-     "home.title": "Добро пожаловать",
-     "search.filters": "Фильтры"
-   }
-   ```
-2. Переборайте generator: `node generate-components.mjs`
-3. App.jsx автоматически добавит маршруты `/ru/`, `/ru/search`, и т.д.
-
-### Как отключить какую-то генерацию?
-
-Отредактируйте `generate-components.mjs`, закомментируйте нужный шаг:
-
-```javascript
-// Step 9: Tokens
-// if (tokensContent) { await scaffold(...) }
-```
-
-### Я хочу использовать собственную структуру папок
+### Как кастомизировать пути?
 
 Отредактируйте пути в начале `generate-components.mjs`:
 ```javascript
 const OUT   = path.resolve('my-custom-components-dir')
 const PAGES = path.resolve('my-custom-pages-dir')
 ```
+
+### Анимации не извлеклись — что делать?
+
+1. Проверь `_animations` в `computed-styles.json` — если пустой, React Fiber не найден (сайт мог не загрузиться полностью)
+2. Перезапусти `extract-computed.mjs` — убедись что страница полностью hydrated (networkidle2)
+3. Проверь лог `[motion] N elements, M gesture variants resolved` — если M=0, возможно Framer изменил конвенцию суффиксов в variant ID (ожидаются `"-hover"`, `"-pressed"`)
+4. Оставшиеся `variants` (без gesture суффиксов) — responsive breakpoint переключения, их не нужно конвертировать в `whileHover`
+5. Fallback: добавь CSS-патч вручную в `framer-styles.css`
+6. Убедись что `framer-motion` установлен: `npm install framer-motion`
