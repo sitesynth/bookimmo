@@ -161,6 +161,51 @@ function getActionCopy(language: SupportedLanguage, actionType: string) {
   return dictionary[actionType as keyof typeof dictionary] || dictionary.fallback
 }
 
+function buildAppUrl(pathname: string) {
+  return new URL(pathname, `${DEFAULT_APP_URL.replace(/\/$/, '')}/`).toString()
+}
+
+function resolveRedirectTo({
+  actionType,
+  language,
+  redirectTo,
+}: {
+  actionType: string
+  language: SupportedLanguage
+  redirectTo?: string
+}) {
+  const fallbackDashboard = buildAppUrl(`/${language}/dashboard-home`)
+  const fallbackUpdatePassword = buildAppUrl(`/${language}/update-password`)
+
+  if (!redirectTo) {
+    return actionType === 'recovery' ? fallbackUpdatePassword : fallbackDashboard
+  }
+
+  try {
+    const target = new URL(redirectTo)
+    const appOrigin = new URL(DEFAULT_APP_URL).origin
+
+    if (target.origin === appOrigin) {
+      const cleanPath = target.pathname.replace(/\/+$/, '') || '/'
+
+      if (actionType === 'recovery') {
+        if (cleanPath === '/' || cleanPath === '') return fallbackUpdatePassword
+        return target.toString()
+      }
+
+      if (cleanPath === '/' || cleanPath === '') {
+        return fallbackDashboard
+      }
+
+      return target.toString()
+    }
+
+    return target.toString()
+  } catch {
+    return actionType === 'recovery' ? fallbackUpdatePassword : fallbackDashboard
+  }
+}
+
 function buildVerifyUrl(job: EmailJob) {
   const params = new URLSearchParams({
     token: job.tokenHash,
@@ -173,7 +218,12 @@ function buildVerifyUrl(job: EmailJob) {
 
 function buildEmailJobs(payload: HookPayload): EmailJob[] {
   const actionType = payload.email_data.email_action_type
-  const redirectTo = payload.email_data.redirect_to || DEFAULT_APP_URL
+  const language = getLanguage(payload)
+  const redirectTo = resolveRedirectTo({
+    actionType,
+    language,
+    redirectTo: payload.email_data.redirect_to,
+  })
 
   if (actionType !== 'email_change') {
     return [{
