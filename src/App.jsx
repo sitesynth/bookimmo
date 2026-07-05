@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import HomePage from './pages/HomePage.jsx'
 import DashboardHomePage from './pages/DashboardHomePage.jsx'
 import SearchPage from './pages/SearchPage.jsx'
+import ApplicationsPage from './pages/ApplicationsPage.jsx'
 import AgentPage from './pages/AgentPage.jsx'
 import SignUpPage from './pages/SignUpPage.jsx'
 import LogInPage from './pages/LogInPage.jsx'
@@ -36,6 +37,7 @@ export default function App() {
       <Route path="/" element={<Navigate to="/de" replace />} />
       <Route path="/dashboard-home" element={<Navigate to="/de/dashboard-home" replace />} />
       <Route path="/search" element={<Navigate to="/de/search" replace />} />
+      <Route path="/applications" element={<Navigate to="/de/applications" replace />} />
       <Route path="/agent" element={<Navigate to="/de/agent" replace />} />
       <Route path="/sign-up" element={<Navigate to="/de/sign-up" replace />} />
       <Route path="/log-in" element={<Navigate to="/de/log-in" replace />} />
@@ -52,6 +54,7 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="dashboard-home" element={<DashboardHomePage />} />
         <Route path="search" element={<SearchPage />} />
+        <Route path="applications" element={<ApplicationsPage />} />
         <Route path="agent" element={<AgentPage />} />
         <Route path="sign-up" element={<SignUpPage />} />
         <Route path="log-in" element={<LogInPage />} />
@@ -69,6 +72,7 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="dashboard-home" element={<DashboardHomePage />} />
         <Route path="search" element={<SearchPage />} />
+        <Route path="applications" element={<ApplicationsPage />} />
         <Route path="agent" element={<AgentPage />} />
         <Route path="sign-up" element={<SignUpPage />} />
         <Route path="log-in" element={<LogInPage />} />
@@ -86,6 +90,7 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="dashboard-home" element={<DashboardHomePage />} />
         <Route path="search" element={<SearchPage />} />
+        <Route path="applications" element={<ApplicationsPage />} />
         <Route path="agent" element={<AgentPage />} />
         <Route path="sign-up" element={<SignUpPage />} />
         <Route path="log-in" element={<LogInPage />} />
@@ -103,6 +108,7 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="dashboard-home" element={<DashboardHomePage />} />
         <Route path="search" element={<SearchPage />} />
+        <Route path="applications" element={<ApplicationsPage />} />
         <Route path="agent" element={<AgentPage />} />
         <Route path="sign-up" element={<SignUpPage />} />
         <Route path="log-in" element={<LogInPage />} />
@@ -120,6 +126,7 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="dashboard-home" element={<DashboardHomePage />} />
         <Route path="search" element={<SearchPage />} />
+        <Route path="applications" element={<ApplicationsPage />} />
         <Route path="agent" element={<AgentPage />} />
         <Route path="sign-up" element={<SignUpPage />} />
         <Route path="log-in" element={<LogInPage />} />

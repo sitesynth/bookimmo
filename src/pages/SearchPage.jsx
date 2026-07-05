@@ -1,16 +1,18 @@
 import React from 'react'
-import { useFramerAppear } from '../hooks/useFramerAppear.js'
 import SvgSprites from '../components/SvgSprites.jsx'
-import SearchSsrHidden1ox42mn from '../components/SearchSsrHidden1ox42mn.jsx'
+import CabinetLayout from '../components/cabinet/CabinetLayout.jsx'
 import SearchMain from '../components/SearchMain.jsx'
 
 export default function SearchPage() {
-  useFramerAppear()
   return (
-    <div className="framer-F8Qc9 framer-z7jVh framer-ksssmz" style={{minHeight:'100vh',width:'auto'}}>
+    <div style={{ minHeight: '100vh', width: 'auto' }}>
       <SvgSprites />
-      <SearchSsrHidden1ox42mn />
-      <SearchMain />
+      <CabinetLayout
+        title="Search Workspace"
+        subtitle="Browse Germany listings on a synchronized map and list, save search presets and move straight into favorites or application drafts."
+      >
+        <SearchMain />
+      </CabinetLayout>
     </div>
   )
 }
