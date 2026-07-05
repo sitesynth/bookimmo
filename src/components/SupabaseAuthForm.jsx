@@ -109,6 +109,7 @@ export default function SupabaseAuthForm({ mode = 'signup' }) {
   const [passwordVisible, setPasswordVisible] = useState(false)
   const [confirmVisible, setConfirmVisible] = useState(false)
   const lang = /^\/(de|en|fr|it|nl)(\/|$)/.exec(location.pathname)?.[1] || 'de'
+  const signupConfirmHref = `${window.location.origin}/${lang}/dashboard-home`
   const dashboardHref = `/${lang}/dashboard-home`
   const updatePasswordHref = `${window.location.origin}/${lang}/update-password`
 
@@ -125,6 +126,7 @@ export default function SupabaseAuthForm({ mode = 'signup' }) {
         email,
         password,
         options: {
+          emailRedirectTo: signupConfirmHref,
           data: {
             profile: {
               preferredLanguage: lang,
