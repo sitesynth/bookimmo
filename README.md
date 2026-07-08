@@ -6,7 +6,7 @@
 - React Router v6 (lang-prefixed routes: /de, /en, /fr, /it, /nl)
 - react-i18next (translations)
 - @directus/sdk (data source)
-- @supabase/supabase-js (client auth + cabinet state)
+- PostgreSQL-backed auth + cabinet state via local API routes
 
 ## Detected from Framer export
 - **Languages**: de, en, fr, it, nl
@@ -31,9 +31,13 @@ npm run dev
 Frontend local auth config lives in `.env.local`:
 
 ```bash
-VITE_SUPABASE_URL=...
-VITE_SUPABASE_ANON_KEY=...
+VITE_DIRECTUS_URL=...
+VITE_DIRECTUS_TOKEN=...
+VITE_MAPBOX_ACCESS_TOKEN=...
+VITE_MAPBOX_STYLE_URL=mapbox://styles/mapbox/light-v11
 ```
+
+Map search now uses Mapbox GL. `VITE_MAPBOX_ACCESS_TOKEN` is required for the live listing map on `/search`.
 
 Backend automation runtime lives in `backend/` and now uses PostgreSQL directly.
 Oracle bootstrap script:
