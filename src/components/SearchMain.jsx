@@ -841,7 +841,7 @@ export default function SearchMain() {
             </SearchWorkspaceCard>
 
             <SearchWorkspaceCard style={{ padding: 0, overflow: 'hidden' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(420px, 1.12fr) minmax(360px, 0.88fr)', minHeight: 760 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(420px, 1.12fr) minmax(360px, 0.88fr)', minHeight: 760, alignItems: 'start' }}>
                 <div style={{ padding: 24, borderRight: '1px solid rgba(25,26,32,0.08)', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 18 }}>
                     <div>
@@ -869,7 +869,7 @@ export default function SearchMain() {
                     ) : null}
                   </div>
 
-                  <div style={{ overflowY: 'auto', paddingRight: 8, display: 'flex', flexDirection: 'column', gap: 18 }}>
+                  <div style={{ overflow: 'visible', paddingRight: 8, display: 'flex', flexDirection: 'column', gap: 18 }}>
                     {loading ? (
                       <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 14, color: 'rgba(25,26,32,0.54)', padding: '20px 0' }}>
                         Loading live listings…
@@ -900,7 +900,7 @@ export default function SearchMain() {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', minHeight: 0, position: 'sticky', top: 24, alignSelf: 'start' }}>
                   <div style={{ padding: 24, borderBottom: '1px solid rgba(25,26,32,0.08)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
                       <div>
