@@ -85,6 +85,17 @@ function buildListingPreviewBadges(property) {
   ].filter(Boolean)
 }
 
+function findMatchingLocationOption(query, options = [], fallbackOptions = []) {
+  const normalized = query.trim().toLowerCase()
+  if (!normalized) return null
+
+  return [...options, ...fallbackOptions].find((item) => {
+    const label = String(item?.label || '').toLowerCase()
+    const id = String(item?.id || '').toLowerCase()
+    return label === normalized || label.includes(normalized) || id === normalized
+  }) || null
+}
+
 function SearchWorkspaceCard({ children, style }) {
   return (
     <section
@@ -490,6 +501,26 @@ export default function SearchMain() {
     }))
   }
 
+  function applyPrimarySearch() {
+    const nextQuery = locationQuery.trim()
+    const matchedLocation = findMatchingLocationOption(nextQuery, locationSuggestions, locationSeeds)
+
+    setFilters((current) => ({
+      ...current,
+      text: nextQuery,
+      geocodes: matchedLocation
+        ? Array.from(new Set([...current.geocodes, matchedLocation.id]))
+        : current.geocodes,
+      page: 1,
+    }))
+
+    if (nextQuery || matchedLocation) {
+      setUiNotice(matchedLocation
+        ? `Search updated for ${matchedLocation.label}.`
+        : 'Search query updated.')
+    }
+  }
+
   function resetFilters() {
     setFilters({
       text: '',
@@ -622,6 +653,109 @@ export default function SearchMain() {
                 Live provider search with synchronized map, saved searches, favorites and application drafts.
               </p>
 
+              <div
+                style={{
+                  marginTop: 18,
+                  padding: 14,
+                  borderRadius: 22,
+                  backgroundColor: 'white',
+                  border: '1px solid rgba(25,26,32,0.08)',
+                  boxShadow: '0 12px 28px rgba(25,26,32,0.05)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 12,
+                }}
+              >
+                <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+                  <div
+                    style={{
+                      flex: '1 1 420px',
+                      minWidth: 280,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      padding: '0 14px',
+                      height: 56,
+                      borderRadius: 18,
+                      border: '1px solid rgba(25,26,32,0.1)',
+                      backgroundColor: 'rgb(248,246,241)',
+                    }}
+                  >
+                    <span style={{ fontSize: 17, color: 'rgba(25,26,32,0.56)' }}>⌕</span>
+                    <input
+                      value={locationQuery}
+                      onChange={(event) => setLocationQuery(event.target.value)}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter') {
+                          event.preventDefault()
+                          applyPrimarySearch()
+                        }
+                      }}
+                      placeholder="Search by city, district, street or IS24 geocode"
+                      style={{
+                        flex: 1,
+                        border: 'none',
+                        background: 'transparent',
+                        fontFamily: '"Lexend", sans-serif',
+                        fontSize: 15,
+                        color: 'rgb(25,26,32)',
+                        outline: 'none',
+                      }}
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={applyPrimarySearch}
+                    style={{
+                      height: 56,
+                      border: 'none',
+                      borderRadius: 18,
+                      padding: '0 18px',
+                      backgroundColor: 'rgb(25,26,32)',
+                      color: 'rgb(245,245,245)',
+                      fontFamily: '"Lexend", sans-serif',
+                      fontSize: 14,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Search now
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={saveCurrentSearch}
+                    style={{
+                      height: 56,
+                      border: '1px solid rgba(25,26,32,0.1)',
+                      borderRadius: 18,
+                      padding: '0 18px',
+                      backgroundColor: 'white',
+                      color: 'rgb(25,26,32)',
+                      fontFamily: '"Lexend", sans-serif',
+                      fontSize: 14,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Save search
+                  </button>
+                </div>
+
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {(locationSuggestions.length ? locationSuggestions : locationSeeds.slice(0, 5)).map((item) => (
+                    <FilterChip key={item.id} active={filters.geocodes.includes(item.id)} onClick={() => toggleLocation(item)}>
+                      {item.label}
+                    </FilterChip>
+                  ))}
+                </div>
+
+                <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.52)', lineHeight: 1.5 }}>
+                  Start with a location here. Detailed room, budget and keyword refinement stays in the filter panel below.
+                </p>
+              </div>
+
               <div style={{ marginTop: 18, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                 <span style={{ borderRadius: 999, padding: '10px 14px', backgroundColor: 'white', fontFamily: '"Lexend", sans-serif', fontSize: 13 }}>
                   {summary.results} results
@@ -670,7 +804,7 @@ export default function SearchMain() {
                     Search controls
                   </p>
                   <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 22, color: 'rgb(25,26,32)', marginTop: 8 }}>
-                    Filters
+                    Advanced filters
                   </h3>
                 </div>
                 <button
@@ -693,32 +827,6 @@ export default function SearchMain() {
               </div>
 
               <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 18 }}>
-                <label style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <span style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.62)' }}>Location or IS24 geocode</span>
-                  <input
-                    value={locationQuery}
-                    onChange={(event) => setLocationQuery(event.target.value)}
-                    placeholder="Hamburg, Winterhude or 0200000006058"
-                    style={{
-                      width: '100%',
-                      padding: '12px 14px',
-                      borderRadius: 14,
-                      border: '1px solid rgba(25,26,32,0.12)',
-                      fontFamily: '"Lexend", sans-serif',
-                      fontSize: 14,
-                      outline: 'none',
-                    }}
-                  />
-                </label>
-
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  {(locationSuggestions.length ? locationSuggestions : locationSeeds.slice(0, 6)).map((item) => (
-                    <FilterChip key={item.id} active={filters.geocodes.includes(item.id)} onClick={() => toggleLocation(item)}>
-                      {item.label}
-                    </FilterChip>
-                  ))}
-                </div>
-
                 <div>
                   <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.62)', marginBottom: 8 }}>Search text</p>
                   <input
