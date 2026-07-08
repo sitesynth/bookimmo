@@ -64,6 +64,18 @@ function buildSearchSummary(filters, selectedLocations = []) {
   return `${locationLabel} · ${roomsLabel} · ${budgetLabel}`
 }
 
+function buildWorkspaceHeading(filters, selectedLocations = []) {
+  if (selectedLocations.length) {
+    return selectedLocations.map((item) => item.label).slice(0, 2).join(' + ')
+  }
+
+  if (filters.text?.trim()) {
+    return filters.text.trim()
+  }
+
+  return 'Germany'
+}
+
 function buildListingPreviewBadges(property) {
   return [
     property.roomsLabel,
@@ -440,6 +452,11 @@ export default function SearchMain() {
     }
   }, [profile])
 
+  const workspaceHeading = useMemo(
+    () => buildWorkspaceHeading(filters, selectedLocations),
+    [filters, selectedLocations],
+  )
+
   function toggleLocation(locationOption) {
     setFilters((current) => {
       const geocodes = current.geocodes.includes(locationOption.id)
@@ -588,35 +605,38 @@ export default function SearchMain() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         <SearchWorkspaceCard
           style={{
-            padding: 30,
+            padding: 24,
             backgroundColor: 'rgb(255, 248, 244)',
             overflow: 'hidden',
           }}
         >
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.6fr) minmax(320px, 0.9fr)', gap: 20, alignItems: 'stretch' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) minmax(320px, 0.9fr)', gap: 20, alignItems: 'stretch' }}>
             <div>
               <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                Post-onboarding workspace
+                Search overview
               </p>
-              <h2 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 32, lineHeight: 1.04, color: 'rgb(25,26,32)', marginTop: 8, maxWidth: 740 }}>
-                Search, compare and act from one renter workspace.
+              <h2 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 30, lineHeight: 1.04, color: 'rgb(25,26,32)', marginTop: 8, maxWidth: 740 }}>
+                {workspaceHeading}
               </h2>
               <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 15, lineHeight: 1.7, color: 'rgba(25,26,32,0.68)', marginTop: 14, maxWidth: 760 }}>
-                This cabinet view is now the bridge between onboarding and applications. Your profile shapes the initial search context, live provider listings power the map, and every result can move straight into favorites or a draft application.
+                Live provider search with synchronized map, saved searches, favorites and application drafts.
               </p>
 
               <div style={{ marginTop: 18, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                 <span style={{ borderRadius: 999, padding: '10px 14px', backgroundColor: 'white', fontFamily: '"Lexend", sans-serif', fontSize: 13 }}>
-                  {workspacePrompt.city}
+                  {summary.results} results
                 </span>
                 <span style={{ borderRadius: 999, padding: '10px 14px', backgroundColor: 'white', fontFamily: '"Lexend", sans-serif', fontSize: 13 }}>
-                  {workspacePrompt.districts}
+                  {summary.mapped} mapped
+                </span>
+                <span style={{ borderRadius: 999, padding: '10px 14px', backgroundColor: 'white', fontFamily: '"Lexend", sans-serif', fontSize: 13 }}>
+                  {workspacePrompt.city}
                 </span>
                 <span style={{ borderRadius: 999, padding: '10px 14px', backgroundColor: 'white', fontFamily: '"Lexend", sans-serif', fontSize: 13 }}>
                   {workspacePrompt.budget}
                 </span>
                 <span style={{ borderRadius: 999, padding: '10px 14px', backgroundColor: 'white', fontFamily: '"Lexend", sans-serif', fontSize: 13 }}>
-                  Move-in: {workspacePrompt.moveIn}
+                  {workspacePrompt.moveIn}
                 </span>
               </div>
             </div>
@@ -634,7 +654,7 @@ export default function SearchMain() {
                   {completionPercent}%
                 </p>
                 <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, lineHeight: 1.6, opacity: 0.76, marginTop: 8 }}>
-                  Search defaults are already using your renter profile. AI refinement will layer on top of this workspace next.
+                  Profile data is already used to prefill the search context and future applications.
                 </p>
               </div>
             </div>
@@ -650,7 +670,7 @@ export default function SearchMain() {
                     Search controls
                   </p>
                   <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 22, color: 'rgb(25,26,32)', marginTop: 8 }}>
-                    Map workspace filters
+                    Filters
                   </h3>
                 </div>
                 <button
@@ -774,7 +794,7 @@ export default function SearchMain() {
                     Saved searches
                   </p>
                   <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 22, color: 'rgb(25,26,32)', marginTop: 8 }}>
-                    Workspace presets
+                    Saved presets
                   </h3>
                 </div>
               </div>
@@ -790,7 +810,7 @@ export default function SearchMain() {
                   />
                 )) : (
                   <div style={{ borderRadius: 22, padding: 18, backgroundColor: 'rgb(248,246,241)', fontFamily: '"Lexend", sans-serif', fontSize: 13, lineHeight: 1.7, color: 'rgba(25,26,32,0.62)' }}>
-                    Save the current filters as your first reusable search preset. This is the foundation that the upcoming AI search step will refine, not replace.
+                    Save the current filters to reuse this search across sessions.
                   </div>
                 )}
               </div>
@@ -802,13 +822,13 @@ export default function SearchMain() {
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 20, flexWrap: 'wrap' }}>
                 <div>
                   <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.52)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                    Unified provider layer
+                    Search results
                   </p>
                   <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 26, color: 'rgb(25,26,32)', marginTop: 8 }}>
-                    Synchronized map + list
+                    Map and list
                   </h3>
                   <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 14, lineHeight: 1.65, color: 'rgba(25,26,32,0.68)', marginTop: 12, maxWidth: 760 }}>
-                    The map and the list now behave like one workspace. Pins, cards, favorites and draft applications all point to the same unified listing model across live provider data.
+                    Pins, cards, favorites and application drafts all reference the same live listing data.
                   </p>
                 </div>
 
@@ -826,7 +846,7 @@ export default function SearchMain() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 18 }}>
                     <div>
                       <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.52)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                        List workspace
+                        Listing feed
                       </p>
                       <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 22, color: 'rgb(25,26,32)', marginTop: 8 }}>
                         Live Germany results
@@ -860,7 +880,7 @@ export default function SearchMain() {
                       </p>
                     ) : listings.length === 0 ? (
                       <div style={{ borderRadius: 24, padding: 20, backgroundColor: 'rgb(248,246,241)', fontFamily: '"Lexend", sans-serif', color: 'rgba(25,26,32,0.62)', lineHeight: 1.65 }}>
-                        No properties match the current filters. This is where the upcoming AI search step will help users broaden or sharpen their intent without leaving the workspace.
+                        No properties match the current filters. Try broadening the location or budget range.
                       </div>
                     ) : (
                       listings.map((property) => (
@@ -901,7 +921,7 @@ export default function SearchMain() {
                     </div>
 
                     <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 14, lineHeight: 1.65, color: 'rgba(25,26,32,0.62)', marginTop: 12 }}>
-                      {activeListing ? activeListing.address : 'The map preview stays synchronized with the list. Clicking a marker or hovering a card keeps the same listing selected across the workspace.'}
+                      {activeListing ? activeListing.address : 'Select a pin or a listing card to preview the active property here.'}
                     </p>
                   </div>
 
@@ -927,13 +947,13 @@ export default function SearchMain() {
                       />
                     ) : (
                       <div style={{ borderRadius: 24, padding: 20, backgroundColor: 'rgb(248,246,241)', fontFamily: '"Lexend", sans-serif', color: 'rgba(25,26,32,0.62)', lineHeight: 1.65 }}>
-                        Search results with coordinates appear here as map pins. Listings with incomplete coordinates stay available in the list so the workspace never loses usable inventory.
+                        Listings with coordinates appear here as pins. Listings without coordinates stay available in the feed.
                       </div>
                     )}
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
                       <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.48)' }}>
-                        {locationsLoading ? 'Updating location suggestions…' : 'Official ImmoScout location autocomplete needs authenticated API access, so this workspace currently uses verified project geocodes plus manual geocode entry.'}
+                        {locationsLoading ? 'Updating location suggestions…' : 'Location suggestions are based on the project geocode layer plus manual geocode entry.'}
                       </p>
                       <a
                         href={activeListing?.url || 'https://www.immobilienscout24.de/'}
