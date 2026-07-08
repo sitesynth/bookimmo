@@ -5,6 +5,14 @@ const HOP_BY_HOP_HEADERS = new Set([
   'transfer-encoding',
 ])
 
+const STRIP_REQUEST_HEADERS = new Set([
+  'accept-encoding',
+])
+
+const STRIP_RESPONSE_HEADERS = new Set([
+  'content-encoding',
+])
+
 function getBridgeBaseUrl() {
   const value = String(process.env.BOOKIMMO_BRIDGE_URL || '').trim()
   return value ? value.replace(/\/$/, '') : ''
@@ -20,7 +28,12 @@ export async function proxyToBridge(req, res) {
 
   const url = new URL(`${baseUrl}${req.url}`)
   const headers = { ...req.headers }
-  delete headers.host
+  Object.keys(headers).forEach((key) => {
+    const lower = key.toLowerCase()
+    if (lower === 'host' || STRIP_REQUEST_HEADERS.has(lower)) {
+      delete headers[key]
+    }
+  })
 
   const init = {
     method: req.method,
@@ -41,6 +54,7 @@ export async function proxyToBridge(req, res) {
 
   upstream.headers.forEach((value, key) => {
     if (HOP_BY_HOP_HEADERS.has(key.toLowerCase())) return
+    if (STRIP_RESPONSE_HEADERS.has(key.toLowerCase())) return
     if (key.toLowerCase() === 'set-cookie') return
     res.setHeader(key, value)
   })
