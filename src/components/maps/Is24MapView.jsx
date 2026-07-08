@@ -78,6 +78,12 @@ function buildPopupHtml(listing) {
   `
 }
 
+function buildBounds(mapboxgl, listings) {
+  const bounds = new mapboxgl.LngLatBounds()
+  listings.forEach((listing) => bounds.extend([listing.lon, listing.lat]))
+  return bounds
+}
+
 export default function Is24MapView({ listings = [], center, activeId, onSelect, onHover }) {
   const mapElementRef = useRef(null)
   const mapRef = useRef(null)
@@ -390,6 +396,38 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect,
     }
   }, [activeId, pointsById])
 
+  function fitToResults() {
+    if (!mapRef.current?.map || !validPoints.length) return
+    const { map, mapboxgl } = mapRef.current
+    const bounds = buildBounds(mapboxgl, validPoints)
+    map.fitBounds(bounds, {
+      padding: { top: 64, right: 36, bottom: 36, left: 36 },
+      maxZoom: validPoints.length === 1 ? 13.5 : 12.8,
+      duration: 550,
+    })
+  }
+
+  function focusSelected() {
+    if (!mapRef.current?.map || !activeId) return
+    const activeListing = pointsById.get(String(activeId))
+    if (!activeListing) return
+
+    mapRef.current.map.easeTo({
+      center: [activeListing.lon, activeListing.lat],
+      zoom: Math.max(mapRef.current.map.getZoom(), 12.5),
+      duration: 500,
+    })
+  }
+
+  function resetToGermany() {
+    if (!mapRef.current?.map) return
+    mapRef.current.map.easeTo({
+      center: [FALLBACK_CENTER.lon, FALLBACK_CENTER.lat],
+      zoom: FALLBACK_CENTER.zoom,
+      duration: 650,
+    })
+  }
+
   if (!MAPBOX_ACCESS_TOKEN) {
     return (
       <div
@@ -417,14 +455,74 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect,
 
   return (
     <div
-      ref={mapElementRef}
       style={{
+        position: 'relative',
         height: 420,
         width: '100%',
         borderRadius: 24,
         overflow: 'hidden',
         background: 'linear-gradient(180deg, #f7f2e8 0%, #efe7d8 100%)',
       }}
-    />
+    >
+      <div
+        style={{
+          position: 'absolute',
+          top: 14,
+          left: 14,
+          zIndex: 2,
+          display: 'flex',
+          gap: 8,
+          flexWrap: 'wrap',
+          pointerEvents: 'none',
+        }}
+      >
+        {[
+          { label: 'Results', onClick: fitToResults, disabled: !validPoints.length },
+          { label: 'Selected', onClick: focusSelected, disabled: !activeId || !pointsById.get(String(activeId)) },
+          { label: 'Germany', onClick: resetToGermany, disabled: false },
+        ].map((action) => (
+          <button
+            key={action.label}
+            type="button"
+            onClick={action.onClick}
+            disabled={action.disabled}
+            style={{
+              pointerEvents: 'auto',
+              border: '1px solid rgba(25,26,32,0.10)',
+              borderRadius: 999,
+              padding: '9px 12px',
+              backgroundColor: action.disabled ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.96)',
+              color: action.disabled ? 'rgba(25,26,32,0.35)' : 'rgb(25,26,32)',
+              fontFamily: '"Lexend", sans-serif',
+              fontSize: 12,
+              fontWeight: 600,
+              boxShadow: '0 10px 24px rgba(25,26,32,0.08)',
+              cursor: action.disabled ? 'default' : 'pointer',
+              backdropFilter: 'blur(10px)',
+            }}
+          >
+            {action.label}
+          </button>
+        ))}
+      </div>
+
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          background: 'linear-gradient(180deg, rgba(255,248,244,0.26) 0%, rgba(255,248,244,0) 16%, rgba(255,248,244,0) 84%, rgba(25,26,32,0.03) 100%)',
+          zIndex: 1,
+        }}
+      />
+
+      <div
+        ref={mapElementRef}
+        style={{
+          height: '100%',
+          width: '100%',
+        }}
+      />
+    </div>
   )
 }
