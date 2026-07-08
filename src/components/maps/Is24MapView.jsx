@@ -5,6 +5,15 @@ const FALLBACK_CENTER = { lon: 10.4515, lat: 51.1657, zoom: 5.6 }
 const MAPBOX_STYLE = import.meta.env.VITE_MAPBOX_STYLE_URL || 'mapbox://styles/mapbox/light-v11'
 const MAPBOX_ACCESS_TOKEN = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || ''
 
+const SOURCE_ID = 'bookimmo-listings'
+const ACTIVE_SOURCE_ID = 'bookimmo-active-listing'
+const CLUSTERS_LAYER_ID = 'bookimmo-clusters'
+const CLUSTER_COUNT_LAYER_ID = 'bookimmo-cluster-count'
+const POINT_LAYER_ID = 'bookimmo-points'
+const POINT_LABEL_LAYER_ID = 'bookimmo-point-labels'
+const ACTIVE_LAYER_ID = 'bookimmo-active-point'
+const ACTIVE_LABEL_LAYER_ID = 'bookimmo-active-label'
+
 function formatMarkerLabel(listing) {
   const priceLabel = listing?.priceLabel?.trim()
   if (!priceLabel) return 'View'
@@ -17,42 +26,71 @@ function formatMarkerLabel(listing) {
   return compact.length > 14 ? `${compact.slice(0, 13)}…` : compact
 }
 
-function createMarkerElement(listing, isActive, onSelect) {
-  const button = document.createElement('button')
-  button.type = 'button'
-  button.setAttribute('aria-label', listing.title || 'Listing marker')
-  button.textContent = formatMarkerLabel(listing)
-  button.onclick = () => onSelect?.(listing)
+function escapeHtml(value) {
+  return String(value || '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;')
+}
 
-  Object.assign(button.style, {
-    border: isActive ? '2px solid #191a20' : '1px solid rgba(25,26,32,0.12)',
-    borderRadius: '999px',
-    background: isActive ? '#ff6625' : '#ffffff',
-    color: isActive ? '#ffffff' : '#191a20',
-    boxShadow: isActive
-      ? '0 14px 32px rgba(255,102,37,0.32)'
-      : '0 8px 24px rgba(25,26,32,0.12)',
-    padding: '8px 12px',
-    fontFamily: '"Lexend", sans-serif',
-    fontSize: '12px',
-    fontWeight: '700',
-    lineHeight: '1',
-    cursor: 'pointer',
-    whiteSpace: 'nowrap',
-  })
+function toFeature(listing) {
+  return {
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [listing.lon, listing.lat],
+    },
+    properties: {
+      id: String(listing.id),
+      title: listing.title || 'Listing',
+      address: listing.address || '',
+      priceLabel: listing.priceLabel || '',
+      priceShort: formatMarkerLabel(listing),
+    },
+  }
+}
 
-  return button
+function toFeatureCollection(listings) {
+  return {
+    type: 'FeatureCollection',
+    features: listings.map(toFeature),
+  }
+}
+
+function buildPopupHtml(listing) {
+  return `
+    <div style="min-width:220px;max-width:260px;padding:2px 2px 0;font-family:Lexend,sans-serif">
+      <div style="font-size:12px;color:rgba(25,26,32,0.54);margin-bottom:6px">${escapeHtml(listing.priceLabel || 'Price on request')}</div>
+      <div style="font-size:14px;font-weight:700;line-height:1.35;color:#191a20">${escapeHtml(listing.title || 'Listing')}</div>
+      ${listing.address ? `<div style="font-size:12px;line-height:1.5;color:rgba(25,26,32,0.62);margin-top:6px">${escapeHtml(listing.address)}</div>` : ''}
+    </div>
+  `
 }
 
 export default function Is24MapView({ listings = [], center, activeId, onSelect }) {
   const mapElementRef = useRef(null)
   const mapRef = useRef(null)
-  const markersRef = useRef([])
+  const popupRef = useRef(null)
+  const fittedRef = useRef(false)
+  const pointsByIdRef = useRef(new Map())
+  const onSelectRef = useRef(onSelect)
 
   const validPoints = useMemo(
     () => listings.filter((listing) => Number.isFinite(listing.lat) && Number.isFinite(listing.lon)),
     [listings],
   )
+
+  const pointsById = useMemo(
+    () => new Map(validPoints.map((listing) => [String(listing.id), listing])),
+    [validPoints],
+  )
+
+  useEffect(() => {
+    pointsByIdRef.current = pointsById
+    onSelectRef.current = onSelect
+  }, [onSelect, pointsById])
 
   useEffect(() => {
     let mounted = true
@@ -79,15 +117,186 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect 
       map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-right')
       map.touchZoomRotate.disableRotation()
 
+      const popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+        offset: 14,
+        maxWidth: '280px',
+      })
+
+      map.on('load', () => {
+        if (!mounted) return
+
+        map.addSource(SOURCE_ID, {
+          type: 'geojson',
+          data: toFeatureCollection([]),
+          cluster: true,
+          clusterMaxZoom: 13,
+          clusterRadius: 44,
+        })
+
+        map.addSource(ACTIVE_SOURCE_ID, {
+          type: 'geojson',
+          data: toFeatureCollection([]),
+        })
+
+        map.addLayer({
+          id: CLUSTERS_LAYER_ID,
+          type: 'circle',
+          source: SOURCE_ID,
+          filter: ['has', 'point_count'],
+          paint: {
+            'circle-color': '#191a20',
+            'circle-radius': [
+              'step',
+              ['get', 'point_count'],
+              18,
+              10,
+              22,
+              25,
+              28,
+            ],
+            'circle-stroke-width': 3,
+            'circle-stroke-color': '#fff8f4',
+          },
+        })
+
+        map.addLayer({
+          id: CLUSTER_COUNT_LAYER_ID,
+          type: 'symbol',
+          source: SOURCE_ID,
+          filter: ['has', 'point_count'],
+          layout: {
+            'text-field': ['get', 'point_count_abbreviated'],
+            'text-size': 12,
+            'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          },
+          paint: {
+            'text-color': '#ffffff',
+          },
+        })
+
+        map.addLayer({
+          id: POINT_LAYER_ID,
+          type: 'circle',
+          source: SOURCE_ID,
+          filter: ['!', ['has', 'point_count']],
+          paint: {
+            'circle-color': '#ffffff',
+            'circle-radius': 20,
+            'circle-stroke-width': 1,
+            'circle-stroke-color': 'rgba(25,26,32,0.10)',
+            'circle-opacity': 0.98,
+          },
+        })
+
+        map.addLayer({
+          id: POINT_LABEL_LAYER_ID,
+          type: 'symbol',
+          source: SOURCE_ID,
+          filter: ['!', ['has', 'point_count']],
+          layout: {
+            'text-field': ['get', 'priceShort'],
+            'text-size': 11,
+            'text-font': ['Open Sans Semibold', 'Arial Unicode MS Regular'],
+            'text-allow-overlap': true,
+            'text-ignore-placement': true,
+          },
+          paint: {
+            'text-color': '#191a20',
+          },
+        })
+
+        map.addLayer({
+          id: ACTIVE_LAYER_ID,
+          type: 'circle',
+          source: ACTIVE_SOURCE_ID,
+          paint: {
+            'circle-color': '#ff6625',
+            'circle-radius': 23,
+            'circle-stroke-width': 2,
+            'circle-stroke-color': '#191a20',
+            'circle-opacity': 1,
+          },
+        })
+
+        map.addLayer({
+          id: ACTIVE_LABEL_LAYER_ID,
+          type: 'symbol',
+          source: ACTIVE_SOURCE_ID,
+          layout: {
+            'text-field': ['get', 'priceShort'],
+            'text-size': 11,
+            'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+            'text-allow-overlap': true,
+            'text-ignore-placement': true,
+          },
+          paint: {
+            'text-color': '#ffffff',
+          },
+        })
+
+        map.on('click', CLUSTERS_LAYER_ID, async (event) => {
+          const feature = event.features?.[0]
+          if (!feature) return
+
+          const clusterId = feature.properties?.cluster_id
+          const source = map.getSource(SOURCE_ID)
+          if (!source || typeof source.getClusterExpansionZoom !== 'function') return
+
+          source.getClusterExpansionZoom(clusterId, (error, zoom) => {
+            if (error) return
+            map.easeTo({
+              center: feature.geometry.coordinates,
+              zoom,
+              duration: 600,
+            })
+          })
+        })
+
+        map.on('click', POINT_LAYER_ID, (event) => {
+          const feature = event.features?.[0]
+          const id = feature?.properties?.id
+          if (!id) return
+          const listing = pointsByIdRef.current.get(String(id))
+          if (listing) onSelectRef.current?.(listing)
+        })
+
+        map.on('mouseenter', CLUSTERS_LAYER_ID, () => {
+          map.getCanvas().style.cursor = 'pointer'
+        })
+        map.on('mouseleave', CLUSTERS_LAYER_ID, () => {
+          map.getCanvas().style.cursor = ''
+        })
+        map.on('mouseenter', POINT_LAYER_ID, (event) => {
+          map.getCanvas().style.cursor = 'pointer'
+          const feature = event.features?.[0]
+          const id = feature?.properties?.id
+          if (!id) return
+          const listing = pointsByIdRef.current.get(String(id))
+          if (!listing) return
+
+          popup
+            .setLngLat([listing.lon, listing.lat])
+            .setHTML(buildPopupHtml(listing))
+            .addTo(map)
+        })
+        map.on('mouseleave', POINT_LAYER_ID, () => {
+          map.getCanvas().style.cursor = ''
+          popup.remove()
+        })
+      })
+
       mapRef.current = { map, mapboxgl }
+      popupRef.current = popup
     }
 
     ensureMap()
 
     return () => {
       mounted = false
-      markersRef.current.forEach((marker) => marker.remove())
-      markersRef.current = []
+      popupRef.current?.remove()
+      popupRef.current = null
 
       if (mapRef.current?.map) {
         mapRef.current.map.remove()
@@ -97,43 +306,52 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect 
   }, [])
 
   useEffect(() => {
-    if (!mapRef.current) return
+    if (!mapRef.current?.map) return
+    const { map } = mapRef.current
 
-    const { map, mapboxgl } = mapRef.current
-    markersRef.current.forEach((marker) => marker.remove())
-    markersRef.current = []
+    const syncMapData = () => {
+      const source = map.getSource(SOURCE_ID)
+      if (source) {
+        source.setData(toFeatureCollection(validPoints))
+      }
 
-    validPoints.forEach((listing) => {
-      const marker = new mapboxgl.Marker({
-        element: createMarkerElement(listing, String(listing.id) === String(activeId), onSelect),
-        anchor: 'bottom',
+      const activeSource = map.getSource(ACTIVE_SOURCE_ID)
+      const activeListing = activeId ? pointsById.get(String(activeId)) : null
+      if (activeSource) {
+        activeSource.setData(activeListing ? toFeatureCollection([activeListing]) : toFeatureCollection([]))
+      }
+
+      if (validPoints.length) {
+        const bounds = new mapRef.current.mapboxgl.LngLatBounds()
+        validPoints.forEach((listing) => bounds.extend([listing.lon, listing.lat]))
+        map.fitBounds(bounds, {
+          padding: { top: 36, right: 36, bottom: 36, left: 36 },
+          maxZoom: validPoints.length === 1 ? 13.5 : 12.8,
+          duration: fittedRef.current ? 550 : 0,
+        })
+        fittedRef.current = true
+        return
+      }
+
+      const fallback = center && Number.isFinite(center.lat) && Number.isFinite(center.lon)
+        ? [center.lon, center.lat]
+        : [FALLBACK_CENTER.lon, FALLBACK_CENTER.lat]
+
+      map.easeTo({
+        center: fallback,
+        zoom: center?.zoom || FALLBACK_CENTER.zoom,
+        duration: fittedRef.current ? 550 : 0,
       })
-        .setLngLat([listing.lon, listing.lat])
-        .addTo(map)
-
-      markersRef.current.push(marker)
-    })
-
-    if (validPoints.length) {
-      const bounds = new mapboxgl.LngLatBounds()
-      validPoints.forEach((listing) => bounds.extend([listing.lon, listing.lat]))
-      map.fitBounds(bounds, {
-        padding: { top: 36, right: 36, bottom: 36, left: 36 },
-        maxZoom: validPoints.length === 1 ? 13.5 : 12.8,
-        duration: 0,
-      })
-      return
     }
 
-    const fallback = center && Number.isFinite(center.lat) && Number.isFinite(center.lon)
-      ? [center.lon, center.lat]
-      : [FALLBACK_CENTER.lon, FALLBACK_CENTER.lat]
+    if (!map.isStyleLoaded()) {
+      map.once('load', syncMapData)
+      return undefined
+    }
 
-    map.jumpTo({
-      center: fallback,
-      zoom: center?.zoom || FALLBACK_CENTER.zoom,
-    })
-  }, [activeId, center, onSelect, validPoints])
+    syncMapData()
+    return undefined
+  }, [activeId, center, pointsById, validPoints])
 
   if (!MAPBOX_ACCESS_TOKEN) {
     return (
