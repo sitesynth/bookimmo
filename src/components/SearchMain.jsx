@@ -78,10 +78,10 @@ function SearchWorkspaceCard({ children, style }) {
     <section
       style={{
         padding: 24,
-        borderRadius: 28,
+        borderRadius: 16,
         backgroundColor: 'white',
         border: '1px solid rgba(25,26,32,0.08)',
-        boxShadow: '0 18px 48px rgba(25,26,32,0.06)',
+        boxShadow: '0 1px 0 rgba(25,26,32,0.04)',
         ...style,
       }}
     >
@@ -589,7 +589,7 @@ export default function SearchMain() {
         <SearchWorkspaceCard
           style={{
             padding: 30,
-            background: 'linear-gradient(135deg, #fffaf0 0%, #f1eadf 100%)',
+            backgroundColor: 'rgb(255, 248, 244)',
             overflow: 'hidden',
           }}
         >
