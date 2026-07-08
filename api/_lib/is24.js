@@ -111,7 +111,18 @@ export async function fetchIs24Listings({
 }) {
   const normalizedGeocodes = Array.isArray(geocodes) && geocodes.length
     ? geocodes.map(String)
-    : LOCATION_SEEDS.slice(0, 5).map((location) => location.id)
+    : []
+
+  if (!normalizedGeocodes.length) {
+    return {
+      pageNumber: page,
+      numberOfPages: 1,
+      totalResults: 0,
+      listings: [],
+      mapListings: [],
+      center: { lat: 51.1657, lon: 10.4515, zoom: 5.6 },
+    }
+  }
 
   const params = new URLSearchParams({
     searchType: 'region',

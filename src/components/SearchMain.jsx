@@ -25,7 +25,7 @@ const PRICE_OPTIONS = [
   { label: 'Over €4,000', min: 4000, max: null },
 ]
 
-const DEFAULT_GEOCODES = ['0200000006058', '0200000006059']
+const DEFAULT_GEOCODES = []
 
 function readLang(pathname) {
   return /^\/(de|en|fr|it|nl)(\/|$)/.exec(pathname)?.[1] || 'de'
@@ -73,7 +73,7 @@ function buildWorkspaceHeading(filters, selectedLocations = []) {
     return filters.text.trim()
   }
 
-  return 'Germany'
+  return 'Start your Germany search'
 }
 
 function buildListingPreviewBadges(property) {
@@ -452,7 +452,7 @@ export default function SearchMain() {
 
   const workspacePrompt = useMemo(() => {
     const moveIn = profile.moveInDate || 'Flexible move-in'
-    const city = profile.currentCity || 'Germany'
+    const city = profile.currentCity || 'No location selected yet'
     const districts = profile.preferredDistricts || 'Any strong district match'
     const budget = profile.maxBudget ? `Budget up to €${Number(profile.maxBudget).toLocaleString('en-US')}` : 'Budget not set yet'
     return {
@@ -744,7 +744,12 @@ export default function SearchMain() {
                 </div>
 
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  {(locationSuggestions.length ? locationSuggestions : locationSeeds.slice(0, 5)).map((item) => (
+                  {(locationSuggestions.length
+                    ? locationSuggestions
+                    : selectedLocations.length
+                      ? selectedLocations
+                      : []
+                  ).map((item) => (
                     <FilterChip key={item.id} active={filters.geocodes.includes(item.id)} onClick={() => toggleLocation(item)}>
                       {item.label}
                     </FilterChip>
@@ -752,7 +757,7 @@ export default function SearchMain() {
                 </div>
 
                 <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.52)', lineHeight: 1.5 }}>
-                  Start with a location here. Detailed room, budget and keyword refinement stays in the filter panel below.
+                  Start with a city, district, street or provider geocode here. Detailed room, budget and keyword refinement stays in the filter panel below.
                 </p>
               </div>
 
