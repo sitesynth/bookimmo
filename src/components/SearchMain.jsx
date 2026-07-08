@@ -26,6 +26,7 @@ const PRICE_OPTIONS = [
 ]
 
 const DEFAULT_GEOCODES = []
+const MAPBOX_ACCESS_TOKEN = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || ''
 
 function readLang(pathname) {
   return /^\/(de|en|fr|it|nl)(\/|$)/.exec(pathname)?.[1] || 'de'
@@ -413,6 +414,7 @@ export default function SearchMain() {
   const { profile, completionPercent, loading: profileLoading } = useProfile()
   const { savedSearches, saveSearch, deleteSearch } = useSavedSearches()
   const [selectedListing, setSelectedListing] = useState(null)
+  const [geocodedPoints, setGeocodedPoints] = useState({})
 
   useEffect(() => {
     if (profileLoading || profileSeeded) return
@@ -439,16 +441,94 @@ export default function SearchMain() {
     setProfileSeeded(true)
   }, [filters.priceMax, filters.priceMin, filters.text, profile, profileLoading, profileSeeded])
 
-  const activeListing = selectedListing || listings[0] || null
+  useEffect(() => {
+    if (!MAPBOX_ACCESS_TOKEN) return undefined
+
+    const candidates = listings
+      .filter((listing) => !Number.isFinite(listing.lat) || !Number.isFinite(listing.lon))
+      .filter((listing) => listing.address)
+      .slice(0, 24)
+
+    if (!candidates.length) return undefined
+
+    let cancelled = false
+
+    async function geocodeMissingListings() {
+      const nextEntries = await Promise.all(
+        candidates.map(async (listing) => {
+          if (geocodedPoints[listing.id]) {
+            return [listing.id, geocodedPoints[listing.id]]
+          }
+
+          try {
+            const params = new URLSearchParams({
+              access_token: MAPBOX_ACCESS_TOKEN,
+              limit: '1',
+              language: 'de,en',
+              country: 'de',
+              autocomplete: 'false',
+            })
+
+            const response = await fetch(
+              `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(listing.address)}.json?${params.toString()}`,
+            )
+
+            if (!response.ok) return null
+            const payload = await response.json()
+            const feature = payload?.features?.[0]
+            const lon = feature?.center?.[0]
+            const lat = feature?.center?.[1]
+            if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null
+
+            return [listing.id, { lat, lon }]
+          } catch {
+            return null
+          }
+        }),
+      )
+
+      if (cancelled) return
+
+      const resolved = Object.fromEntries(nextEntries.filter(Boolean))
+      if (Object.keys(resolved).length) {
+        setGeocodedPoints((current) => ({ ...current, ...resolved }))
+      }
+    }
+
+    geocodeMissingListings()
+    return () => {
+      cancelled = true
+    }
+  }, [geocodedPoints, listings])
+
+  const enrichedListings = useMemo(
+    () => listings.map((listing) => (
+      geocodedPoints[listing.id]
+        ? { ...listing, ...geocodedPoints[listing.id] }
+        : listing
+    )),
+    [geocodedPoints, listings],
+  )
+
+  const enrichedMapListings = useMemo(
+    () => enrichedListings.filter((listing) => Number.isFinite(listing.lat) && Number.isFinite(listing.lon)),
+    [enrichedListings],
+  )
+
+  const activeListing = useMemo(() => {
+    const targetId = selectedListing?.id || listings[0]?.id
+    if (!targetId) return null
+    return enrichedListings.find((listing) => String(listing.id) === String(targetId)) || null
+  }, [enrichedListings, listings, selectedListing])
 
   const summary = useMemo(() => {
-    const districts = new Set(listings.map((property) => property.district).filter(Boolean)).size
+    const districts = new Set(enrichedListings.map((property) => property.district).filter(Boolean)).size
     return {
-      results: totalResults || listings.length,
-      mapped: mapListings.length,
+      results: totalResults || enrichedListings.length,
+      mapped: enrichedMapListings.length,
       areas: districts || selectedLocations.length || locationSeeds.length,
     }
-  }, [listings, locationSeeds.length, mapListings.length, selectedLocations.length, totalResults])
+  }, [enrichedListings, enrichedMapListings.length, locationSeeds.length, selectedLocations.length, totalResults])
 
   const workspacePrompt = useMemo(() => {
     const moveIn = profile.moveInDate || 'Flexible move-in'
@@ -467,6 +547,11 @@ export default function SearchMain() {
     () => buildWorkspaceHeading(filters, selectedLocations),
     [filters, selectedLocations],
   )
+
+  const shouldShowLocationSuggestions = locationQuery.trim().length > 0
+  const visibleLocationChips = shouldShowLocationSuggestions
+    ? locationSuggestions
+    : selectedLocations
 
   function toggleLocation(locationOption) {
     setFilters((current) => {
@@ -744,12 +829,7 @@ export default function SearchMain() {
                 </div>
 
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  {(locationSuggestions.length
-                    ? locationSuggestions
-                    : selectedLocations.length
-                      ? selectedLocations
-                      : []
-                  ).map((item) => (
+                  {visibleLocationChips.map((item) => (
                     <FilterChip key={item.id} active={filters.geocodes.includes(item.id)} onClick={() => toggleLocation(item)}>
                       {item.label}
                     </FilterChip>
@@ -996,7 +1076,7 @@ export default function SearchMain() {
                         No properties match the current filters. Try broadening the location or budget range.
                       </div>
                     ) : (
-                      listings.map((property) => (
+                      enrichedListings.map((property) => (
                         <ListingCard
                           key={property.id}
                           property={property}
@@ -1040,7 +1120,7 @@ export default function SearchMain() {
 
                   <div style={{ padding: 20, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 18 }}>
                     <Is24MapView
-                      listings={mapListings}
+                      listings={enrichedMapListings}
                       center={center}
                       activeId={activeListing?.id}
                       onSelect={setSelectedListing}
