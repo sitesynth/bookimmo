@@ -931,6 +931,7 @@ export default function SearchMain() {
                       center={center}
                       activeId={activeListing?.id}
                       onSelect={setSelectedListing}
+                      onHover={setSelectedListing}
                     />
 
                     {activeListing ? (

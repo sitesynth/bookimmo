@@ -48,6 +48,9 @@ function toFeature(listing) {
       address: listing.address || '',
       priceLabel: listing.priceLabel || '',
       priceShort: formatMarkerLabel(listing),
+      imageUrl: listing.imageUrl || '',
+      source: listing.source || '',
+      url: listing.url || '',
     },
   }
 }
@@ -61,21 +64,29 @@ function toFeatureCollection(listings) {
 
 function buildPopupHtml(listing) {
   return `
-    <div style="min-width:220px;max-width:260px;padding:2px 2px 0;font-family:Lexend,sans-serif">
-      <div style="font-size:12px;color:rgba(25,26,32,0.54);margin-bottom:6px">${escapeHtml(listing.priceLabel || 'Price on request')}</div>
-      <div style="font-size:14px;font-weight:700;line-height:1.35;color:#191a20">${escapeHtml(listing.title || 'Listing')}</div>
-      ${listing.address ? `<div style="font-size:12px;line-height:1.5;color:rgba(25,26,32,0.62);margin-top:6px">${escapeHtml(listing.address)}</div>` : ''}
+    <div style="min-width:236px;max-width:280px;padding:0;font-family:Lexend,sans-serif;overflow:hidden;border-radius:16px">
+      ${listing.imageUrl ? `<div style="height:120px;background:#f4eee5"><img src="${escapeHtml(listing.imageUrl)}" alt="${escapeHtml(listing.title || 'Listing')}" style="display:block;width:100%;height:100%;object-fit:cover" /></div>` : ''}
+      <div style="padding:${listing.imageUrl ? '12px 12px 2px' : '4px 4px 0'}">
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">
+          <div style="font-size:12px;color:rgba(25,26,32,0.54);margin-bottom:6px">${escapeHtml(listing.priceLabel || 'Price on request')}</div>
+          ${listing.source ? `<div style="font-size:11px;color:#ff6625;text-transform:uppercase;letter-spacing:.04em">${escapeHtml(String(listing.source))}</div>` : ''}
+        </div>
+        <div style="font-size:14px;font-weight:700;line-height:1.35;color:#191a20">${escapeHtml(listing.title || 'Listing')}</div>
+        ${listing.address ? `<div style="font-size:12px;line-height:1.5;color:rgba(25,26,32,0.62);margin-top:6px">${escapeHtml(listing.address)}</div>` : ''}
+      </div>
     </div>
   `
 }
 
-export default function Is24MapView({ listings = [], center, activeId, onSelect }) {
+export default function Is24MapView({ listings = [], center, activeId, onSelect, onHover }) {
   const mapElementRef = useRef(null)
   const mapRef = useRef(null)
   const popupRef = useRef(null)
   const fittedRef = useRef(false)
   const pointsByIdRef = useRef(new Map())
   const onSelectRef = useRef(onSelect)
+  const onHoverRef = useRef(onHover)
+  const lastListingKeyRef = useRef('')
 
   const validPoints = useMemo(
     () => listings.filter((listing) => Number.isFinite(listing.lat) && Number.isFinite(listing.lon)),
@@ -90,7 +101,8 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect 
   useEffect(() => {
     pointsByIdRef.current = pointsById
     onSelectRef.current = onSelect
-  }, [onSelect, pointsById])
+    onHoverRef.current = onHover
+  }, [onHover, onSelect, pointsById])
 
   useEffect(() => {
     let mounted = true
@@ -275,6 +287,7 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect 
           if (!id) return
           const listing = pointsByIdRef.current.get(String(id))
           if (!listing) return
+          onHoverRef.current?.(listing)
 
           popup
             .setLngLat([listing.lon, listing.lat])
@@ -321,7 +334,9 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect 
         activeSource.setData(activeListing ? toFeatureCollection([activeListing]) : toFeatureCollection([]))
       }
 
-      if (validPoints.length) {
+      const listingKey = validPoints.map((listing) => String(listing.id)).join('|')
+
+      if (validPoints.length && listingKey !== lastListingKeyRef.current) {
         const bounds = new mapRef.current.mapboxgl.LngLatBounds()
         validPoints.forEach((listing) => bounds.extend([listing.lon, listing.lat]))
         map.fitBounds(bounds, {
@@ -330,6 +345,7 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect 
           duration: fittedRef.current ? 550 : 0,
         })
         fittedRef.current = true
+        lastListingKeyRef.current = listingKey
         return
       }
 
@@ -337,11 +353,13 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect 
         ? [center.lon, center.lat]
         : [FALLBACK_CENTER.lon, FALLBACK_CENTER.lat]
 
-      map.easeTo({
-        center: fallback,
-        zoom: center?.zoom || FALLBACK_CENTER.zoom,
-        duration: fittedRef.current ? 550 : 0,
-      })
+      if (!validPoints.length) {
+        map.easeTo({
+          center: fallback,
+          zoom: center?.zoom || FALLBACK_CENTER.zoom,
+          duration: fittedRef.current ? 550 : 0,
+        })
+      }
     }
 
     if (!map.isStyleLoaded()) {
@@ -352,6 +370,25 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect 
     syncMapData()
     return undefined
   }, [activeId, center, pointsById, validPoints])
+
+  useEffect(() => {
+    if (!mapRef.current?.map || !activeId) return
+    const activeListing = pointsById.get(String(activeId))
+    if (!activeListing) return
+
+    const { map } = mapRef.current
+    const bounds = map.getBounds()
+    const coords = [activeListing.lon, activeListing.lat]
+    const isVisible = bounds?.contains(coords)
+
+    if (!isVisible) {
+      map.easeTo({
+        center: coords,
+        duration: 500,
+        zoom: Math.max(map.getZoom(), 11.5),
+      })
+    }
+  }, [activeId, pointsById])
 
   if (!MAPBOX_ACCESS_TOKEN) {
     return (
