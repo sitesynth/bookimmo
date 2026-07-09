@@ -447,6 +447,7 @@ export default function SearchMain() {
     const candidates = listings
       .filter((listing) => !Number.isFinite(listing.lat) || !Number.isFinite(listing.lon))
       .filter((listing) => listing.address)
+      .filter((listing) => !geocodedPoints[listing.id])
       .slice(0, 24)
 
     if (!candidates.length) return undefined
