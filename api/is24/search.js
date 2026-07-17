@@ -1,5 +1,6 @@
 import { fetchIs24Listings, findLocationById } from '../_lib/is24.js'
 import { fetchImmoweltListings } from '../_lib/immowelt.js'
+import { upsertListingsCache } from '../_lib/listings-cache.js'
 
 function normalizeArray(value) {
   if (!value) return []
@@ -56,6 +57,12 @@ export default async function handler(req, res) {
         is24Result.status === 'rejected' ? `is24: ${String(is24Result.reason)}` : '',
         immoweltResult.status === 'rejected' ? `immowelt: ${String(immoweltResult.reason)}` : '',
       ].filter(Boolean),
+    }
+
+    try {
+      await upsertListingsCache(result.listings)
+    } catch (cacheError) {
+      result.warnings.push(`listings_cache: ${String(cacheError)}`)
     }
 
     res.setHeader('Access-Control-Allow-Origin', '*')

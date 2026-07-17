@@ -178,6 +178,38 @@ async function createSchema() {
 
     CREATE INDEX IF NOT EXISTS applications_user_id_idx
       ON public.applications (user_id, updated_at DESC);
+
+    CREATE TABLE IF NOT EXISTS public.listings_cache (
+      id BIGSERIAL PRIMARY KEY,
+      source TEXT NOT NULL,
+      external_id TEXT NOT NULL,
+      slug TEXT NOT NULL,
+      title TEXT NOT NULL,
+      address TEXT,
+      postcode TEXT,
+      district TEXT,
+      price NUMERIC,
+      price_label TEXT,
+      area_sqm NUMERIC,
+      area_label TEXT,
+      rooms NUMERIC,
+      rooms_label TEXT,
+      image_url TEXT,
+      source_url TEXT,
+      lat DOUBLE PRECISION,
+      lon DOUBLE PRECISION,
+      listing_type TEXT,
+      published_label TEXT,
+      raw_payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+      imported_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      UNIQUE (source, external_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS listings_cache_imported_at_idx
+      ON public.listings_cache (imported_at DESC);
+
+    CREATE INDEX IF NOT EXISTS listings_cache_location_idx
+      ON public.listings_cache (district, postcode, imported_at DESC);
   `
 
   await getPool().query(sql)
