@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useApplications } from '../../hooks/useApplications.js'
 import { usePropertiesByIds } from '../../hooks/usePropertiesByIds.js'
 import { useProfile } from '../../hooks/useProfile.js'
+import { buildListingDetailHref } from '../../lib/listingRouting.js'
 
 const STOCK_IMGS = [
   '/assets/images/YB8HvCRaMzDFv3gr1oraLARMV10.jpg',
@@ -29,17 +30,9 @@ function readLang(pathname) {
 }
 
 function propertyImage(property, index) {
-  return property?.cover_image
-    ? `/api/directus?path=/assets/${property.cover_image}&query=${encodeURIComponent('width=900&quality=80')}`
+  return property?.imageUrl
+    ? property.imageUrl
     : STOCK_IMGS[index % STOCK_IMGS.length]
-}
-
-function slugify(value = '') {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
 }
 
 function formatStatus(status) {
@@ -376,14 +369,14 @@ export default function ApplicationsShell() {
                     {selectedProperty?.title || selectedApplication.title || `Property #${selectedApplication.propertyId}`}
                   </p>
                   <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.56)', marginTop: 8 }}>
-                    {selectedProperty?.address || selectedProperty?.city_slug || 'Listing details are still loading'}
+                    {selectedProperty?.address || selectedProperty?.district || selectedProperty?.postcode || 'Listing details are still loading'}
                   </p>
                 </div>
 
                 <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.72)' }}>
-                  <span>{selectedProperty?.property_category || 'Property'}</span>
-                  <span>{selectedProperty?.bedrooms || selectedProperty?.rooms || 0} rooms</span>
-                  <span>{selectedProperty?.price ? `€ ${Number(selectedProperty.price).toLocaleString()}` : 'Price on request'}</span>
+                  <span>{selectedProperty?.listingType || selectedProperty?.source?.toUpperCase() || 'Property'}</span>
+                  <span>{selectedProperty?.roomsLabel || (selectedProperty?.rooms ? `${selectedProperty.rooms} rooms` : 'Rooms on request')}</span>
+                  <span>{selectedProperty?.priceLabel || (selectedProperty?.price ? `€ ${Number(selectedProperty.price).toLocaleString()}` : 'Price on request')}</span>
                 </div>
               </div>
             </article>
@@ -576,7 +569,7 @@ export default function ApplicationsShell() {
                       {saving ? 'Saving…' : selectedApplication.status === 'submitted' ? 'Submitted' : 'Mark as submitted'}
                     </button>
                     <Link
-                      to={selectedProperty ? `/${lang}/Property-Details/${selectedProperty.slug || slugify(selectedProperty.title || '')}` : `/${lang}/search`}
+                      to={selectedProperty ? buildListingDetailHref(lang, selectedProperty) : `/${lang}/search`}
                       style={{
                         display: 'inline-flex',
                         textDecoration: 'none',

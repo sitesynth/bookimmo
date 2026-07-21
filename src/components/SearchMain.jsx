@@ -446,9 +446,10 @@ export default function SearchMain() {
 
     const candidates = listings
       .filter((listing) => !Number.isFinite(listing.lat) || !Number.isFinite(listing.lon))
+      .filter((listing) => !mapListings.some((point) => String(point.id) === String(listing.id) && Number.isFinite(point.lat) && Number.isFinite(point.lon)))
       .filter((listing) => listing.address)
       .filter((listing) => !geocodedPoints[listing.id])
-      .slice(0, 24)
+      .slice(0, 12)
 
     if (!candidates.length) return undefined
 
@@ -500,21 +501,42 @@ export default function SearchMain() {
     return () => {
       cancelled = true
     }
-  }, [geocodedPoints, listings])
+  }, [geocodedPoints, listings, mapListings])
+
+  const providerMapPoints = useMemo(() => (
+    new Map(
+      mapListings
+        .filter((listing) => Number.isFinite(listing.lat) && Number.isFinite(listing.lon))
+        .map((listing) => [String(listing.id), { lat: listing.lat, lon: listing.lon }]),
+    )
+  ), [mapListings])
 
   const enrichedListings = useMemo(
     () => listings.map((listing) => (
-      geocodedPoints[listing.id]
-        ? { ...listing, ...geocodedPoints[listing.id] }
-        : listing
+      providerMapPoints.get(String(listing.id))
+        ? { ...listing, ...providerMapPoints.get(String(listing.id)) }
+        : geocodedPoints[listing.id]
+          ? { ...listing, ...geocodedPoints[listing.id] }
+          : listing
     )),
-    [geocodedPoints, listings],
+    [geocodedPoints, listings, providerMapPoints],
   )
 
-  const enrichedMapListings = useMemo(
-    () => enrichedListings.filter((listing) => Number.isFinite(listing.lat) && Number.isFinite(listing.lon)),
-    [enrichedListings],
-  )
+  const enrichedMapListings = useMemo(() => {
+    const merged = new Map()
+
+    mapListings.forEach((listing) => {
+      if (!Number.isFinite(listing.lat) || !Number.isFinite(listing.lon)) return
+      merged.set(String(listing.id), listing)
+    })
+
+    enrichedListings.forEach((listing) => {
+      if (!Number.isFinite(listing.lat) || !Number.isFinite(listing.lon)) return
+      merged.set(String(listing.id), listing)
+    })
+
+    return Array.from(merged.values())
+  }, [enrichedListings, mapListings])
 
   const activeListing = useMemo(() => {
     const targetId = selectedListing?.id || listings[0]?.id
@@ -1063,7 +1085,15 @@ export default function SearchMain() {
                     ) : null}
                   </div>
 
-                  <div style={{ overflow: 'visible', paddingRight: 8, display: 'flex', flexDirection: 'column', gap: 18 }}>
+                  <div style={{
+                    overflowY: 'auto',
+                    overflowX: 'visible',
+                    maxHeight: 'calc(100vh - 280px)',
+                    paddingRight: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 18,
+                  }}>
                     {loading ? (
                       <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 14, color: 'rgba(25,26,32,0.54)', padding: '20px 0' }}>
                         Loading live listings…

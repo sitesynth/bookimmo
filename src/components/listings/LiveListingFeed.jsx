@@ -55,6 +55,30 @@ function dedupeListings(listings = []) {
   })
 }
 
+function tokenizeSoftMatch(text) {
+  return String(text || '')
+    .split(/[,\s]+/)
+    .map((item) => item.trim().toLowerCase())
+    .filter(Boolean)
+    .slice(0, 8)
+}
+
+function matchesSoftSeed(listing, tokens = []) {
+  if (!tokens.length) return true
+
+  const haystack = [
+    listing?.title,
+    listing?.address,
+    listing?.district,
+    listing?.postcode,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase()
+
+  return tokens.every((token) => haystack.includes(token))
+}
+
 function buildMeta(listing) {
   return [
     listing?.priceLabel || 'Price on request',
@@ -280,9 +304,10 @@ export default function LiveListingFeed({
     ].filter(Boolean).join(' ')
   }, [profile, useProfileSeed])
 
+  const seededTokens = useMemo(() => tokenizeSoftMatch(seededText), [seededText])
+
   const latestListings = useLatestListings({
-    limit,
-    text: sourceMode === 'database-cache' ? seededText : '',
+    limit: sourceMode === 'database-cache' ? Math.max(limit * 4, 12) : limit,
   })
 
   const liveSearch = useIs24Search({
@@ -293,11 +318,18 @@ export default function LiveListingFeed({
   const loading = sourceMode === 'database-cache' ? latestListings.loading : liveSearch.loading
   const error = sourceMode === 'database-cache' ? latestListings.error : liveSearch.error
   const selectedLocations = sourceMode === 'database-cache' ? [] : liveSearch.selectedLocations
-  const totalResults = sourceMode === 'database-cache' ? latestListings.items.length : liveSearch.totalResults
   const sourceListings = sourceMode === 'database-cache' ? latestListings.items : liveSearch.listings
 
+  const filteredSourceListings = useMemo(() => {
+    if (sourceMode !== 'database-cache') return sourceListings
+    if (!seededTokens.length) return sourceListings
+
+    const matched = sourceListings.filter((item) => matchesSoftSeed(item, seededTokens))
+    return matched.length ? matched : sourceListings
+  }, [seededTokens, sourceListings, sourceMode])
+
   const cards = useMemo(() => (
-    dedupeListings(sourceListings)
+    dedupeListings(filteredSourceListings)
       .filter((item) => item?.id && item?.source)
       .sort((left, right) => {
         const leftImported = new Date(left?.importedAt || 0).getTime()
@@ -305,7 +337,9 @@ export default function LiveListingFeed({
         return rightImported - leftImported
       })
       .slice(0, limit)
-  ), [limit, sourceListings])
+  ), [filteredSourceListings, limit])
+
+  const totalResults = sourceMode === 'database-cache' ? filteredSourceListings.length : liveSearch.totalResults
 
   const resolvedHref = ctaHref || `/${lang}/search?geocodes=${encodeURIComponent(effectiveGeocodes.join(','))}`
   const locationSummary = selectedLocations.length
@@ -452,7 +486,9 @@ export default function LiveListingFeed({
           fontSize: 14,
           color: 'rgba(25,26,32,0.74)',
         }}>
-          No live listings matched the current location seed yet. Open search to broaden the area or use a different geocode.
+          {sourceMode === 'database-cache' && seededTokens.length
+            ? 'No exact profile-area match was found in the latest cache yet. We can broaden the search workspace or enrich the location profile next.'
+            : 'No live listings matched the current location seed yet. Open search to broaden the area or use a different geocode.'}
         </div>
       ) : null}
     </section>

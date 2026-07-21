@@ -1,14 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 
 function buildQuery(propertyIds) {
-  const parts = [
-    'fields=id,title,slug,price,bedrooms,bathrooms,area_m2,city_slug,address,listing_type,property_category,is_featured,short_description,description,status,cover_image',
-    'filter[status][_eq]=published',
-    `filter[id][_in]=${propertyIds.map((id) => encodeURIComponent(id)).join(',')}`,
-    `limit=${propertyIds.length}`,
-  ]
-
-  return parts.join('&')
+  return new URLSearchParams({
+    ids: propertyIds.map((id) => String(id)).join(','),
+  }).toString()
 }
 
 export function usePropertiesByIds(propertyIds = []) {
@@ -30,17 +25,23 @@ export function usePropertiesByIds(propertyIds = []) {
 
     let cancelled = false
     const query = buildQuery(normalizedIds)
-    const url = `/api/directus?path=/items/properties&query=${encodeURIComponent(query)}`
+    const url = `/api/listings/by-ids?${query}`
 
     setLoading(true)
     setError(null)
 
     fetch(url)
-      .then((response) => response.json())
+      .then(async (response) => {
+        const json = await response.json().catch(() => ({}))
+        if (!response.ok) {
+          throw new Error(json?.error || 'listing_lookup_failed')
+        }
+        return json
+      })
       .then((json) => {
         if (cancelled) return
 
-        const byId = new Map((json.data || []).map((property) => [String(property.id), property]))
+        const byId = new Map((json.items || []).map((property) => [String(property.id), property]))
         const ordered = normalizedIds.map((id) => byId.get(id)).filter(Boolean)
         setProperties(ordered)
         setLoading(false)

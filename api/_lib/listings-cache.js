@@ -163,3 +163,27 @@ export async function getLatestCachedListings({ limit = 6, text = '' } = {}) {
 
   return result.rows
 }
+
+export async function getCachedListingsByIds(ids = []) {
+  const normalizedIds = ids
+    .map((item) => String(item || '').trim())
+    .filter(Boolean)
+    .slice(0, 100)
+
+  if (!normalizedIds.length) return []
+
+  const result = await query(
+    `SELECT DISTINCT ON (external_id)
+            source, external_id, slug, title, address, postcode, district,
+            price, price_label, area_sqm, area_label, rooms, rooms_label,
+            image_url, source_url, lat, lon, listing_type, published_label,
+            imported_at, raw_payload
+     FROM public.listings_cache
+     WHERE external_id = ANY($1::text[])
+     ORDER BY external_id, imported_at DESC`,
+    [normalizedIds],
+  )
+
+  const ordered = new Map(result.rows.map((row) => [String(row.external_id), row]))
+  return normalizedIds.map((id) => ordered.get(id)).filter(Boolean)
+}

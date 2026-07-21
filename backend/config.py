@@ -34,7 +34,7 @@ DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
 DB_SSLMODE = os.environ.get("DB_SSLMODE", "")
 DB_CONNECT_TIMEOUT = int(os.environ.get("DB_CONNECT_TIMEOUT", "10"))
 
-# Supabase REST API
+# Legacy external service keys (not required for local PostgreSQL runtime)
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
 

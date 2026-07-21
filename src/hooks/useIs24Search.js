@@ -32,12 +32,19 @@ export function useIs24Search(filters = {}) {
 
   useEffect(() => {
     let cancelled = false
+    const controller = new AbortController()
     const query = buildQuery(filters)
     setLoading(true)
     setError(null)
 
-    fetch(`/api/is24/search${query ? `?${query}` : ''}`)
-      .then((response) => response.json())
+    fetch(`/api/is24/search${query ? `?${query}` : ''}`, { signal: controller.signal })
+      .then(async (response) => {
+        const json = await response.json().catch(() => ({}))
+        if (!response.ok) {
+          throw new Error(json?.error || 'is24_search_failed')
+        }
+        return json
+      })
       .then((json) => {
         if (cancelled) return
         setResult({
@@ -52,13 +59,14 @@ export function useIs24Search(filters = {}) {
         setLoading(false)
       })
       .catch((err) => {
-        if (cancelled) return
+        if (cancelled || err?.name === 'AbortError') return
         setError(err)
         setLoading(false)
       })
 
     return () => {
       cancelled = true
+      controller.abort()
     }
   }, [filterKey])
 

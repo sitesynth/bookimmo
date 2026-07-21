@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useAuthUser } from '../../hooks/useAuthUser.js'
 import { useFavorites } from '../../hooks/useFavorites.js'
 import { usePropertiesByIds } from '../../hooks/usePropertiesByIds.js'
+import { buildListingDetailHref } from '../../lib/listingRouting.js'
 
 const STOCK_IMGS = [
   '/assets/images/YB8HvCRaMzDFv3gr1oraLARMV10.jpg',
@@ -17,17 +18,9 @@ function readLang(pathname) {
 }
 
 function propertyImage(property, index) {
-  return property.cover_image
-    ? `/api/directus?path=/assets/${property.cover_image}&query=${encodeURIComponent('width=900&quality=80')}`
+  return property.imageUrl
+    ? property.imageUrl
     : STOCK_IMGS[index % STOCK_IMGS.length]
-}
-
-function slugify(value = '') {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
 }
 
 function EmptyCard({ lang, isAuthenticated }) {
@@ -46,7 +39,7 @@ function EmptyCard({ lang, isAuthenticated }) {
         {isAuthenticated ? 'No saved properties yet' : 'Guest favorites are still empty'}
       </h2>
       <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 15, lineHeight: 1.65, color: 'rgba(25,26,32,0.68)', marginTop: 12, maxWidth: 760 }}>
-        Save interesting homes from search and they will appear here for comparison. Guests can test the flow locally, and signed-in users can keep favorites synced in Supabase.
+        Save interesting homes from search and they will appear here for comparison. Guests can test the flow locally, and signed-in users can keep favorites synced across sessions.
       </p>
       <Link
         to={`/${lang}/search`}
@@ -118,7 +111,7 @@ export default function FavoritesShell() {
           gap: 16,
         }}>
           {properties.map((property, index) => {
-            const detailHref = `/${lang}/Property-Details/${property.slug || slugify(property.title)}`
+            const detailHref = buildListingDetailHref(lang, property)
 
             return (
               <article
@@ -150,18 +143,18 @@ export default function FavoritesShell() {
                       {property.title}
                     </Link>
                     <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.54)', marginTop: 8 }}>
-                      {property.address || property.city_slug || 'Location on request'}
+                      {property.address || property.district || property.postcode || 'Location on request'}
                     </p>
                   </div>
 
                   <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.72)' }}>
-                    <span>{property.bedrooms || property.rooms || 0} rooms</span>
-                    <span>{property.area_m2 ? `${property.area_m2} m²` : 'Area on request'}</span>
-                    <span>{property.property_category || 'Property'}</span>
+                    <span>{property.roomsLabel || (property.rooms ? `${property.rooms} rooms` : 'Rooms on request')}</span>
+                    <span>{property.areaLabel || (property.areaSqm ? `${property.areaSqm} m²` : 'Area on request')}</span>
+                    <span>{property.listingType || property.source?.toUpperCase() || 'Property'}</span>
                   </div>
 
                   <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 24, fontWeight: 700, color: 'rgb(25,26,32)', marginTop: 'auto' }}>
-                    € {property.price ? Number(property.price).toLocaleString() : '—'}
+                    {property.priceLabel || (property.price ? `€ ${Number(property.price).toLocaleString()}` : 'Price on request')}
                   </p>
 
                   <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>

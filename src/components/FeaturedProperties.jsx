@@ -16,6 +16,7 @@ export default function FeaturedProperties() {
           limit={3}
           compact
           ctaLabel="Explore all listings"
+          sourceMode="database-cache"
         />
       </div>
     </section>

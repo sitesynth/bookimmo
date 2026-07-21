@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Тестирует соединение с рабочей PostgreSQL-конфигурацией backend."""
+"""Legacy compatibility test for backend PostgreSQL connectivity."""
 
 import psycopg2
 

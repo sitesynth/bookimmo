@@ -235,10 +235,10 @@ def format_user_stats(first_name: str) -> str:
             message += f"    ⏰ {timestamp_str}\n"
             message += f"    👤 {fname} {lname}\n"
             
-            # Добавляем временную шкалу из Supabase
+            # Добавляем временную шкалу из backend database
             try:
-                import supabase_db
-                timeline = supabase_db.get_apartment_timeline(str(expose_id))
+                import storage_db
+                timeline = storage_db.get_apartment_timeline(str(expose_id))
                 if timeline:
                     for event in timeline:
                         event_type = event.get("event_type", "")

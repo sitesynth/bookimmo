@@ -30,12 +30,12 @@ except ImportError:
 
 # Database integration
 try:
-    import supabase_db
-    SUPABASE_ENABLED = True
-    print("✅ Database интеграция активирована")
+    import storage_db
+    STORAGE_DB_ENABLED = True
+    print("✅ Backend database integration activated")
 except ImportError:
-    SUPABASE_ENABLED = False
-    print("⚠️  database integration не найдена. Используем локальные fichier")
+    STORAGE_DB_ENABLED = False
+    print("⚠️  backend database integration not found. Using local files")
 
 # Telegram integration
 try:
@@ -339,10 +339,10 @@ class ContactLogHandler(BaseHTTPRequestHandler):
                 expose_address = apartment_addresses.get(str(expose_id), '')
                 update_tracking(expose_id, address=expose_address)
                 
-                # Логируем в timeline (в Supabase)
-                if SUPABASE_ENABLED:
+                # Логируем в timeline (в backend database)
+                if STORAGE_DB_ENABLED:
                     try:
-                        supabase_db.log_apartment_contact_sent(
+                        storage_db.log_apartment_contact_sent(
                             expose_id=str(data.get('expose_id')),
                             timestamp=data.get('timestamp'),
                             first_name=data.get('contact_info', {}).get('firstName', ''),
@@ -601,7 +601,7 @@ def add_apartment_to_history(expose_id, title="", district=""):
 
 def sync_tracking_from_server():
     """Синхронизирует tracking с уже отправленными контактами из БД"""
-    if not SUPABASE_ENABLED:
+    if not STORAGE_DB_ENABLED:
         # Fallback к локальным файлам
         return load_tracking()
     
@@ -671,10 +671,10 @@ def update_tracking(expose_id, address=""):
         apartments_in_queue.discard(expose_id_str)
 
     # Попытаемся также обновить в БД (но это опционально)
-    if SUPABASE_ENABLED:
+    if STORAGE_DB_ENABLED:
         try:
-            import supabase_db
-            supabase_db.mark_as_sent(expose_id)
+            import storage_db
+            storage_db.mark_as_sent(expose_id)
         except Exception as e:
             print(f"⚠️  Не удалось обновить expose_id={expose_id} в БД: {e}")
             print(f"   ✅ Но локальный tracking.json обновлен успешно")
@@ -711,10 +711,10 @@ def save_contact_log(data):
         f.write(json.dumps(data, ensure_ascii=False) + '\n')
     
     # Сохраняем в БД
-    if SUPABASE_ENABLED:
+    if STORAGE_DB_ENABLED:
         try:
-            import supabase_db
-            supabase_db.save_contact(
+            import storage_db
+            storage_db.save_contact(
                 expose_id=data.get("expose_id"),
                 timestamp=data.get("timestamp"),
                 email=data.get("contact_info", {}).get("email", ""),
@@ -747,10 +747,10 @@ def save_apartment_log(apartment_data):
     # или в открытии браузера при таймауте. Не дублируем здесь.
     
     # Сохраняем в БД
-    if SUPABASE_ENABLED:
+    if STORAGE_DB_ENABLED:
         try:
-            import supabase_db
-            supabase_db.save_apartment(
+            import storage_db
+            storage_db.save_apartment(
                 apartment_id=log_entry["id"],
                 title=log_entry["title"],
                 address=log_entry["address"],
@@ -764,7 +764,7 @@ def save_apartment_log(apartment_data):
                 postcode=apartment_data.get("postcode", "")
             )
         except Exception as e:
-            print(f"⚠️  Ошибка сохранения квартиры в Supabase: {e}")
+            print(f"⚠️  Ошибка сохранения квартиры в backend database: {e}")
     
     # Отправляем в Telegram (только для важных пропусков, не для обменных)
     if TELEGRAM_ENABLED:
@@ -1093,10 +1093,10 @@ def get_apartments():
                             except Exception as e:
                                 print(f"    ⚠️  Не удалось отправить уведомление: {e}")
                         
-                        # Логируем в timeline (в Supabase)
-                        if SUPABASE_ENABLED:
+                        # Логируем в timeline (в backend database)
+                        if STORAGE_DB_ENABLED:
                             try:
-                                supabase_db.log_apartment_found(
+                                storage_db.log_apartment_found(
                                     expose_id=str(expose_id),
                                     title=title,
                                     district=district,
@@ -1147,16 +1147,16 @@ def get_apartments():
     return apartments
 
 def sync_tracking_from_server():
-    """Синхронизирует tracking с Supabase базой
-    Получает все успешно отправленные контакты из Supabase и обновляет локальный tracking.json
+    """Синхронизирует tracking с backend database
+    Получает все успешно отправленные контакты из backend database и обновляет локальный tracking.json
     """
-    if not SUPABASE_ENABLED:
+    if not STORAGE_DB_ENABLED:
         return load_tracking()
     
     try:
-        import supabase_db
-        # Получаем все контакты из Supabase
-        contacts = supabase_db.get_all_contacts()
+        import storage_db
+        # Получаем все контакты из backend database
+        contacts = storage_db.get_all_contacts()
         
         # Обновляем локальный tracking
         tracking = load_tracking()
@@ -1182,7 +1182,7 @@ def sync_tracking_from_server():
         
         return tracking
     except Exception as e:
-        print(f"⚠️  Ошибка синхронизации с Supabase: {e}")
+        print(f"⚠️  Ошибка синхронизации с backend database: {e}")
         return load_tracking()
 
 def get_new_apartments(all_apartments):
