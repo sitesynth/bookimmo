@@ -1,4 +1,5 @@
 import { fetchIs24Listings, getLocationSeeds } from '../_lib/is24.js'
+import { proxyToBridge } from '../_lib/bridge.js'
 import { fetchImmoweltListings } from '../_lib/immowelt.js'
 import { getLatestCachedListings, upsertListingsCache } from '../_lib/listings-cache.js'
 
@@ -46,6 +47,7 @@ async function warmCache(limit) {
 }
 
 export default async function handler(req, res) {
+  if (await proxyToBridge(req, res)) return
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' })
 
   const limit = Math.max(1, Math.min(Number(req.query.limit) || 6, 24))

@@ -1,3 +1,4 @@
+import { proxyToBridge } from '../_lib/bridge.js'
 import { getCachedListingsByIds } from '../_lib/listings-cache.js'
 
 function normalizeRows(rows = []) {
@@ -27,6 +28,7 @@ function normalizeRows(rows = []) {
 }
 
 export default async function handler(req, res) {
+  if (await proxyToBridge(req, res)) return
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' })
 
   const ids = String(req.query.ids || '')
