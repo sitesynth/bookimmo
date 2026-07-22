@@ -20,22 +20,16 @@ const WRAP = {
 
 const BRAND = {
   display: 'flex',
-  alignItems: 'center',
-  gap: 12,
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  gap: 10,
 }
 
-const MARK = {
-  width: 42,
-  height: 42,
-  borderRadius: 14,
-  background: 'linear-gradient(135deg, rgb(255,184,0) 0%, rgb(255,102,37) 100%)',
-  color: 'white',
-  fontFamily: '"Lexend", sans-serif',
-  fontSize: 13,
-  fontWeight: 700,
-  display: 'grid',
-  placeItems: 'center',
-  boxShadow: '0 10px 24px rgba(255,102,37,0.24)',
+const BRAND_LOGO = {
+  display: 'block',
+  width: 170,
+  maxWidth: '100%',
+  height: 'auto',
 }
 
 const NAV = {
@@ -67,11 +61,8 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
   return (
     <aside style={WRAP}>
       <div style={BRAND}>
-        <div style={MARK}>BI</div>
         <div>
-          <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 18, fontWeight: 700, color: 'rgb(25,26,32)' }}>
-            Bookimmo
-          </p>
+          <img src="/email-logo.png" alt="Bookimmo" style={BRAND_LOGO} />
           <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.58)' }}>
             Client cabinet
           </p>

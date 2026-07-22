@@ -172,6 +172,15 @@ export async function getCachedListingsByIds(ids = []) {
 
   if (!normalizedIds.length) return []
 
+  const parsedExternalIds = normalizedIds
+    .map((id) => {
+      const match = id.match(/^[a-z0-9_-]+-([a-z0-9][a-z0-9-]{5,})$/i)
+      return match?.[1] || null
+    })
+    .filter(Boolean)
+
+  const externalIds = [...new Set([...normalizedIds, ...parsedExternalIds])]
+
   const result = await query(
     `SELECT DISTINCT ON (external_id)
             source, external_id, slug, title, address, postcode, district,
@@ -179,11 +188,21 @@ export async function getCachedListingsByIds(ids = []) {
             image_url, source_url, lat, lon, listing_type, published_label,
             imported_at, raw_payload
      FROM public.listings_cache
-     WHERE external_id = ANY($1::text[])
+     WHERE external_id = ANY($1::text[]) OR slug = ANY($2::text[])
      ORDER BY external_id, imported_at DESC`,
-    [normalizedIds],
+    [externalIds, normalizedIds],
   )
 
-  const ordered = new Map(result.rows.map((row) => [String(row.external_id), row]))
-  return normalizedIds.map((id) => ordered.get(id)).filter(Boolean)
+  const byExternalId = new Map(result.rows.map((row) => [String(row.external_id), row]))
+  const bySlug = new Map(result.rows.map((row) => [String(row.slug), row]))
+
+  return normalizedIds.map((id) => {
+    const direct = bySlug.get(id) || byExternalId.get(id)
+    if (direct) return { ...direct, lookup_id: id }
+
+    const match = id.match(/^[a-z0-9_-]+-([a-z0-9][a-z0-9-]{5,})$/i)
+    const externalId = match?.[1]
+    const fallback = externalId ? byExternalId.get(externalId) : null
+    return fallback ? { ...fallback, lookup_id: id } : null
+  }).filter(Boolean)
 }

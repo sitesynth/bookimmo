@@ -3,6 +3,7 @@ import { getCachedListingsByIds } from '../_lib/listings-cache.js'
 
 function normalizeRows(rows = []) {
   return rows.map((row) => ({
+    lookupId: row.lookup_id || row.external_id,
     source: row.source,
     id: row.external_id,
     externalId: row.external_id,

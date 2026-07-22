@@ -41,7 +41,17 @@ export function usePropertiesByIds(propertyIds = []) {
       .then((json) => {
         if (cancelled) return
 
-        const byId = new Map((json.items || []).map((property) => [String(property.id), property]))
+        const byId = new Map()
+        ;(json.items || []).forEach((property) => {
+          ;[
+            property.lookupId,
+            property.id,
+            property.externalId,
+            property.slug,
+          ].filter(Boolean).forEach((key) => {
+            byId.set(String(key), property)
+          })
+        })
         const ordered = normalizedIds.map((id) => byId.get(id)).filter(Boolean)
         setProperties(ordered)
         setLoading(false)
