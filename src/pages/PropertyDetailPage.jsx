@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useLayoutEffect, useMemo } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import SvgSprites from '../components/SvgSprites.jsx'
 import CabinetLayout from '../components/cabinet/CabinetLayout.jsx'
@@ -43,6 +43,60 @@ export default function PropertyDetailPage() {
   const parsed = useMemo(() => parseListingDetailSlug(slug), [slug])
   const { property, loading, error } = useListingDetail(parsed)
   const { createDraftApplication } = useApplications()
+
+  useLayoutEffect(() => {
+    const html = document.documentElement
+    const body = document.body
+    const root = document.getElementById('root')
+
+    const previous = {
+      htmlOverflow: html.style.overflow,
+      htmlOverflowY: html.style.overflowY,
+      htmlHeight: html.style.height,
+      bodyOverflow: body.style.overflow,
+      bodyOverflowY: body.style.overflowY,
+      bodyHeight: body.style.height,
+      bodyMinHeight: body.style.minHeight,
+      rootOverflow: root?.style.overflow || '',
+      rootOverflowY: root?.style.overflowY || '',
+      rootHeight: root?.style.height || '',
+      rootMinHeight: root?.style.minHeight || '',
+    }
+
+    html.style.overflow = 'visible'
+    html.style.overflowY = 'auto'
+    html.style.height = 'auto'
+
+    body.style.overflow = 'visible'
+    body.style.overflowY = 'auto'
+    body.style.height = 'auto'
+    body.style.minHeight = '100vh'
+
+    if (root) {
+      root.style.overflow = 'visible'
+      root.style.overflowY = 'visible'
+      root.style.height = 'auto'
+      root.style.minHeight = '100vh'
+    }
+
+    return () => {
+      html.style.overflow = previous.htmlOverflow
+      html.style.overflowY = previous.htmlOverflowY
+      html.style.height = previous.htmlHeight
+
+      body.style.overflow = previous.bodyOverflow
+      body.style.overflowY = previous.bodyOverflowY
+      body.style.height = previous.bodyHeight
+      body.style.minHeight = previous.bodyMinHeight
+
+      if (root) {
+        root.style.overflow = previous.rootOverflow
+        root.style.overflowY = previous.rootOverflowY
+        root.style.height = previous.rootHeight
+        root.style.minHeight = previous.rootMinHeight
+      }
+    }
+  }, [])
 
   async function handleApply() {
     if (!property) return
@@ -91,7 +145,19 @@ export default function PropertyDetailPage() {
   const agent = property.agent
 
   return (
-    <div style={{ minHeight: '100vh', width: 'auto' }}>
+    <div style={{ minHeight: '100vh', width: 'auto', overflow: 'visible' }}>
+      <style>
+        {`
+          html,
+          body,
+          #root {
+            min-height: 100vh;
+            height: auto;
+            overflow: visible !important;
+            overflow-y: auto !important;
+          }
+        `}
+      </style>
       <SvgSprites />
       <CabinetLayout
         title={property.title}

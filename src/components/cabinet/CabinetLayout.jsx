@@ -25,6 +25,7 @@ export default function CabinetLayout({ title, subtitle, children, aside = null 
       minHeight: '100vh',
       background: 'linear-gradient(180deg, #fffdf8 0%, #f2ede4 100%)',
       padding: '24px',
+      overflow: 'visible',
     }}>
       <div style={{
         maxWidth: 1440,
@@ -46,6 +47,8 @@ export default function CabinetLayout({ title, subtitle, children, aside = null 
           display: 'flex',
           flexDirection: 'column',
           gap: 20,
+          minHeight: 'auto',
+          overflow: 'visible',
         }}>
           <section style={{
             padding: '28px 30px',
@@ -97,12 +100,14 @@ export default function CabinetLayout({ title, subtitle, children, aside = null 
             gridTemplateColumns: aside ? 'minmax(0, 1fr) 320px' : 'minmax(0, 1fr)',
             gap: 20,
             alignItems: 'start',
+            overflow: 'visible',
           }}>
             <div style={{
               minWidth: 0,
               display: 'flex',
               flexDirection: 'column',
               gap: 20,
+              overflow: 'visible',
             }}>
               {children}
             </div>
