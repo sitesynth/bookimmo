@@ -238,6 +238,7 @@ function ListingCard({
         display: 'flex',
         flexDirection: compact ? 'row' : 'column',
         gap: compact ? 16 : 0,
+        minHeight: compact ? 150 : 0,
         borderRadius: 24,
         overflow: 'hidden',
         backgroundColor: 'white',
@@ -252,18 +253,21 @@ function ListingCard({
           position: 'relative',
           minWidth: compact ? 150 : 'auto',
           width: compact ? 150 : '100%',
-          paddingTop: compact ? 0 : '62%',
-          height: compact ? 150 : 'auto',
+          flexShrink: 0,
+          aspectRatio: compact ? '1 / 1' : '1.6 / 1',
+          minHeight: compact ? 150 : 220,
+          overflow: 'hidden',
+          background: 'linear-gradient(180deg, #f7f2e8 0%, #efe7d8 100%)',
         }}
       >
         {property.imageUrl ? (
           <img
             src={property.imageUrl}
             alt={property.title}
-            style={{ position: compact ? 'relative' : 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+            style={{ position: 'absolute', inset: 0, display: 'block', width: '100%', height: '100%', objectFit: 'cover' }}
           />
         ) : (
-          <div style={{ position: compact ? 'relative' : 'absolute', inset: 0, background: 'linear-gradient(180deg, #f7f2e8 0%, #efe7d8 100%)' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, #f7f2e8 0%, #efe7d8 100%)' }} />
         )}
       </div>
 
