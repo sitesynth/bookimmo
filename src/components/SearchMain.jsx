@@ -238,6 +238,7 @@ function ListingCard({
         display: 'flex',
         flexDirection: compact ? 'row' : 'column',
         gap: compact ? 16 : 0,
+        flexShrink: 0,
         minHeight: compact ? 150 : 0,
         borderRadius: 24,
         overflow: 'hidden',
