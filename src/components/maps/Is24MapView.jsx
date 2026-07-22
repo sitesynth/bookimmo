@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 const FALLBACK_CENTER = { lon: 10.4515, lat: 51.1657, zoom: 5.6 }
@@ -93,6 +93,7 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect,
   const onSelectRef = useRef(onSelect)
   const onHoverRef = useRef(onHover)
   const lastListingKeyRef = useRef('')
+  const [mapError, setMapError] = useState('')
 
   const validPoints = useMemo(
     () => listings.filter((listing) => Number.isFinite(listing.lat) && Number.isFinite(listing.lon)),
@@ -116,47 +117,52 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect,
     async function ensureMap() {
       if (!MAPBOX_ACCESS_TOKEN || !mapElementRef.current || mapRef.current || typeof window === 'undefined') return
 
-      const mapboxglModule = await import('mapbox-gl')
-      const mapboxgl = mapboxglModule.default
-      if (!mounted || !mapElementRef.current) return
+      try {
+        const mapboxglModule = await import('mapbox-gl')
+        const mapboxgl = mapboxglModule.default
+        if (!mounted || !mapElementRef.current) return
 
-      mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN
+        if (typeof mapboxgl.supported === 'function' && !mapboxgl.supported()) {
+          throw new Error('webgl_not_supported')
+        }
 
-      const map = new mapboxgl.Map({
-        container: mapElementRef.current,
-        style: MAPBOX_STYLE,
-        center: [FALLBACK_CENTER.lon, FALLBACK_CENTER.lat],
-        zoom: FALLBACK_CENTER.zoom,
-        attributionControl: true,
-        pitchWithRotate: false,
-        dragRotate: false,
-      })
+        mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN
 
-      map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-right')
-      map.touchZoomRotate.disableRotation()
-
-      const popup = new mapboxgl.Popup({
-        closeButton: false,
-        closeOnClick: false,
-        offset: 14,
-        maxWidth: '280px',
-      })
-
-      map.on('load', () => {
-        if (!mounted) return
-
-        map.addSource(SOURCE_ID, {
-          type: 'geojson',
-          data: toFeatureCollection([]),
-          cluster: true,
-          clusterMaxZoom: 13,
-          clusterRadius: 44,
+        const map = new mapboxgl.Map({
+          container: mapElementRef.current,
+          style: MAPBOX_STYLE,
+          center: [FALLBACK_CENTER.lon, FALLBACK_CENTER.lat],
+          zoom: FALLBACK_CENTER.zoom,
+          attributionControl: true,
+          pitchWithRotate: false,
+          dragRotate: false,
         })
 
-        map.addSource(ACTIVE_SOURCE_ID, {
-          type: 'geojson',
-          data: toFeatureCollection([]),
+        map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-right')
+        map.touchZoomRotate.disableRotation()
+
+        const popup = new mapboxgl.Popup({
+          closeButton: false,
+          closeOnClick: false,
+          offset: 14,
+          maxWidth: '280px',
         })
+
+        map.on('load', () => {
+          if (!mounted) return
+
+          map.addSource(SOURCE_ID, {
+            type: 'geojson',
+            data: toFeatureCollection([]),
+            cluster: true,
+            clusterMaxZoom: 13,
+            clusterRadius: 44,
+          })
+
+          map.addSource(ACTIVE_SOURCE_ID, {
+            type: 'geojson',
+            data: toFeatureCollection([]),
+          })
 
         map.addLayer({
           id: CLUSTERS_LAYER_ID,
@@ -300,14 +306,21 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect,
             .setHTML(buildPopupHtml(listing))
             .addTo(map)
         })
-        map.on('mouseleave', POINT_LAYER_ID, () => {
-          map.getCanvas().style.cursor = ''
-          popup.remove()
+          map.on('mouseleave', POINT_LAYER_ID, () => {
+            map.getCanvas().style.cursor = ''
+            popup.remove()
+          })
         })
-      })
 
-      mapRef.current = { map, mapboxgl }
-      popupRef.current = popup
+        mapRef.current = { map, mapboxgl }
+        popupRef.current = popup
+        setMapError('')
+      } catch (error) {
+        if (!mounted) return
+        setMapError(error?.message === 'webgl_not_supported'
+          ? 'This browser cannot initialize WebGL, so the interactive map is unavailable here.'
+          : 'The interactive map could not start on this device right now.')
+      }
     }
 
     ensureMap()
@@ -396,6 +409,11 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect,
     }
   }, [activeId, pointsById])
 
+  const fallbackListings = useMemo(
+    () => validPoints.slice(0, 5),
+    [validPoints],
+  )
+
   function fitToResults() {
     if (!mapRef.current?.map || !validPoints.length) return
     const { map, mapboxgl } = mapRef.current
@@ -449,6 +467,68 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect,
         }}
       >
         Add `VITE_MAPBOX_ACCESS_TOKEN` to enable the production map layer.
+      </div>
+    )
+  }
+
+  if (mapError) {
+    return (
+      <div
+        style={{
+          height: 420,
+          width: '100%',
+          borderRadius: 24,
+          overflow: 'hidden',
+          background: 'linear-gradient(180deg, #f7f2e8 0%, #efe7d8 100%)',
+          border: '1px solid rgba(25,26,32,0.08)',
+          padding: 20,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 14,
+        }}
+      >
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <span style={{ borderRadius: 999, padding: '9px 12px', backgroundColor: 'rgba(255,255,255,0.92)', fontFamily: '"Lexend", sans-serif', fontSize: 12, fontWeight: 600 }}>
+            Map unavailable
+          </span>
+          <span style={{ borderRadius: 999, padding: '9px 12px', backgroundColor: 'rgba(255,255,255,0.72)', fontFamily: '"Lexend", sans-serif', fontSize: 12 }}>
+            {validPoints.length} pinned results
+          </span>
+        </div>
+
+        <div style={{ fontFamily: '"Lexend", sans-serif', color: 'rgb(25,26,32)' }}>
+          <p style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.5 }}>
+            {mapError}
+          </p>
+          <p style={{ fontSize: 13, lineHeight: 1.65, color: 'rgba(25,26,32,0.62)', marginTop: 8 }}>
+            Search results are still available below, and you can continue through the active listing card or provider detail page.
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, overflowY: 'auto' }}>
+          {fallbackListings.map((listing) => (
+            <button
+              key={listing.id}
+              type="button"
+              onClick={() => onSelect?.(listing)}
+              style={{
+                border: '1px solid rgba(25,26,32,0.08)',
+                borderRadius: 18,
+                padding: '12px 14px',
+                backgroundColor: String(listing.id) === String(activeId) ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.82)',
+                textAlign: 'left',
+                cursor: 'pointer',
+              }}
+            >
+              <div style={{ fontFamily: '"Lexend", sans-serif', fontSize: 14, fontWeight: 600, color: 'rgb(25,26,32)', lineHeight: 1.4 }}>
+                {listing.title}
+              </div>
+              <div style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.62)', marginTop: 4, lineHeight: 1.5 }}>
+                {listing.address || 'Location on request'}
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
     )
   }
