@@ -1062,8 +1062,8 @@ export default function SearchMain() {
             </SearchWorkspaceCard>
 
             <SearchWorkspaceCard style={{ padding: 0, overflow: 'hidden' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(420px, 1.12fr) minmax(360px, 0.88fr)', minHeight: 760, alignItems: 'start' }}>
-                <div style={{ padding: 24, borderRight: '1px solid rgba(25,26,32,0.08)', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(420px, 1.12fr) minmax(360px, 0.88fr)', alignItems: 'start' }}>
+                <div style={{ padding: 24, borderRight: '1px solid rgba(25,26,32,0.08)', display: 'flex', flexDirection: 'column', minHeight: 0, alignSelf: 'start' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 18 }}>
                     <div>
                       <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.52)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
@@ -1091,9 +1091,9 @@ export default function SearchMain() {
                   </div>
 
                   <div style={{
-                    overflowY: 'auto',
+                    overflowY: enrichedListings.length > 2 ? 'auto' : 'visible',
                     overflowX: 'visible',
-                    maxHeight: 'calc(100vh - 280px)',
+                    maxHeight: enrichedListings.length > 2 ? 'calc(100vh - 280px)' : 'none',
                     paddingRight: 8,
                     display: 'flex',
                     flexDirection: 'column',
