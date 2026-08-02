@@ -38,6 +38,9 @@ function StatCard({ label, value, accent = 'rgb(248,246,241)', hint }) {
 function ActionCard({ title, body, to, cta }) {
   return (
     <article style={{
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
       padding: 24,
       borderRadius: 24,
       backgroundColor: 'white',
@@ -54,7 +57,10 @@ function ActionCard({ title, body, to, cta }) {
         to={to}
         style={{
           display: 'inline-flex',
-          marginTop: 18,
+          marginTop: 'auto',
+          alignSelf: 'flex-start',
+          position: 'relative',
+          top: 18,
           padding: '12px 16px',
           borderRadius: 16,
           textDecoration: 'none',
