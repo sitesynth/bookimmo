@@ -105,6 +105,7 @@ function RailCard({ listing, lang, compact = false }) {
       style={{
         display: 'flex',
         flexDirection: 'column',
+        height: '100%',
         minWidth: 0,
         borderRadius: compact ? 22 : 28,
         overflow: 'hidden',
@@ -115,7 +116,7 @@ function RailCard({ listing, lang, compact = false }) {
     >
       <Link
         to={buildListingDetailHref(lang, listing)}
-        style={{ color: 'inherit', textDecoration: 'none', display: 'block' }}
+        style={{ color: 'inherit', textDecoration: 'none', display: 'flex', flexDirection: 'column', height: '100%' }}
       >
         <div style={{ position: 'relative', aspectRatio: compact ? '1.25 / 1' : '1.3 / 1', backgroundColor: 'rgb(244,239,231)' }}>
           {listing?.imageUrl ? (
@@ -196,7 +197,7 @@ function RailCard({ listing, lang, compact = false }) {
           </div>
         </div>
 
-        <div style={{ padding: compact ? 18 : 22, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ padding: compact ? 18 : 22, display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
           <div>
             <h3 style={{
               fontFamily: '"Lexend", sans-serif',
@@ -240,7 +241,7 @@ function RailCard({ listing, lang, compact = false }) {
             justifyContent: 'space-between',
             alignItems: 'center',
             gap: 12,
-            marginTop: 4,
+            marginTop: 'auto',
           }}>
             <div style={{
               fontFamily: '"Lexend", sans-serif',
