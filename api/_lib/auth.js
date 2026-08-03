@@ -86,9 +86,18 @@ export async function getAgentProfileByUserId(userId) {
 
   const { rows } = await query(
     `SELECT ap.id, ap.user_id, ap.display_name, ap.phone, ap.avatar_url,
+            ap.account_type, ap.organization_id, ap.country_code, ap.base_city_id,
             ap.base_city, ap.service_regions, ap.bio, ap.capacity_limit,
-            ap.is_active, ap.created_at, ap.updated_at
+            ap.is_active, ap.created_at, ap.updated_at,
+            org.name AS organization_name,
+            org.website AS organization_website,
+            c.name AS country_name,
+            city.name AS city_name,
+            city.region AS city_region
      FROM public.agent_profiles ap
+     LEFT JOIN public.organizations org ON org.id = ap.organization_id
+     LEFT JOIN public.countries c ON c.code = ap.country_code
+     LEFT JOIN public.cities city ON city.id = ap.base_city_id
      WHERE ap.user_id = $1
      LIMIT 1`,
     [userId],

@@ -105,7 +105,7 @@ function RailCard({ listing, lang, compact = false }) {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        height: '100%',
+        height: compact ? 'auto' : '100%',
         minWidth: 0,
         borderRadius: compact ? 22 : 28,
         overflow: 'hidden',
@@ -116,9 +116,16 @@ function RailCard({ listing, lang, compact = false }) {
     >
       <Link
         to={buildListingDetailHref(lang, listing)}
-        style={{ color: 'inherit', textDecoration: 'none', display: 'flex', flexDirection: 'column', height: '100%' }}
+        style={{
+          color: 'inherit',
+          textDecoration: 'none',
+          display: 'flex',
+          flexDirection: 'column',
+          height: compact ? 'auto' : '100%',
+          minHeight: 0,
+        }}
       >
-        <div style={{ position: 'relative', aspectRatio: compact ? '1.25 / 1' : '1.3 / 1', backgroundColor: 'rgb(244,239,231)' }}>
+        <div style={{ position: 'relative', aspectRatio: compact ? '1.14 / 1' : '1.3 / 1', backgroundColor: 'rgb(244,239,231)' }}>
           {listing?.imageUrl ? (
             <img
               src={listing.imageUrl}
@@ -197,38 +204,46 @@ function RailCard({ listing, lang, compact = false }) {
           </div>
         </div>
 
-        <div style={{ padding: compact ? 18 : 22, display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
+        <div style={{ padding: compact ? 18 : 22, display: 'flex', flexDirection: 'column', gap: compact ? 10 : 12, flex: compact ? '0 0 auto' : 1, minHeight: 0 }}>
           <div>
             <h3 style={{
               fontFamily: '"Lexend", sans-serif',
-              fontSize: compact ? 20 : 24,
-              lineHeight: 1.15,
+              fontSize: compact ? 17 : 24,
+              lineHeight: compact ? 1.18 : 1.15,
               color: 'rgb(25,26,32)',
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: compact ? 3 : 4,
+              overflow: 'hidden',
             }}>
               {listing?.title || 'Untitled listing'}
             </h3>
             <p style={{
               marginTop: 8,
               fontFamily: '"Lexend", sans-serif',
-              fontSize: 14,
+              fontSize: compact ? 13 : 14,
               lineHeight: 1.55,
               color: 'rgba(25,26,32,0.62)',
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: compact ? 2 : 3,
+              overflow: 'hidden',
             }}>
               {listing?.address || 'Germany'}
             </p>
           </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: compact ? 6 : 8 }}>
             {meta.map((item) => (
               <span
                 key={`${listing?.id}-${item}`}
                 style={{
-                  padding: '9px 12px',
+                  padding: compact ? '8px 11px' : '9px 12px',
                   borderRadius: 999,
                   backgroundColor: 'rgb(248,246,241)',
                   color: 'rgb(25,26,32)',
                   fontFamily: '"Lexend", sans-serif',
-                  fontSize: 13,
+                  fontSize: compact ? 12 : 13,
                 }}
               >
                 {item}
@@ -241,13 +256,15 @@ function RailCard({ listing, lang, compact = false }) {
             justifyContent: 'space-between',
             alignItems: 'center',
             gap: 12,
-            marginTop: 'auto',
+            marginTop: compact ? 8 : 'auto',
+            flexWrap: compact ? 'wrap' : 'nowrap',
           }}>
             <div style={{
               fontFamily: '"Lexend", sans-serif',
-              fontSize: compact ? 22 : 26,
+              fontSize: compact ? 18 : 26,
               fontWeight: 700,
               color: 'rgb(25,26,32)',
+              flexShrink: 0,
             }}>
               {listing?.priceLabel || 'View details'}
             </div>
@@ -255,13 +272,14 @@ function RailCard({ listing, lang, compact = false }) {
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '12px 16px',
+              padding: compact ? '10px 14px' : '12px 16px',
               borderRadius: 16,
               backgroundColor: 'rgb(25,26,32)',
               color: 'rgb(245,245,245)',
               fontFamily: '"Lexend", sans-serif',
-              fontSize: 13,
+              fontSize: compact ? 12 : 13,
               fontWeight: 600,
+              whiteSpace: 'nowrap',
             }}>
               View property
             </span>
@@ -372,7 +390,7 @@ export default function LiveListingFeed({
           <h2 style={{
             marginTop: eyebrow ? 10 : 0,
             fontFamily: '"Lexend", sans-serif',
-            fontSize: compact ? 34 : 44,
+            fontSize: compact ? 38 : 44,
             lineHeight: 1.03,
             color: 'rgb(25,26,32)',
           }}>
@@ -464,7 +482,7 @@ export default function LiveListingFeed({
 
       <div style={{
         display: 'grid',
-        gridTemplateColumns: compact ? 'repeat(auto-fit, minmax(280px, 1fr))' : 'repeat(auto-fit, minmax(300px, 1fr))',
+        gridTemplateColumns: compact ? 'repeat(auto-fit, minmax(260px, 1fr))' : 'repeat(auto-fit, minmax(300px, 1fr))',
         gap: 18,
       }}>
         {cards.map((listing) => (

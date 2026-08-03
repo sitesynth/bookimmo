@@ -1,6 +1,7 @@
 import crypto from 'node:crypto'
 import { Pool } from 'pg'
 import { loadLocalEnv } from './env.js'
+import { CITY_SEED, COUNTRY_SEED } from './reference-data.js'
 
 loadLocalEnv()
 
@@ -150,6 +151,10 @@ async function createSchema() {
       display_name TEXT,
       phone TEXT,
       avatar_url TEXT,
+      account_type TEXT NOT NULL DEFAULT 'independent',
+      organization_id TEXT,
+      country_code TEXT,
+      base_city_id TEXT,
       base_city TEXT,
       service_regions JSONB NOT NULL DEFAULT '[]'::jsonb,
       bio TEXT,
@@ -159,8 +164,59 @@ async function createSchema() {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
+    ALTER TABLE public.agent_profiles
+      ADD COLUMN IF NOT EXISTS account_type TEXT NOT NULL DEFAULT 'independent',
+      ADD COLUMN IF NOT EXISTS organization_id TEXT,
+      ADD COLUMN IF NOT EXISTS country_code TEXT,
+      ADD COLUMN IF NOT EXISTS base_city_id TEXT;
+
     CREATE INDEX IF NOT EXISTS agent_profiles_active_idx
       ON public.agent_profiles (is_active, base_city);
+
+    CREATE TABLE IF NOT EXISTS public.countries (
+      code TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      priority INTEGER NOT NULL DEFAULT 0,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS public.cities (
+      id TEXT PRIMARY KEY,
+      country_code TEXT NOT NULL REFERENCES public.countries(code) ON DELETE CASCADE,
+      name TEXT NOT NULL,
+      region TEXT,
+      slug TEXT NOT NULL,
+      population INTEGER,
+      is_active BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      UNIQUE (country_code, slug)
+    );
+
+    CREATE INDEX IF NOT EXISTS cities_lookup_idx
+      ON public.cities (country_code, is_active, population DESC, name ASC);
+
+    CREATE TABLE IF NOT EXISTS public.organizations (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      country_code TEXT REFERENCES public.countries(code) ON DELETE SET NULL,
+      website TEXT,
+      kind TEXT NOT NULL DEFAULT 'agency',
+      metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS public.organization_members (
+      id TEXT PRIMARY KEY,
+      organization_id TEXT NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
+      user_id TEXT NOT NULL REFERENCES public.app_users(id) ON DELETE CASCADE,
+      role TEXT NOT NULL DEFAULT 'agent',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      UNIQUE (organization_id, user_id)
+    );
 
     CREATE TABLE IF NOT EXISTS public.agent_city_coverage (
       id TEXT PRIMARY KEY,
@@ -357,9 +413,82 @@ async function createSchema() {
   await getPool().query(sql)
 }
 
+async function addConstraintIfMissing(name, statement) {
+  const existing = await getPool().query(
+    `SELECT 1
+     FROM pg_constraint
+     WHERE conname = $1
+     LIMIT 1`,
+    [name],
+  )
+
+  if (!existing.rows[0]) {
+    await getPool().query(statement)
+  }
+}
+
+async function ensureReferenceData() {
+  await addConstraintIfMissing(
+    'agent_profiles_organization_id_fkey',
+    `ALTER TABLE public.agent_profiles
+       ADD CONSTRAINT agent_profiles_organization_id_fkey
+       FOREIGN KEY (organization_id) REFERENCES public.organizations(id) ON DELETE SET NULL`,
+  )
+  await addConstraintIfMissing(
+    'agent_profiles_country_code_fkey',
+    `ALTER TABLE public.agent_profiles
+       ADD CONSTRAINT agent_profiles_country_code_fkey
+       FOREIGN KEY (country_code) REFERENCES public.countries(code) ON DELETE SET NULL`,
+  )
+  await addConstraintIfMissing(
+    'agent_profiles_base_city_id_fkey',
+    `ALTER TABLE public.agent_profiles
+       ADD CONSTRAINT agent_profiles_base_city_id_fkey
+       FOREIGN KEY (base_city_id) REFERENCES public.cities(id) ON DELETE SET NULL`,
+  )
+
+  for (const item of COUNTRY_SEED) {
+    await getPool().query(
+      `INSERT INTO public.countries (code, name, priority)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (code) DO UPDATE
+         SET name = EXCLUDED.name,
+             priority = EXCLUDED.priority,
+             updated_at = NOW()`,
+      [item.code, item.name, item.priority || 0],
+    )
+  }
+
+  for (const item of CITY_SEED) {
+    await getPool().query(
+      `INSERT INTO public.cities (id, country_code, name, region, slug, population, is_active)
+       VALUES ($1, $2, $3, $4, $5, $6, TRUE)
+       ON CONFLICT (id) DO UPDATE
+         SET country_code = EXCLUDED.country_code,
+             name = EXCLUDED.name,
+             region = EXCLUDED.region,
+             slug = EXCLUDED.slug,
+             population = EXCLUDED.population,
+             is_active = TRUE,
+             updated_at = NOW()`,
+      [
+        item.id,
+        item.countryCode,
+        item.name,
+        item.region || null,
+        item.slug,
+        Number.isFinite(item.population) ? item.population : null,
+      ],
+    )
+  }
+}
+
 export async function ensureSchema() {
   if (!schemaPromise) {
-    schemaPromise = createSchema()
+    schemaPromise = (async () => {
+      await createSchema()
+      await ensureReferenceData()
+    })()
   }
   return schemaPromise
 }

@@ -14,16 +14,26 @@ export default async function handler(req, res) {
     name = '',
     portal = 'client',
     phone = '',
+    accountType = 'independent',
+    countryCode = 'DE',
     baseCity = '',
+    baseCityId = '',
     serviceRegions = [],
     bio = '',
+    companyName = '',
+    companyWebsite = '',
   } = req.body || {}
   const normalizedEmail = String(email).trim().toLowerCase()
   const normalizedPortal = String(portal || 'client').trim().toLowerCase() === 'agent' ? 'agent' : 'client'
+  const normalizedAccountType = String(accountType || 'independent').trim().toLowerCase() === 'company' ? 'company' : 'independent'
   const normalizedName = String(name || normalizedEmail.split('@')[0]).trim()
   const normalizedPhone = String(phone || '').trim()
+  const normalizedCountryCode = String(countryCode || 'DE').trim().toUpperCase()
   const normalizedBaseCity = String(baseCity || '').trim()
+  const normalizedBaseCityId = String(baseCityId || '').trim()
   const normalizedBio = String(bio || '').trim()
+  const normalizedCompanyName = String(companyName || '').trim()
+  const normalizedCompanyWebsite = String(companyWebsite || '').trim()
   const normalizedRegions = Array.isArray(serviceRegions)
     ? serviceRegions.map((item) => String(item || '').trim()).filter(Boolean)
     : String(serviceRegions || '')
@@ -44,8 +54,14 @@ export default async function handler(req, res) {
     if (!normalizedPhone) {
       return res.status(400).json({ error: 'Enter the agent phone number.' })
     }
-    if (!normalizedBaseCity) {
-      return res.status(400).json({ error: 'Enter the base city.' })
+    if (!normalizedCountryCode) {
+      return res.status(400).json({ error: 'Choose the operating country.' })
+    }
+    if (!normalizedBaseCityId) {
+      return res.status(400).json({ error: 'Choose the base city from the directory.' })
+    }
+    if (normalizedAccountType === 'company' && !normalizedCompanyName) {
+      return res.status(400).json({ error: 'Enter the company or agency name.' })
     }
   }
 
@@ -58,6 +74,24 @@ export default async function handler(req, res) {
   const agentProfileId = newId()
   const verifyToken = newId().replace(/-/g, '') + newId().replace(/-/g, '')
 
+  let resolvedCity = null
+  if (normalizedPortal === 'agent') {
+    const cityLookup = await query(
+      `SELECT id, country_code, name, region
+       FROM public.cities
+       WHERE id = $1
+         AND country_code = $2
+         AND is_active = TRUE
+       LIMIT 1`,
+      [normalizedBaseCityId, normalizedCountryCode],
+    )
+    resolvedCity = cityLookup.rows[0] || null
+
+    if (!resolvedCity) {
+      return res.status(400).json({ error: 'The selected base city is no longer available. Please choose it again.' })
+    }
+  }
+
   try {
     await withClient(async (client) => {
       await client.query('BEGIN')
@@ -67,11 +101,43 @@ export default async function handler(req, res) {
         [userId, normalizedEmail, hashPassword(String(password)), normalizedName, normalizedPortal, preferredLanguage],
       )
       if (normalizedPortal === 'agent') {
+        let organizationId = null
+
+        if (normalizedAccountType === 'company') {
+          organizationId = newId()
+          await client.query(
+            `INSERT INTO public.organizations (
+               id, name, country_code, website, kind, metadata
+             ) VALUES ($1, $2, $3, $4, 'agency', '{}'::jsonb)`,
+            [organizationId, normalizedCompanyName, normalizedCountryCode, normalizedCompanyWebsite || null],
+          )
+
+          await client.query(
+            `INSERT INTO public.organization_members (
+               id, organization_id, user_id, role
+             ) VALUES ($1, $2, $3, 'owner')`,
+            [newId(), organizationId, userId],
+          )
+        }
+
         await client.query(
           `INSERT INTO public.agent_profiles (
-             id, user_id, display_name, phone, base_city, service_regions, bio, is_active
-           ) VALUES ($1, $2, $3, $4, $5, $6::jsonb, $7, TRUE)`,
-          [agentProfileId, userId, normalizedName, normalizedPhone, normalizedBaseCity, JSON.stringify(normalizedRegions), normalizedBio],
+             id, user_id, display_name, phone, account_type, organization_id,
+             country_code, base_city_id, base_city, service_regions, bio, is_active
+           ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::jsonb, $11, TRUE)`,
+          [
+            agentProfileId,
+            userId,
+            normalizedName,
+            normalizedPhone,
+            normalizedAccountType,
+            organizationId,
+            normalizedCountryCode,
+            resolvedCity.id,
+            resolvedCity.name,
+            JSON.stringify(normalizedRegions),
+            normalizedBio,
+          ],
         )
       }
       await client.query(

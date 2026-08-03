@@ -33,10 +33,20 @@ export default async function handler(req, res) {
       agent_profile: agentProfile ? {
         id: agentProfile.id,
         displayName: agentProfile.display_name || user.name || user.email,
+        accountType: agentProfile.account_type || 'independent',
+        countryCode: agentProfile.country_code || '',
+        countryName: agentProfile.country_name || '',
+        baseCityId: agentProfile.base_city_id || '',
         baseCity: agentProfile.base_city || '',
+        baseCityRegion: agentProfile.city_region || '',
         phone: agentProfile.phone || '',
         serviceRegions: Array.isArray(agentProfile.service_regions) ? agentProfile.service_regions : [],
         capacityLimit: agentProfile.capacity_limit || null,
+        organization: agentProfile.organization_id ? {
+          id: agentProfile.organization_id,
+          name: agentProfile.organization_name || '',
+          website: agentProfile.organization_website || '',
+        } : null,
       } : null,
       provider_accounts: providerAccounts.rows.map((row) => ({
         id: row.id,

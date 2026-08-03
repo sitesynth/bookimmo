@@ -45,6 +45,23 @@ const TOGGLE_BUTTON_STYLE = {
   cursor: 'pointer',
   padding: 0,
 }
+const SEGMENTED_GROUP_STYLE = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+  gap: '8px',
+  width: '100%',
+}
+const SEGMENT_BUTTON_STYLE = (active) => ({
+  width: '100%',
+  padding: '12px 14px',
+  borderRadius: '8px',
+  border: `1px solid ${active ? 'rgb(25,26,32)' : 'rgba(25,26,32,0.15)'}`,
+  background: active ? 'rgb(25,26,32)' : '#fff',
+  color: active ? 'rgb(245,245,245)' : 'rgb(25,26,32)',
+  fontSize: '14px',
+  fontFamily: '"Lexend", sans-serif',
+  cursor: 'pointer',
+})
 
 function EyeIcon({ visible }) {
   if (visible) {
@@ -107,9 +124,17 @@ export default function SupabaseAuthForm({ mode = 'signup', portal = 'client' })
   const [confirm, setConfirm]   = useState('')
   const [name, setName]         = useState('')
   const [phone, setPhone]       = useState('')
+  const [accountType, setAccountType] = useState('independent')
+  const [countryCode, setCountryCode] = useState('DE')
+  const [baseCityId, setBaseCityId] = useState('')
   const [baseCity, setBaseCity] = useState('')
   const [serviceRegions, setServiceRegions] = useState('')
   const [bio, setBio]           = useState('')
+  const [companyName, setCompanyName] = useState('')
+  const [companyWebsite, setCompanyWebsite] = useState('')
+  const [countries, setCountries] = useState([])
+  const [cities, setCities] = useState([])
+  const [referenceLoading, setReferenceLoading] = useState(false)
   const [status, setStatus]     = useState('idle')
   const [message, setMessage]   = useState('')
   const [passwordVisible, setPasswordVisible] = useState(false)
@@ -136,6 +161,57 @@ export default function SupabaseAuthForm({ mode = 'signup', portal = 'client' })
     }
   }, [location.search])
 
+  useEffect(() => {
+    if (!(mode === 'signup' && portal === 'agent')) return
+
+    let cancelled = false
+
+    async function loadCountries() {
+      try {
+        const result = await apiRequest('/api/reference/countries')
+        if (cancelled) return
+        setCountries(Array.isArray(result?.countries) ? result.countries : [])
+      } catch (error) {
+        if (cancelled) return
+        setCountries([])
+      }
+    }
+
+    loadCountries()
+    return () => { cancelled = true }
+  }, [mode, portal])
+
+  useEffect(() => {
+    if (!(mode === 'signup' && portal === 'agent')) return
+
+    let cancelled = false
+
+    async function loadCities() {
+      setReferenceLoading(true)
+      try {
+        const result = await apiRequest(`/api/reference/cities?countryCode=${encodeURIComponent(countryCode)}&limit=120`)
+        if (cancelled) return
+        const nextCities = Array.isArray(result?.cities) ? result.cities : []
+        setCities(nextCities)
+
+        if (!nextCities.some((item) => item.id === baseCityId)) {
+          setBaseCityId('')
+          setBaseCity('')
+        }
+      } catch (error) {
+        if (cancelled) return
+        setCities([])
+        setBaseCityId('')
+        setBaseCity('')
+      } finally {
+        if (!cancelled) setReferenceLoading(false)
+      }
+    }
+
+    loadCities()
+    return () => { cancelled = true }
+  }, [baseCityId, countryCode, mode, portal])
+
   async function handleSubmit(e) {
     e.preventDefault()
     setStatus('loading')
@@ -146,8 +222,11 @@ export default function SupabaseAuthForm({ mode = 'signup', portal = 'client' })
         setStatus('error'); setMessage('Passwords do not match.'); return
       }
       if (portal === 'agent') {
-        if (!name.trim() || !phone.trim() || !baseCity.trim()) {
-          setStatus('error'); setMessage('Fill in your full name, phone number and base city.'); return
+        if (!name.trim() || !phone.trim() || !countryCode || !baseCityId) {
+          setStatus('error'); setMessage('Fill in your full name, phone number, country and base city.'); return
+        }
+        if (accountType === 'company' && !companyName.trim()) {
+          setStatus('error'); setMessage('Add the company or agency name.'); return
         }
       }
       const preferredLanguage = await detectPreferredLanguage()
@@ -162,9 +241,14 @@ export default function SupabaseAuthForm({ mode = 'signup', portal = 'client' })
             name,
             portal,
             phone,
+            accountType,
+            countryCode,
+            baseCityId,
             baseCity,
             serviceRegions,
             bio,
+            companyName,
+            companyWebsite,
           }),
         })
         setStatus('success'); setMessage(portal === 'agent' ? 'Check your email to confirm your agent account.' : 'Check your email to confirm your account.')
@@ -220,11 +304,35 @@ export default function SupabaseAuthForm({ mode = 'signup', portal = 'client' })
   const showPass    = mode !== 'reset'
   const showConfirm = mode === 'signup' || mode === 'update'
   const showAgentFields = mode === 'signup' && portal === 'agent'
+  const showCompanyFields = showAgentFields && accountType === 'company'
+
+  function handleCityChange(event) {
+    const nextId = event.target.value
+    const nextCity = cities.find((item) => item.id === nextId) || null
+    setBaseCityId(nextId)
+    setBaseCity(nextCity ? nextCity.name : '')
+  }
 
   return (
     <form onSubmit={handleSubmit} style={{display:'flex', flexDirection:'column', gap:'12px', width:'100%'}}>
       {showAgentFields && (
         <>
+          <div style={SEGMENTED_GROUP_STYLE}>
+            <button
+              type="button"
+              onClick={() => setAccountType('independent')}
+              style={SEGMENT_BUTTON_STYLE(accountType === 'independent')}
+            >
+              Independent agent
+            </button>
+            <button
+              type="button"
+              onClick={() => setAccountType('company')}
+              style={SEGMENT_BUTTON_STYLE(accountType === 'company')}
+            >
+              Company / agency
+            </button>
+          </div>
           <input
             type="text"
             placeholder="Full name"
@@ -243,15 +351,56 @@ export default function SupabaseAuthForm({ mode = 'signup', portal = 'client' })
             style={INPUT_STYLE}
             autoComplete="tel"
           />
-          <input
-            type="text"
-            placeholder="Base city"
+          {showCompanyFields ? (
+            <>
+              <input
+                type="text"
+                placeholder="Company or agency name"
+                required
+                value={companyName}
+                onChange={e => setCompanyName(e.target.value)}
+                style={INPUT_STYLE}
+                autoComplete="organization"
+              />
+              <input
+                type="url"
+                placeholder="Company website (optional)"
+                value={companyWebsite}
+                onChange={e => setCompanyWebsite(e.target.value)}
+                style={INPUT_STYLE}
+                autoComplete="url"
+              />
+            </>
+          ) : null}
+          <select
             required
-            value={baseCity}
-            onChange={e => setBaseCity(e.target.value)}
+            value={countryCode}
+            onChange={e => setCountryCode(e.target.value)}
             style={INPUT_STYLE}
-            autoComplete="address-level2"
-          />
+          >
+            <option value="">Select country</option>
+            {countries.map((item) => (
+              <option key={item.code} value={item.code}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+          <select
+            required
+            value={baseCityId}
+            onChange={handleCityChange}
+            style={INPUT_STYLE}
+            disabled={!countryCode || referenceLoading}
+          >
+            <option value="">
+              {referenceLoading ? 'Loading cities…' : 'Select base city'}
+            </option>
+            {cities.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.region ? `${item.name}, ${item.region}` : item.name}
+              </option>
+            ))}
+          </select>
           <input
             type="text"
             placeholder="Service regions (comma separated)"
