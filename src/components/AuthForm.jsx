@@ -394,6 +394,7 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
   const [referenceLoading, setReferenceLoading] = useState(false)
   const [countryQuery, setCountryQuery] = useState('Germany')
   const [cityQuery, setCityQuery] = useState('')
+  const [agentStep, setAgentStep] = useState(1)
 
   const pathLanguage = getPathLanguage(location.pathname)
   const lang = normalizeLanguage(pathLanguage, 'en')
@@ -423,6 +424,18 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
   const showAgentFields = mode === 'signup' && portal === 'agent'
   const showCompanyFields = showAgentFields && agentForm.watch('accountType') === 'company'
   const agentCountryCode = agentForm.watch('countryCode')
+
+  const agentStepOneFields = [
+    'accountType',
+    'name',
+    'phone',
+    'countryCode',
+    'baseCityId',
+    'baseCity',
+    'serviceRegions',
+    'bio',
+    ...(showCompanyFields ? ['companyName', 'companyWebsite'] : []),
+  ]
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
@@ -644,6 +657,16 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
     }
   }
 
+  async function continueAgentSignup() {
+    const isValid = await agentForm.trigger(agentStepOneFields)
+    if (isValid) {
+      setAgentStep(2)
+      window.requestAnimationFrame(() => {
+        document.querySelector('[data-agent-signup-step="2"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+    }
+  }
+
   const isLoading = status === 'loading'
   const showEmail = mode !== 'update'
   const showPass = mode !== 'reset'
@@ -657,7 +680,23 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
     <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
       {showAgentFields ? (
         <>
+          <div style={{ display: 'grid', gap: '8px', marginBottom: '4px' }} aria-label="Registration progress">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+              <p style={{ ...LABEL_STYLE, marginBottom: 0 }}>Registration</p>
+              <p style={{ ...HELP_STYLE, margin: 0 }}>Step {agentStep} of 2</p>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '6px' }}>
+              {[1, 2].map((step) => (
+                <span
+                  key={step}
+                  aria-current={agentStep === step ? 'step' : undefined}
+                  style={{ height: '4px', borderRadius: '999px', background: step <= agentStep ? 'rgb(25,26,32)' : 'rgba(25,26,32,0.12)' }}
+                />
+              ))}
+            </div>
+          </div>
           <div style={{ display: 'grid', gap: '10px' }}>
+            {agentStep === 1 ? (+              <>
             <div>
               <label style={LABEL_STYLE}>Account type</label>
               <div style={SEGMENTED_GROUP_STYLE}>
@@ -833,6 +872,13 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
               <FieldError message={agentForm.formState.errors.bio?.message} />
             </div>
 
+            <button type="button" onClick={continueAgentSignup} style={BTN_STYLE}>
+              Continue to account details
+            </button>
+              </>
+            ) : (
+              <div data-agent-signup-step="2" style={{ display: 'grid', gap: '10px' }}>
+
             <div>
               <label style={LABEL_STYLE}>Email</label>
               <input
@@ -885,6 +931,19 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
               />
               <FieldError message={agentForm.formState.errors.confirm?.message} />
             </div>
+                <button type="submit" disabled={isLoading} style={{ ...BTN_STYLE, opacity: isLoading ? 0.6 : 1 }}>
+                  {isLoading ? 'Please wait…' : 'Create Agent Account'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAgentStep(1)}
+                  disabled={isLoading}
+                  style={{ ...BTN_STYLE, marginTop: 0, background: '#fff', color: 'rgb(25,26,32)', border: '1px solid rgba(25,26,32,0.14)' }}
+                >
+                  Back to profile
+                </button>
+              </div>
+            )}
           </div>
         </>
       ) : null}
@@ -923,13 +982,15 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
         />
       ) : null}
 
-      <button type="submit" disabled={isLoading} style={{ ...BTN_STYLE, opacity: isLoading ? 0.6 : 1 }}>
-        {isLoading ? 'Please wait…'
-          : mode === 'signup' ? (portal === 'agent' ? 'Create Agent Account' : 'Create Account')
-          : mode === 'login' ? (portal === 'agent' ? 'Sign In As Agent' : 'Sign In')
-          : mode === 'reset' ? 'Send Reset Link'
-          : 'Update Password'}
-      </button>
+      {!showAgentFields ? (
+        <button type="submit" disabled={isLoading} style={{ ...BTN_STYLE, opacity: isLoading ? 0.6 : 1 }}>
+          {isLoading ? 'Please wait…'
+            : mode === 'signup' ? 'Create Account'
+            : mode === 'login' ? (portal === 'agent' ? 'Sign In As Agent' : 'Sign In')
+            : mode === 'reset' ? 'Send Reset Link'
+            : 'Update Password'}
+        </button>
+      ) : null}
 
       {message ? <p style={MSG_STYLE(status === 'error')}>{message}</p> : null}
     </form>
