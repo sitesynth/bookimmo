@@ -1,35 +1,62 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import { PhoneInput } from 'react-international-phone'
+import 'react-international-phone/style.css'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { z } from 'zod'
 import { detectPreferredLanguage, getPathLanguage, normalizeLanguage } from '../lib/language.js'
 import { apiRequest } from '../lib/api.js'
-import PhoneField from './PhoneField.jsx'
 
 const INPUT_STYLE = {
-  width: '100%', padding: '12px 16px', borderRadius: '8px',
-  border: '1px solid rgba(25,26,32,0.15)', fontSize: '16px',
-  fontFamily: '"Lexend", sans-serif', outline: 'none',
-  boxSizing: 'border-box', color: 'rgb(25,26,32)', background: '#fff',
+  width: '100%',
+  padding: '14px 16px',
+  borderRadius: '16px',
+  border: '1px solid rgba(25,26,32,0.14)',
+  fontSize: '16px',
+  fontFamily: '"Lexend", sans-serif',
+  outline: 'none',
+  boxSizing: 'border-box',
+  color: 'rgb(25,26,32)',
+  background: '#fff',
+  minHeight: '56px',
 }
+
 const BTN_STYLE = {
-  width: '100%', padding: '12px 24px', borderRadius: '8px',
-  backgroundColor: 'rgb(25,26,32)', color: 'rgb(245,245,245)',
-  border: 'none', fontSize: '16px', fontFamily: '"Lexend", sans-serif',
-  cursor: 'pointer', marginTop: '4px',
+  width: '100%',
+  padding: '14px 24px',
+  borderRadius: '18px',
+  backgroundColor: 'rgb(25,26,32)',
+  color: 'rgb(245,245,245)',
+  border: 'none',
+  fontSize: '16px',
+  fontFamily: '"Lexend", sans-serif',
+  fontWeight: 500,
+  cursor: 'pointer',
+  marginTop: '4px',
+  minHeight: '58px',
 }
+
 const MSG_STYLE = (isError) => ({
-  fontSize: '14px', fontFamily: '"Lexend", sans-serif',
-  color: isError ? '#c0392b' : '#27ae60',
-  padding: '8px 12px', borderRadius: '6px',
-  background: isError ? 'rgba(192,57,43,0.08)' : 'rgba(39,174,96,0.08)',
+  fontSize: '14px',
+  fontFamily: '"Lexend", sans-serif',
+  color: isError ? '#c0392b' : '#1f8a5b',
+  padding: '10px 12px',
+  borderRadius: '12px',
+  background: isError ? 'rgba(192,57,43,0.08)' : 'rgba(31,138,91,0.08)',
 })
+
 const PASSWORD_INPUT_STYLE = {
   ...INPUT_STYLE,
   paddingRight: '52px',
 }
+
 const PASSWORD_FIELD_STYLE = {
   position: 'relative',
   width: '100%',
 }
+
 const TOGGLE_BUTTON_STYLE = {
   position: 'absolute',
   top: '50%',
@@ -46,22 +73,166 @@ const TOGGLE_BUTTON_STYLE = {
   cursor: 'pointer',
   padding: 0,
 }
+
 const SEGMENTED_GROUP_STYLE = {
   display: 'grid',
   gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-  gap: '8px',
+  gap: '10px',
   width: '100%',
 }
+
 const SEGMENT_BUTTON_STYLE = (active) => ({
   width: '100%',
-  padding: '12px 14px',
-  borderRadius: '8px',
+  padding: '14px 16px',
+  borderRadius: '18px',
   border: `1px solid ${active ? 'rgb(25,26,32)' : 'rgba(25,26,32,0.15)'}`,
   background: active ? 'rgb(25,26,32)' : '#fff',
   color: active ? 'rgb(245,245,245)' : 'rgb(25,26,32)',
-  fontSize: '14px',
+  fontSize: '16px',
+  fontFamily: '"Lexend", sans-serif',
+  fontWeight: 500,
+  cursor: 'pointer',
+  minHeight: '56px',
+})
+
+const LABEL_STYLE = {
+  display: 'block',
+  marginBottom: '8px',
+  color: 'rgba(25,26,32,0.72)',
+  fontSize: '13px',
+  fontFamily: '"Lexend", sans-serif',
+  letterSpacing: '0.04em',
+  textTransform: 'uppercase',
+}
+
+const HELP_STYLE = {
+  fontSize: '13px',
+  lineHeight: 1.55,
+  color: 'rgba(25,26,32,0.58)',
+  fontFamily: '"Lexend", sans-serif',
+}
+
+const ERROR_STYLE = {
+  fontSize: '13px',
+  lineHeight: 1.45,
+  color: '#c0392b',
+  fontFamily: '"Lexend", sans-serif',
+}
+
+const DROPDOWN_STYLE = {
+  position: 'absolute',
+  top: 'calc(100% + 8px)',
+  left: 0,
+  right: 0,
+  zIndex: 20,
+  borderRadius: '18px',
+  border: '1px solid rgba(25,26,32,0.1)',
+  background: '#fff',
+  boxShadow: '0 18px 42px rgba(25,26,32,0.12)',
+  padding: '8px',
+  maxHeight: '240px',
+  overflowY: 'auto',
+}
+
+const DROPDOWN_ITEM_STYLE = (active) => ({
+  width: '100%',
+  textAlign: 'left',
+  padding: '11px 12px',
+  borderRadius: '12px',
+  border: 'none',
+  background: active ? 'rgba(255, 162, 22, 0.12)' : 'transparent',
+  color: 'rgb(25,26,32)',
+  fontSize: '15px',
   fontFamily: '"Lexend", sans-serif',
   cursor: 'pointer',
+})
+
+const PHONE_WRAPPER_STYLE = {
+  width: '100%',
+}
+
+const PHONE_INPUT_STYLE = {
+  ...INPUT_STYLE,
+  borderLeft: '1px solid rgba(25,26,32,0.14)',
+  borderTopLeftRadius: 0,
+  borderBottomLeftRadius: 0,
+}
+
+const PHONE_SELECTOR_STYLE_PROPS = {
+  buttonStyle: {
+    minHeight: '56px',
+    borderRadius: '16px 0 0 16px',
+    border: '1px solid rgba(25,26,32,0.14)',
+    borderRight: 'none',
+    background: '#fff',
+    paddingInline: '12px',
+  },
+  dropdownArrowStyle: {
+    color: 'rgba(25,26,32,0.58)',
+  },
+  buttonContentWrapperStyle: {
+    gap: '8px',
+  },
+  dropdownStyleProps: {
+    style: {
+      borderRadius: '18px',
+      border: '1px solid rgba(25,26,32,0.1)',
+      boxShadow: '0 18px 42px rgba(25,26,32,0.12)',
+    },
+  },
+}
+
+const agentSignupSchema = z.object({
+  accountType: z.enum(['independent', 'company']),
+  name: z.string().trim().min(2, 'Enter your full name.'),
+  phone: z.string().trim().min(1, 'Enter your phone number.'),
+  countryCode: z.string().trim().min(2, 'Choose the operating country.'),
+  baseCityId: z.string().trim().min(1, 'Choose the base city from the directory.'),
+  baseCity: z.string().trim().min(1, 'Choose the base city from the directory.'),
+  serviceRegions: z.string().trim().min(2, 'Add at least one service region.'),
+  bio: z.string().trim().min(16, 'Add a short service focus so clients know what you cover.').max(700, 'Keep the service focus under 700 characters.'),
+  companyName: z.string().optional().default(''),
+  companyWebsite: z.string().optional().default(''),
+  email: z.string().trim().email('Enter a valid email address.'),
+  password: z.string().min(8, 'Password must be at least 8 characters.'),
+  confirm: z.string().min(8, 'Confirm your password.'),
+}).superRefine((data, ctx) => {
+  const parsedPhone = parsePhoneNumberFromString(data.phone || '')
+
+  if (!parsedPhone || !parsedPhone.isValid()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['phone'],
+      message: 'Enter a valid phone number.',
+    })
+  }
+
+  if (data.accountType === 'company' && !String(data.companyName || '').trim()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['companyName'],
+      message: 'Enter the company or agency name.',
+    })
+  }
+
+  if (String(data.companyWebsite || '').trim()) {
+    const websiteResult = z.string().url('Enter a valid company website URL.').safeParse(data.companyWebsite)
+    if (!websiteResult.success) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['companyWebsite'],
+        message: 'Enter a valid company website URL.',
+      })
+    }
+  }
+
+  if (data.password !== data.confirm) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['confirm'],
+      message: 'Passwords do not match.',
+    })
+  }
 })
 
 function EyeIcon({ visible }) {
@@ -116,34 +287,142 @@ function PasswordField({
   )
 }
 
+function FieldError({ message }) {
+  if (!message) return null
+  return <p style={ERROR_STYLE}>{message}</p>
+}
+
+function formatDirectoryOption(option) {
+  if (!option) return ''
+  return option.region ? `${option.name}, ${option.region}` : option.name
+}
+
+function DirectoryCombobox({
+  label,
+  placeholder,
+  value,
+  options,
+  onChange,
+  onSelect,
+  error,
+  disabled = false,
+  loading = false,
+  emptyMessage = 'No matches found.',
+}) {
+  const [open, setOpen] = useState(false)
+
+  const filteredOptions = useMemo(() => {
+    const needle = String(value || '').trim().toLowerCase()
+    if (!needle) return options.slice(0, 10)
+
+    return options
+      .filter((option) => formatDirectoryOption(option).toLowerCase().includes(needle))
+      .slice(0, 10)
+  }, [options, value])
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <label style={LABEL_STYLE}>{label}</label>
+      <input
+        type="text"
+        value={value}
+        onChange={(event) => {
+          onChange(event.target.value)
+          setOpen(true)
+        }}
+        onFocus={() => setOpen(true)}
+        onBlur={() => window.setTimeout(() => setOpen(false), 120)}
+        placeholder={placeholder}
+        disabled={disabled}
+        style={{
+          ...INPUT_STYLE,
+          borderColor: error ? 'rgba(192,57,43,0.42)' : INPUT_STYLE.border,
+          background: disabled ? 'rgba(25,26,32,0.04)' : '#fff',
+        }}
+      />
+      <div style={{ marginTop: '6px' }}>
+        <FieldError message={error} />
+      </div>
+      {open && !disabled ? (
+        <div style={DROPDOWN_STYLE}>
+          {loading ? (
+            <p style={{ ...HELP_STYLE, padding: '8px 10px' }}>Loading directory…</p>
+          ) : filteredOptions.length ? (
+            filteredOptions.map((option) => {
+              const labelValue = formatDirectoryOption(option)
+              const active = labelValue === value
+
+              return (
+                <button
+                  key={option.id || option.code}
+                  type="button"
+                  style={DROPDOWN_ITEM_STYLE(active)}
+                  onMouseDown={(event) => {
+                    event.preventDefault()
+                    onSelect(option)
+                    setOpen(false)
+                  }}
+                >
+                  {labelValue}
+                </button>
+              )
+            })
+          ) : (
+            <p style={{ ...HELP_STYLE, padding: '8px 10px' }}>{emptyMessage}</p>
+          )}
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
 // mode: 'signup' | 'login' | 'reset' | 'update'
 export default function AuthForm({ mode = 'signup', portal = 'client' }) {
   const navigate = useNavigate()
   const location = useLocation()
-  const [email, setEmail]       = useState('')
+  const phoneInputRef = useRef(null)
+
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [confirm, setConfirm]   = useState('')
-  const [name, setName]         = useState('')
-  const [phone, setPhone]       = useState('')
-  const [accountType, setAccountType] = useState('independent')
-  const [countryCode, setCountryCode] = useState('DE')
-  const [baseCityId, setBaseCityId] = useState('')
-  const [baseCity, setBaseCity] = useState('')
-  const [serviceRegions, setServiceRegions] = useState('')
-  const [bio, setBio]           = useState('')
-  const [companyName, setCompanyName] = useState('')
-  const [companyWebsite, setCompanyWebsite] = useState('')
+  const [confirm, setConfirm] = useState('')
+  const [status, setStatus] = useState('idle')
+  const [message, setMessage] = useState('')
+  const [passwordVisible, setPasswordVisible] = useState(false)
+  const [confirmVisible, setConfirmVisible] = useState(false)
   const [countries, setCountries] = useState([])
   const [cities, setCities] = useState([])
   const [referenceLoading, setReferenceLoading] = useState(false)
-  const [status, setStatus]     = useState('idle')
-  const [message, setMessage]   = useState('')
-  const [passwordVisible, setPasswordVisible] = useState(false)
-  const [confirmVisible, setConfirmVisible] = useState(false)
+  const [countryQuery, setCountryQuery] = useState('Germany')
+  const [cityQuery, setCityQuery] = useState('')
+
   const pathLanguage = getPathLanguage(location.pathname)
   const lang = normalizeLanguage(pathLanguage, 'en')
   const dashboardHref = `/${lang}/dashboard-home`
   const agentWorkspaceHref = `/${lang}/agent-workspace`
+
+  const agentForm = useForm({
+    resolver: zodResolver(agentSignupSchema),
+    mode: 'onBlur',
+    defaultValues: {
+      accountType: 'independent',
+      name: '',
+      phone: '',
+      countryCode: 'DE',
+      baseCityId: '',
+      baseCity: '',
+      serviceRegions: '',
+      bio: '',
+      companyName: '',
+      companyWebsite: '',
+      email: '',
+      password: '',
+      confirm: '',
+    },
+  })
+
+  const showAgentFields = mode === 'signup' && portal === 'agent'
+  const showCompanyFields = showAgentFields && agentForm.watch('accountType') === 'company'
+  const agentCountryCode = agentForm.watch('countryCode')
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
@@ -163,7 +442,7 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
   }, [location.search])
 
   useEffect(() => {
-    if (!(mode === 'signup' && portal === 'agent')) return
+    if (!showAgentFields) return undefined
 
     let cancelled = false
 
@@ -171,70 +450,79 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
       try {
         const result = await apiRequest('/api/reference/countries')
         if (cancelled) return
-        setCountries(Array.isArray(result?.countries) ? result.countries : [])
+        const nextCountries = Array.isArray(result?.countries) ? result.countries : []
+        setCountries(nextCountries)
+
+        const matched = nextCountries.find((item) => item.code === agentForm.getValues('countryCode'))
+        if (matched) setCountryQuery(matched.name)
       } catch (error) {
-        if (cancelled) return
-        setCountries([])
+        if (!cancelled) setCountries([])
       }
     }
 
     loadCountries()
     return () => { cancelled = true }
-  }, [mode, portal])
+  }, [agentForm, showAgentFields])
 
   useEffect(() => {
-    if (!(mode === 'signup' && portal === 'agent')) return
+    if (!showAgentFields) return undefined
 
     let cancelled = false
-
-    async function loadCities() {
+    const timeoutId = window.setTimeout(async () => {
       setReferenceLoading(true)
       try {
-        const result = await apiRequest(`/api/reference/cities?countryCode=${encodeURIComponent(countryCode)}&limit=120`)
+        const search = cityQuery.trim()
+        const q = search ? `&q=${encodeURIComponent(search)}` : ''
+        const result = await apiRequest(`/api/reference/cities?countryCode=${encodeURIComponent(agentCountryCode)}&limit=120${q}`)
         if (cancelled) return
-        const nextCities = Array.isArray(result?.cities) ? result.cities : []
-        setCities(nextCities)
-
-        if (!nextCities.some((item) => item.id === baseCityId)) {
-          setBaseCityId('')
-          setBaseCity('')
-        }
+        setCities(Array.isArray(result?.cities) ? result.cities : [])
       } catch (error) {
-        if (cancelled) return
-        setCities([])
-        setBaseCityId('')
-        setBaseCity('')
+        if (!cancelled) setCities([])
       } finally {
         if (!cancelled) setReferenceLoading(false)
       }
+    }, 160)
+
+    return () => {
+      cancelled = true
+      window.clearTimeout(timeoutId)
+    }
+  }, [agentCountryCode, cityQuery, showAgentFields])
+
+  function syncCountryLabel(nextCode) {
+    const matched = countries.find((item) => item.code === nextCode)
+    if (matched) setCountryQuery(matched.name)
+  }
+
+  function applyCountrySelection(nextCode) {
+    const currentCode = agentForm.getValues('countryCode')
+    if (currentCode !== nextCode) {
+      agentForm.setValue('countryCode', nextCode, { shouldDirty: true, shouldValidate: true })
+      agentForm.setValue('baseCityId', '', { shouldDirty: true, shouldValidate: true })
+      agentForm.setValue('baseCity', '', { shouldDirty: true, shouldValidate: true })
+      setCityQuery('')
+      setCities([])
     }
 
-    loadCities()
-    return () => { cancelled = true }
-  }, [baseCityId, countryCode, mode, portal])
+    syncCountryLabel(nextCode)
+    phoneInputRef.current?.setCountry?.(nextCode.toLowerCase(), { focusOnInput: false })
+  }
 
-  async function handleSubmit(e) {
-    e.preventDefault()
+  async function handleLegacySubmit(event) {
+    event.preventDefault()
     setStatus('loading')
     setMessage('')
 
     if (mode === 'signup') {
       if (password !== confirm) {
-        setStatus('error'); setMessage('Passwords do not match.'); return
+        setStatus('error')
+        setMessage('Passwords do not match.')
+        return
       }
-      if (portal === 'agent') {
-        if (!name.trim() || !phone.trim() || !countryCode || !baseCityId) {
-          setStatus('error'); setMessage('Fill in your full name, phone number, country and base city.'); return
-        }
-        if (phone.replace(/\D/g, '').length < 6) {
-          setStatus('error'); setMessage('Enter a valid phone number.'); return
-        }
-        if (accountType === 'company' && !companyName.trim()) {
-          setStatus('error'); setMessage('Add the company or agency name.'); return
-        }
-      }
+
       const preferredLanguage = await detectPreferredLanguage()
       const authLanguage = normalizeLanguage(pathLanguage || preferredLanguage, 'en')
+
       try {
         await apiRequest('/api/auth/register', {
           method: 'POST',
@@ -242,24 +530,15 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
             email,
             password,
             preferredLanguage: authLanguage,
-            name,
             portal,
-            phone,
-            accountType,
-            countryCode,
-            baseCityId,
-            baseCity,
-            serviceRegions,
-            bio,
-            companyName,
-            companyWebsite,
           }),
         })
-        setStatus('success'); setMessage(portal === 'agent' ? 'Check your email to confirm your agent account.' : 'Check your email to confirm your account.')
+        setStatus('success')
+        setMessage('Check your email to confirm your account.')
       } catch (error) {
-        setStatus('error'); setMessage(error.message)
+        setStatus('error')
+        setMessage(error.message)
       }
-
     } else if (mode === 'login') {
       try {
         const result = await apiRequest('/api/auth/login', {
@@ -270,190 +549,389 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
         const destination = result?.user?.isAgent || result?.user?.role === 'agent'
           ? agentWorkspaceHref
           : dashboardHref
-        setStatus('success'); setMessage('Signed in! Redirecting…'); setTimeout(() => navigate(destination), 700)
+        setStatus('success')
+        setMessage('Signed in! Redirecting…')
+        setTimeout(() => navigate(destination), 700)
       } catch (error) {
-        setStatus('error'); setMessage(error.message)
+        setStatus('error')
+        setMessage(error.message)
       }
-
     } else if (mode === 'reset') {
       try {
         await apiRequest('/api/auth/forgot-password', {
           method: 'POST',
           body: JSON.stringify({ email, preferredLanguage: lang }),
         })
-        setStatus('success'); setMessage('Password reset email sent. Check your inbox.')
+        setStatus('success')
+        setMessage('Password reset email sent. Check your inbox.')
       } catch (error) {
-        setStatus('error'); setMessage(error.message)
+        setStatus('error')
+        setMessage(error.message)
       }
-
     } else if (mode === 'update') {
       if (password !== confirm) {
-        setStatus('error'); setMessage('Passwords do not match.'); return
+        setStatus('error')
+        setMessage('Passwords do not match.')
+        return
       }
+
       const resetToken = new URLSearchParams(location.search).get('token') || ''
       try {
         await apiRequest('/api/auth/reset-password', {
           method: 'POST',
           body: JSON.stringify({ token: resetToken, password }),
         })
-        setStatus('success'); setMessage('Password updated! Redirecting…'); setTimeout(() => navigate(`/${lang}/log-in?authNotice=${encodeURIComponent('Password updated. You can sign in now.')}`), 900)
+        setStatus('success')
+        setMessage('Password updated! Redirecting…')
+        setTimeout(() => navigate(`/${lang}/log-in?authNotice=${encodeURIComponent('Password updated. You can sign in now.')}`), 900)
       } catch (error) {
-        setStatus('error'); setMessage(error.message)
+        setStatus('error')
+        setMessage(error.message)
       }
     }
   }
 
-  const isLoading = status === 'loading'
-  const showEmail   = mode !== 'update'
-  const showPass    = mode !== 'reset'
-  const showConfirm = mode === 'signup' || mode === 'update'
-  const showAgentFields = mode === 'signup' && portal === 'agent'
-  const showCompanyFields = showAgentFields && accountType === 'company'
+  async function handleAgentSignupSubmit(values) {
+    setStatus('loading')
+    setMessage('')
 
-  function handleCityChange(event) {
-    const nextId = event.target.value
-    const nextCity = cities.find((item) => item.id === nextId) || null
-    setBaseCityId(nextId)
-    setBaseCity(nextCity ? nextCity.name : '')
+    const preferredLanguage = await detectPreferredLanguage()
+    const authLanguage = normalizeLanguage(pathLanguage || preferredLanguage, 'en')
+
+    try {
+      await apiRequest('/api/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+          preferredLanguage: authLanguage,
+          name: values.name,
+          portal,
+          phone: values.phone,
+          accountType: values.accountType,
+          countryCode: values.countryCode,
+          baseCityId: values.baseCityId,
+          baseCity: values.baseCity,
+          serviceRegions: values.serviceRegions,
+          bio: values.bio,
+          companyName: values.companyName,
+          companyWebsite: values.companyWebsite,
+        }),
+      })
+
+      setStatus('success')
+      setMessage('Check your email to confirm your agent account.')
+      agentForm.reset({
+        accountType: 'independent',
+        name: '',
+        phone: '',
+        countryCode: values.countryCode,
+        baseCityId: '',
+        baseCity: '',
+        serviceRegions: '',
+        bio: '',
+        companyName: '',
+        companyWebsite: '',
+        email: '',
+        password: '',
+        confirm: '',
+      })
+      syncCountryLabel(values.countryCode)
+      setCityQuery('')
+    } catch (error) {
+      setStatus('error')
+      setMessage(error.message)
+    }
   }
 
+  const isLoading = status === 'loading'
+  const showEmail = mode !== 'update'
+  const showPass = mode !== 'reset'
+  const showConfirm = mode === 'signup' || mode === 'update'
+  const onSubmit = showAgentFields ? agentForm.handleSubmit(handleAgentSignupSubmit) : handleLegacySubmit
+
+  const selectedCountryOptions = useMemo(() => countries, [countries])
+  const cityOptions = useMemo(() => cities, [cities])
+
   return (
-    <form onSubmit={handleSubmit} style={{display:'flex', flexDirection:'column', gap:'12px', width:'100%'}}>
-      {showAgentFields && (
+    <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+      {showAgentFields ? (
         <>
-          <div style={SEGMENTED_GROUP_STYLE}>
-            <button
-              type="button"
-              onClick={() => setAccountType('independent')}
-              style={SEGMENT_BUTTON_STYLE(accountType === 'independent')}
-            >
-              Independent agent
-            </button>
-            <button
-              type="button"
-              onClick={() => setAccountType('company')}
-              style={SEGMENT_BUTTON_STYLE(accountType === 'company')}
-            >
-              Company / agency
-            </button>
-          </div>
-          <input
-            type="text"
-            placeholder="Full name"
-            required
-            value={name}
-            onChange={e => setName(e.target.value)}
-            style={INPUT_STYLE}
-            autoComplete="name"
-          />
-          <PhoneField
-            value={phone}
-            onChange={setPhone}
-            countryCodeHint={countryCode}
-            required
-            placeholder="Phone number"
-            style={INPUT_STYLE}
-          />
-          {showCompanyFields ? (
-            <>
+          <div style={{ display: 'grid', gap: '10px' }}>
+            <div>
+              <label style={LABEL_STYLE}>Account type</label>
+              <div style={SEGMENTED_GROUP_STYLE}>
+                <button
+                  type="button"
+                  onClick={() => agentForm.setValue('accountType', 'independent', { shouldDirty: true, shouldValidate: true })}
+                  style={SEGMENT_BUTTON_STYLE(agentForm.watch('accountType') === 'independent')}
+                >
+                  Independent agent
+                </button>
+                <button
+                  type="button"
+                  onClick={() => agentForm.setValue('accountType', 'company', { shouldDirty: true, shouldValidate: true })}
+                  style={SEGMENT_BUTTON_STYLE(agentForm.watch('accountType') === 'company')}
+                >
+                  Company / agency
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label style={LABEL_STYLE}>Full name</label>
               <input
                 type="text"
-                placeholder="Company or agency name"
-                required
-                value={companyName}
-                onChange={e => setCompanyName(e.target.value)}
-                style={INPUT_STYLE}
-                autoComplete="organization"
+                placeholder="Full name"
+                autoComplete="name"
+                style={{
+                  ...INPUT_STYLE,
+                  borderColor: agentForm.formState.errors.name ? 'rgba(192,57,43,0.42)' : INPUT_STYLE.border,
+                }}
+                {...agentForm.register('name')}
               />
+              <FieldError message={agentForm.formState.errors.name?.message} />
+            </div>
+
+            {showCompanyFields ? (
+              <>
+                <div>
+                  <label style={LABEL_STYLE}>Company / agency</label>
+                  <input
+                    type="text"
+                    placeholder="Company or agency name"
+                    autoComplete="organization"
+                    style={{
+                      ...INPUT_STYLE,
+                      borderColor: agentForm.formState.errors.companyName ? 'rgba(192,57,43,0.42)' : INPUT_STYLE.border,
+                    }}
+                    {...agentForm.register('companyName')}
+                  />
+                  <FieldError message={agentForm.formState.errors.companyName?.message} />
+                </div>
+                <div>
+                  <label style={LABEL_STYLE}>Website</label>
+                  <input
+                    type="url"
+                    placeholder="Company website (optional)"
+                    autoComplete="url"
+                    style={{
+                      ...INPUT_STYLE,
+                      borderColor: agentForm.formState.errors.companyWebsite ? 'rgba(192,57,43,0.42)' : INPUT_STYLE.border,
+                    }}
+                    {...agentForm.register('companyWebsite')}
+                  />
+                  <FieldError message={agentForm.formState.errors.companyWebsite?.message} />
+                </div>
+              </>
+            ) : null}
+
+            <div>
+              <label style={LABEL_STYLE}>Phone number</label>
+              <Controller
+                control={agentForm.control}
+                name="phone"
+                render={({ field }) => (
+                  <div style={PHONE_WRAPPER_STYLE}>
+                    <PhoneInput
+                      ref={phoneInputRef}
+                      defaultCountry={String(agentForm.getValues('countryCode') || 'DE').toLowerCase()}
+                      value={field.value}
+                      forceDialCode
+                      disableCountryGuess={false}
+                      placeholder="Phone number"
+                      style={{ width: '100%' }}
+                      inputStyle={{
+                        ...PHONE_INPUT_STYLE,
+                        borderColor: agentForm.formState.errors.phone ? 'rgba(192,57,43,0.42)' : 'rgba(25,26,32,0.14)',
+                      }}
+                      countrySelectorStyleProps={PHONE_SELECTOR_STYLE_PROPS}
+                      onChange={(nextPhone, meta) => {
+                        field.onChange(nextPhone)
+                        const nextCode = String(meta.country.iso2 || agentForm.getValues('countryCode') || 'DE').toUpperCase()
+                        if (nextCode !== agentForm.getValues('countryCode')) {
+                          applyCountrySelection(nextCode)
+                        }
+                      }}
+                    />
+                  </div>
+                )}
+              />
+              <FieldError message={agentForm.formState.errors.phone?.message} />
+            </div>
+
+            <DirectoryCombobox
+              label="Operating country"
+              placeholder="Select country"
+              value={countryQuery}
+              options={selectedCountryOptions}
+              loading={false}
+              error={agentForm.formState.errors.countryCode?.message}
+              onChange={(nextQuery) => {
+                setCountryQuery(nextQuery)
+                agentForm.setValue('countryCode', '', { shouldDirty: true, shouldValidate: true })
+                agentForm.setValue('baseCityId', '', { shouldDirty: true, shouldValidate: true })
+                agentForm.setValue('baseCity', '', { shouldDirty: true, shouldValidate: true })
+                setCityQuery('')
+              }}
+              onSelect={(option) => {
+                applyCountrySelection(option.code)
+              }}
+              emptyMessage="No matching countries in the directory yet."
+            />
+
+            <DirectoryCombobox
+              label="Base city"
+              placeholder={agentCountryCode ? 'Start typing a city name' : 'Choose the country first'}
+              value={cityQuery}
+              options={cityOptions}
+              loading={referenceLoading}
+              disabled={!agentCountryCode}
+              error={agentForm.formState.errors.baseCityId?.message}
+              onChange={(nextQuery) => {
+                setCityQuery(nextQuery)
+                agentForm.setValue('baseCityId', '', { shouldDirty: true, shouldValidate: true })
+                agentForm.setValue('baseCity', '', { shouldDirty: true, shouldValidate: true })
+              }}
+              onSelect={(option) => {
+                agentForm.setValue('baseCityId', option.id, { shouldDirty: true, shouldValidate: true })
+                agentForm.setValue('baseCity', option.name, { shouldDirty: true, shouldValidate: true })
+                setCityQuery(formatDirectoryOption(option))
+              }}
+              emptyMessage="No matching cities found."
+            />
+            <p style={HELP_STYLE}>
+              Country and city come from the Bookimmo reference directory, so agents and companies can route work consistently.
+            </p>
+
+            <div>
+              <label style={LABEL_STYLE}>Service regions</label>
               <input
-                type="url"
-                placeholder="Company website (optional)"
-                value={companyWebsite}
-                onChange={e => setCompanyWebsite(e.target.value)}
-                style={INPUT_STYLE}
-                autoComplete="url"
+                type="text"
+                placeholder="Cities, districts or regions you cover"
+                style={{
+                  ...INPUT_STYLE,
+                  borderColor: agentForm.formState.errors.serviceRegions ? 'rgba(192,57,43,0.42)' : INPUT_STYLE.border,
+                }}
+                {...agentForm.register('serviceRegions')}
               />
-            </>
-          ) : null}
-          <select
-            required
-            value={countryCode}
-            onChange={e => setCountryCode(e.target.value)}
-            style={INPUT_STYLE}
-          >
-            <option value="">Select country</option>
-            {countries.map((item) => (
-              <option key={item.code} value={item.code}>
-                {item.name}
-              </option>
-            ))}
-          </select>
-          <select
-            required
-            value={baseCityId}
-            onChange={handleCityChange}
-            style={INPUT_STYLE}
-            disabled={!countryCode || referenceLoading}
-          >
-            <option value="">
-              {referenceLoading ? 'Loading cities…' : 'Select base city'}
-            </option>
-            {cities.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.region ? `${item.name}, ${item.region}` : item.name}
-              </option>
-            ))}
-          </select>
-          <input
-            type="text"
-            placeholder="Service regions (comma separated)"
-            value={serviceRegions}
-            onChange={e => setServiceRegions(e.target.value)}
-            style={INPUT_STYLE}
-          />
-          <textarea
-            placeholder="Short bio or service focus"
-            value={bio}
-            onChange={e => setBio(e.target.value)}
-            style={{ ...INPUT_STYLE, minHeight: '112px', resize: 'vertical' }}
-          />
+              <FieldError message={agentForm.formState.errors.serviceRegions?.message} />
+            </div>
+
+            <div>
+              <label style={LABEL_STYLE}>Service focus</label>
+              <textarea
+                placeholder="Tell clients what you specialize in, which cities you cover, and how you usually help with rentals or sales."
+                style={{
+                  ...INPUT_STYLE,
+                  minHeight: '132px',
+                  resize: 'vertical',
+                  borderColor: agentForm.formState.errors.bio ? 'rgba(192,57,43,0.42)' : INPUT_STYLE.border,
+                }}
+                {...agentForm.register('bio')}
+              />
+              <FieldError message={agentForm.formState.errors.bio?.message} />
+            </div>
+
+            <div>
+              <label style={LABEL_STYLE}>Email</label>
+              <input
+                type="email"
+                placeholder="Email address"
+                autoComplete="email"
+                style={{
+                  ...INPUT_STYLE,
+                  borderColor: agentForm.formState.errors.email ? 'rgba(192,57,43,0.42)' : INPUT_STYLE.border,
+                }}
+                {...agentForm.register('email')}
+              />
+              <FieldError message={agentForm.formState.errors.email?.message} />
+            </div>
+
+            <div>
+              <label style={LABEL_STYLE}>Password</label>
+              <Controller
+                control={agentForm.control}
+                name="password"
+                render={({ field }) => (
+                  <PasswordField
+                    placeholder="Password"
+                    value={field.value}
+                    onChange={field.onChange}
+                    autoComplete="new-password"
+                    visible={passwordVisible}
+                    onToggle={() => setPasswordVisible((current) => !current)}
+                  />
+                )}
+              />
+              <FieldError message={agentForm.formState.errors.password?.message} />
+            </div>
+
+            <div>
+              <label style={LABEL_STYLE}>Confirm password</label>
+              <Controller
+                control={agentForm.control}
+                name="confirm"
+                render={({ field }) => (
+                  <PasswordField
+                    placeholder="Confirm password"
+                    value={field.value}
+                    onChange={field.onChange}
+                    autoComplete="new-password"
+                    visible={confirmVisible}
+                    onToggle={() => setConfirmVisible((current) => !current)}
+                  />
+                )}
+              />
+              <FieldError message={agentForm.formState.errors.confirm?.message} />
+            </div>
+          </div>
         </>
-      )}
-      {showEmail && (
+      ) : null}
+
+      {!showAgentFields && showEmail ? (
         <input
-          type="email" placeholder="Email address" required
-          value={email} onChange={e => setEmail(e.target.value)}
-          style={INPUT_STYLE} autoComplete="email"
+          type="email"
+          placeholder="Email address"
+          required
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          style={INPUT_STYLE}
+          autoComplete="email"
         />
-      )}
-      {showPass && (
+      ) : null}
+
+      {!showAgentFields && showPass ? (
         <PasswordField
           placeholder={mode === 'update' ? 'New password' : 'Password'}
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={(event) => setPassword(event.target.value)}
           autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
           visible={passwordVisible}
           onToggle={() => setPasswordVisible((current) => !current)}
         />
-      )}
-      {showConfirm && (
+      ) : null}
+
+      {!showAgentFields && showConfirm ? (
         <PasswordField
           placeholder="Confirm password"
           value={confirm}
-          onChange={e => setConfirm(e.target.value)}
+          onChange={(event) => setConfirm(event.target.value)}
           autoComplete="new-password"
           visible={confirmVisible}
           onToggle={() => setConfirmVisible((current) => !current)}
         />
-      )}
-      <button type="submit" disabled={isLoading} style={{...BTN_STYLE, opacity: isLoading ? 0.6 : 1}}>
+      ) : null}
+
+      <button type="submit" disabled={isLoading} style={{ ...BTN_STYLE, opacity: isLoading ? 0.6 : 1 }}>
         {isLoading ? 'Please wait…'
           : mode === 'signup' ? (portal === 'agent' ? 'Create Agent Account' : 'Create Account')
-          : mode === 'login'  ? (portal === 'agent' ? 'Sign In As Agent' : 'Sign In')
-          : mode === 'reset'  ? 'Send Reset Link'
+          : mode === 'login' ? (portal === 'agent' ? 'Sign In As Agent' : 'Sign In')
+          : mode === 'reset' ? 'Send Reset Link'
           : 'Update Password'}
       </button>
-      {message && <p style={MSG_STYLE(status === 'error')}>{message}</p>}
+
+      {message ? <p style={MSG_STYLE(status === 'error')}>{message}</p> : null}
     </form>
   )
 }

@@ -12,16 +12,21 @@
   },
   "dependencies": {
     "@directus/sdk": "^17.0.0",
+    "@hookform/resolvers": "^5.7.1",
     "express": "^4.21.2",
     "framer-motion": "^12.38.0",
     "i18next": "^23.0.0",
+    "libphonenumber-js": "^1.13.10",
     "lz-string": "^1.5.0",
     "mapbox-gl": "^3.25.0",
     "pg": "^8.16.3",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
+    "react-hook-form": "^7.84.0",
     "react-i18next": "^15.0.0",
-    "react-router-dom": "^6.26.0"
+    "react-international-phone": "^4.8.0",
+    "react-router-dom": "^6.26.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@sparticuz/chromium": "^149.0.0",

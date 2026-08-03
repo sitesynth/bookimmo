@@ -1,4 +1,5 @@
 import { query } from '../_lib/db.js'
+import { CITY_SEED } from '../_lib/reference-data.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' })
@@ -41,18 +42,57 @@ export default async function handler(req, res) {
 
     const result = await query(sql, params)
 
-    return res.status(200).json({
-      cities: result.rows.map((row) => ({
-        id: row.id,
-        countryCode: row.country_code,
-        name: row.name,
-        region: row.region || '',
-        slug: row.slug,
-        population: row.population || null,
-      })),
-    })
+    const cities = result.rows.length
+      ? result.rows.map((row) => ({
+          id: row.id,
+          countryCode: row.country_code,
+          name: row.name,
+          region: row.region || '',
+          slug: row.slug,
+          population: row.population || null,
+        }))
+      : CITY_SEED
+          .filter((row) => row.countryCode === countryCode)
+          .filter((row) => {
+            if (!search) return true
+            const needle = search.toLowerCase()
+            return [
+              row.name,
+              row.region,
+              row.slug,
+            ].some((value) => String(value || '').toLowerCase().includes(needle))
+          })
+          .sort((left, right) => {
+            const populationDelta = Number(right.population || 0) - Number(left.population || 0)
+            if (populationDelta !== 0) return populationDelta
+            return left.name.localeCompare(right.name)
+          })
+          .slice(0, limit)
+
+    return res.status(200).json({ cities })
   } catch (error) {
     console.error('reference_cities_failed', error)
-    return res.status(500).json({ error: 'Could not load cities.' })
+    const fallbackCities = CITY_SEED
+      .filter((row) => row.countryCode === countryCode)
+      .filter((row) => {
+        if (!search) return true
+        const needle = search.toLowerCase()
+        return [
+          row.name,
+          row.region,
+          row.slug,
+        ].some((value) => String(value || '').toLowerCase().includes(needle))
+      })
+      .sort((left, right) => {
+        const populationDelta = Number(right.population || 0) - Number(left.population || 0)
+        if (populationDelta !== 0) return populationDelta
+        return left.name.localeCompare(right.name)
+      })
+      .slice(0, limit)
+
+    return res.status(200).json({
+      cities: fallbackCities,
+      fallback: true,
+    })
   }
 }
