@@ -52,13 +52,15 @@ export default function AuthCallbackPage() {
       }
     }
 
+    const requestedPortal = search.get('portal') || hash.get('portal')
+
     apiRequest('/api/auth/verify-email', {
       method: 'POST',
       body: JSON.stringify({ token }),
     }).then((result) => {
       if (!active) return
       window.dispatchEvent(new Event('bookimmo-auth-changed'))
-      const destination = result?.user?.isAgent || result?.user?.role === 'agent'
+      const destination = requestedPortal === 'agent' || result?.user?.isAgent || result?.user?.role === 'agent'
         ? `/${lang}/agent-workspace`
         : `/${lang}/dashboard-home`
       navigate(destination, { replace: true })

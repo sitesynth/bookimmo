@@ -74,7 +74,7 @@ function renderEmailHtml({ language, mode, url }) {
         <div style="background:#ffffff;border:1px solid rgba(25,26,32,0.08);border-radius:24px;overflow:hidden;box-shadow:0 24px 64px rgba(25,26,32,0.08);">
           <div style="padding:32px 32px 20px;background:linear-gradient(135deg,#fffaf0 0%,#efe7d8 100%);border-bottom:1px solid rgba(25,26,32,0.08);">
             <img src="${LOGO_URL}" alt="${base.brand}" width="315" height="44" style="display:block;width:220px;height:auto;" />
-            <h1 style="margin:12px 0 0;font-size:30px;line-height:1.1;font-family:'Bricolage Grotesque',Inter,Arial,sans-serif;font-weight:600;color:#191a20;">${copy.title}</h1>
+            <h1 style="margin:12px 0 0;font-size:15px;line-height:1.2;font-family:'Bricolage Grotesque',Inter,Arial,sans-serif;font-weight:600;color:#191a20;">${copy.title}</h1>
           </div>
           <div style="padding:28px 32px 32px;">
             <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:rgba(25,26,32,0.74);">${copy.intro}</p>
@@ -131,7 +131,7 @@ export async function sendVerifyEmail({ email, language = 'en', token }) {
 }
 
 export async function sendAgentVerifyEmail({ email, language = 'en', token }) {
-  const url = `${APP_URL.replace(/\/$/, '')}/${language}/auth/callback?token=${encodeURIComponent(token)}`
+  const url = `${APP_URL.replace(/\/$/, '')}/${language}/auth/callback?token=${encodeURIComponent(token)}&portal=agent`
   const copy = languageCopy(language)
   const subject = language === 'de'
     ? 'Bestaetige deinen Bookimmo Agenten-Account'
@@ -152,7 +152,7 @@ export async function sendAgentVerifyEmail({ email, language = 'en', token }) {
         <div style="background:#ffffff;border:1px solid rgba(25,26,32,0.08);border-radius:24px;overflow:hidden;box-shadow:0 24px 64px rgba(25,26,32,0.08);">
           <div style="padding:32px 32px 20px;background:linear-gradient(135deg,#fffaf0 0%,#efe7d8 100%);border-bottom:1px solid rgba(25,26,32,0.08);">
             <img src="${LOGO_URL}" alt="${copy.brand}" width="315" height="44" style="display:block;width:220px;height:auto;" />
-            <h1 style="margin:12px 0 0;font-size:30px;line-height:1.1;font-family:'Bricolage Grotesque',Inter,Arial,sans-serif;font-weight:600;color:#191a20;">
+            <h1 style="margin:12px 0 0;font-size:15px;line-height:1.2;font-family:'Bricolage Grotesque',Inter,Arial,sans-serif;font-weight:600;color:#191a20;">
               ${language === 'de' ? 'Agenten-Account bestaetigen' : 'Confirm your agent account'}
             </h1>
           </div>
