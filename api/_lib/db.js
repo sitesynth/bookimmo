@@ -82,11 +82,15 @@ async function createSchema() {
       email TEXT NOT NULL UNIQUE,
       password_hash TEXT NOT NULL,
       name TEXT,
+      role TEXT NOT NULL DEFAULT 'client',
       email_verified BOOLEAN NOT NULL DEFAULT FALSE,
       preferred_language TEXT NOT NULL DEFAULT 'en',
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
+
+    ALTER TABLE public.app_users
+      ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'client';
 
     CREATE TABLE IF NOT EXISTS public.auth_sessions (
       token_hash TEXT PRIMARY KEY,
@@ -140,6 +144,59 @@ async function createSchema() {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
+    CREATE TABLE IF NOT EXISTS public.agent_profiles (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL UNIQUE REFERENCES public.app_users(id) ON DELETE CASCADE,
+      display_name TEXT,
+      phone TEXT,
+      avatar_url TEXT,
+      base_city TEXT,
+      service_regions JSONB NOT NULL DEFAULT '[]'::jsonb,
+      bio TEXT,
+      capacity_limit INTEGER,
+      is_active BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS agent_profiles_active_idx
+      ON public.agent_profiles (is_active, base_city);
+
+    CREATE TABLE IF NOT EXISTS public.agent_city_coverage (
+      id TEXT PRIMARY KEY,
+      agent_id TEXT NOT NULL REFERENCES public.agent_profiles(id) ON DELETE CASCADE,
+      city_slug TEXT NOT NULL,
+      district_slug TEXT,
+      priority INTEGER NOT NULL DEFAULT 100,
+      active BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      UNIQUE (agent_id, city_slug, district_slug)
+    );
+
+    CREATE INDEX IF NOT EXISTS agent_city_coverage_lookup_idx
+      ON public.agent_city_coverage (city_slug, district_slug, active, priority);
+
+    CREATE TABLE IF NOT EXISTS public.agent_provider_accounts (
+      id TEXT PRIMARY KEY,
+      agent_id TEXT NOT NULL REFERENCES public.agent_profiles(id) ON DELETE CASCADE,
+      provider_source TEXT NOT NULL,
+      account_label TEXT NOT NULL,
+      external_account_ref TEXT,
+      browser_profile_key TEXT,
+      session_state TEXT NOT NULL DEFAULT 'cold',
+      last_sync_at TIMESTAMPTZ,
+      health_status TEXT NOT NULL DEFAULT 'unknown',
+      metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+      is_active BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      UNIQUE (provider_source, account_label)
+    );
+
+    CREATE INDEX IF NOT EXISTS agent_provider_accounts_agent_idx
+      ON public.agent_provider_accounts (agent_id, provider_source, is_active);
+
     CREATE TABLE IF NOT EXISTS public.favorites (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL REFERENCES public.app_users(id) ON DELETE CASCADE,
@@ -178,6 +235,91 @@ async function createSchema() {
 
     CREATE INDEX IF NOT EXISTS applications_user_id_idx
       ON public.applications (user_id, updated_at DESC);
+
+    ALTER TABLE public.applications
+      ADD COLUMN IF NOT EXISTS provider_source TEXT,
+      ADD COLUMN IF NOT EXISTS provider_expose_id TEXT,
+      ADD COLUMN IF NOT EXISTS provider_conversation_id TEXT,
+      ADD COLUMN IF NOT EXISTS assigned_agent_id TEXT,
+      ADD COLUMN IF NOT EXISTS stage TEXT NOT NULL DEFAULT 'draft',
+      ADD COLUMN IF NOT EXISTS stage_updated_at TIMESTAMPTZ,
+      ADD COLUMN IF NOT EXISTS last_message_at TIMESTAMPTZ,
+      ADD COLUMN IF NOT EXISTS last_message_preview TEXT,
+      ADD COLUMN IF NOT EXISTS unread_count INTEGER NOT NULL DEFAULT 0,
+      ADD COLUMN IF NOT EXISTS conversation_state TEXT NOT NULL DEFAULT 'none';
+
+    CREATE INDEX IF NOT EXISTS applications_provider_lookup_idx
+      ON public.applications (provider_source, provider_expose_id, provider_conversation_id);
+
+    CREATE TABLE IF NOT EXISTS public.application_events (
+      id TEXT PRIMARY KEY,
+      application_id TEXT NOT NULL REFERENCES public.applications(id) ON DELETE CASCADE,
+      event_type TEXT NOT NULL,
+      event_source TEXT NOT NULL,
+      actor_role TEXT,
+      title TEXT,
+      body TEXT,
+      payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+      occurred_at TIMESTAMPTZ NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS application_events_application_id_idx
+      ON public.application_events (application_id, occurred_at DESC);
+
+    CREATE TABLE IF NOT EXISTS public.application_messages (
+      id TEXT PRIMARY KEY,
+      application_id TEXT NOT NULL REFERENCES public.applications(id) ON DELETE CASCADE,
+      provider_source TEXT NOT NULL,
+      external_thread_id TEXT,
+      external_message_id TEXT,
+      direction TEXT NOT NULL,
+      sender_role TEXT NOT NULL,
+      sender_name TEXT,
+      subject TEXT,
+      body_text TEXT,
+      body_html TEXT,
+      attachments JSONB NOT NULL DEFAULT '[]'::jsonb,
+      message_timestamp TIMESTAMPTZ NOT NULL,
+      is_unread_for_client BOOLEAN NOT NULL DEFAULT TRUE,
+      raw_payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS application_messages_application_id_idx
+      ON public.application_messages (application_id, message_timestamp DESC);
+
+    CREATE INDEX IF NOT EXISTS application_messages_thread_idx
+      ON public.application_messages (provider_source, external_thread_id, external_message_id);
+
+    CREATE TABLE IF NOT EXISTS public.application_provider_threads (
+      id TEXT PRIMARY KEY,
+      application_id TEXT NOT NULL REFERENCES public.applications(id) ON DELETE CASCADE,
+      provider_source TEXT NOT NULL,
+      provider_conversation_id TEXT,
+      provider_expose_id TEXT,
+      provider_listing_address TEXT,
+      counterparty_name TEXT,
+      counterparty_role TEXT,
+      account_label TEXT,
+      last_message_at TIMESTAMPTZ,
+      last_message_preview TEXT,
+      raw_payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+      linked_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      last_synced_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE UNIQUE INDEX IF NOT EXISTS application_provider_threads_application_idx
+      ON public.application_provider_threads (application_id, provider_source);
+
+    CREATE UNIQUE INDEX IF NOT EXISTS application_provider_threads_conversation_idx
+      ON public.application_provider_threads (provider_source, provider_conversation_id)
+      WHERE provider_conversation_id IS NOT NULL;
+
+    CREATE INDEX IF NOT EXISTS application_provider_threads_expose_idx
+      ON public.application_provider_threads (provider_source, provider_expose_id);
 
     CREATE TABLE IF NOT EXISTS public.listings_cache (
       id BIGSERIAL PRIMARY KEY,

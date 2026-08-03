@@ -106,6 +106,16 @@ apartments_in_queue = set()  # Глобальный set для дедуплик�
 addresses_in_queue = set()  # Глобальный set для дедупликации по улице+дому
 apartment_addresses = {}  # Словарь expose_id -> address (для сохранения адресов перед открытием браузера)
 
+
+def _normalize_provider_source(value):
+    source = str(value or "is24").strip().lower()
+    return source or "is24"
+
+
+def _extract_conversation_id(value):
+    match = re.search(r"/messenger/messages/([0-9a-fA-F-]{8,})", str(value or ""))
+    return match.group(1) if match else None
+
 # ============================================================================
 # ПОЛУЧЕНИЕ IP АДРЕСА ДЛЯ РАСШИРЕНИЯ
 # ============================================================================
@@ -451,6 +461,76 @@ class ContactLogHandler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
             self.wfile.write(json.dumps({"status": "ok"}).encode('utf-8'))
+
+        elif self.path == "/provider_thread_link":
+            content_length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(content_length) if content_length > 0 else b'{}'
+
+            try:
+                data = json.loads(body.decode('utf-8')) if body else {}
+                expose_id = str(data.get('expose_id') or data.get('provider_expose_id') or '').strip()
+                provider_source = _normalize_provider_source(data.get('provider_source'))
+                conversation_id = (
+                    data.get('provider_conversation_id')
+                    or data.get('conversation_id')
+                    or _extract_conversation_id(data.get('url'))
+                )
+                listing_address = data.get('provider_listing_address') or data.get('listing_address')
+                counterparty_name = data.get('counterparty_name')
+                counterparty_role = data.get('counterparty_role')
+                account_label = data.get('account_label')
+                last_message_at = data.get('last_message_at') or data.get('timestamp')
+                last_message_preview = data.get('last_message_preview')
+
+                if not expose_id:
+                    self.send_response(400)
+                    self.send_header('Content-Type', 'application/json')
+                    self.send_header("Access-Control-Allow-Origin", "*")
+                    self.end_headers()
+                    self.wfile.write(json.dumps({
+                        "error": "expose_id is required"
+                    }).encode('utf-8'))
+                    return
+
+                affected = 0
+                if STORAGE_DB_ENABLED:
+                    affected = storage_db.link_provider_thread_for_expose(
+                        expose_id=expose_id,
+                        provider_conversation_id=conversation_id,
+                        provider_source=provider_source,
+                        provider_listing_address=listing_address,
+                        counterparty_name=counterparty_name,
+                        counterparty_role=counterparty_role,
+                        account_label=account_label,
+                        last_message_at=last_message_at,
+                        last_message_preview=last_message_preview,
+                        raw_payload=data,
+                    )
+
+                print(
+                    f"🔗 THREAD LINK (expose:{expose_id}, conversation:{conversation_id or 'n/a'}, "
+                    f"provider:{provider_source}, affected:{affected})"
+                )
+
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    "status": "ok",
+                    "affected": affected,
+                    "provider_conversation_id": conversation_id,
+                }).encode('utf-8'))
+
+            except Exception as e:
+                print(f"❌ Ошибка при привязке provider thread: {e}")
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    "error": str(e),
+                }).encode('utf-8'))
 
         elif self.path == "/apartment/deleted":
             # Расширение отправляет уведомление о удаленной квартире

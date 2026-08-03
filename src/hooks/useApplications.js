@@ -28,11 +28,29 @@ function normalizeApplication(item = {}) {
     propertyId: String(item.property_id || item.propertyId || ''),
     title: item.title || '',
     status: item.status || 'draft',
+    stage: item.stage || item.status || 'draft',
     coverMessage: item.cover_message || item.coverMessage || '',
     sourceChannel: item.source_channel || item.sourceChannel || '',
+    providerSource: item.provider_source || item.providerSource || '',
+    providerExposeId: item.provider_expose_id || item.providerExposeId || '',
+    providerConversationId: item.provider_conversation_id || item.providerConversationId || '',
+    assignedAgentId: item.assigned_agent_id || item.assignedAgentId || '',
+    stageUpdatedAt: item.stage_updated_at || item.stageUpdatedAt || '',
+    lastMessageAt: item.last_message_at || item.lastMessageAt || '',
+    lastMessagePreview: item.last_message_preview || item.lastMessagePreview || '',
+    unreadCount: Number(item.unread_count || item.unreadCount || 0),
+    conversationState: item.conversation_state || item.conversationState || 'none',
     createdAt: item.created_at || item.createdAt || '',
     updatedAt: item.updated_at || item.updatedAt || '',
   }
+}
+
+function inferProviderExposeId(property = {}) {
+  const source = String(property.source || '').trim().toLowerCase()
+  const rawId = String(property.id || property.externalId || '').trim()
+  if (!source || !rawId) return ''
+  if (source === 'is24' || source === 'immowelt') return rawId
+  return ''
 }
 
 export function useApplications() {
@@ -96,6 +114,8 @@ export function useApplications() {
       status: 'draft',
       coverMessage: null,
       sourceChannel: 'client_cabinet_search',
+      providerSource: property.source || null,
+      providerExposeId: inferProviderExposeId(property) || null,
     }
 
     let data

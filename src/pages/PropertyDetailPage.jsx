@@ -103,6 +103,7 @@ export default function PropertyDetailPage() {
     const result = await createDraftApplication({
       property: {
         id: property.id,
+        externalId: property.id,
         title: property.title,
         source: property.source,
         slug: property.slug,

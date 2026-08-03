@@ -59,7 +59,7 @@ export async function getSessionUser(req) {
   if (!rawToken) return null
 
   const { rows } = await query(
-    `SELECT u.id, u.email, u.name, u.email_verified, u.preferred_language, u.created_at, u.updated_at
+    `SELECT u.id, u.email, u.name, u.role, u.email_verified, u.preferred_language, u.created_at, u.updated_at
      FROM public.auth_sessions s
      JOIN public.app_users u ON u.id = s.user_id
      WHERE s.token_hash = $1
@@ -79,4 +79,39 @@ export async function requireUser(req, res) {
     return null
   }
   return user
+}
+
+export async function getAgentProfileByUserId(userId) {
+  if (!userId) return null
+
+  const { rows } = await query(
+    `SELECT ap.id, ap.user_id, ap.display_name, ap.phone, ap.avatar_url,
+            ap.base_city, ap.service_regions, ap.bio, ap.capacity_limit,
+            ap.is_active, ap.created_at, ap.updated_at
+     FROM public.agent_profiles ap
+     WHERE ap.user_id = $1
+     LIMIT 1`,
+    [userId],
+  )
+
+  return rows[0] || null
+}
+
+export async function requireAgent(req, res) {
+  const user = await requireUser(req, res)
+  if (!user) return null
+
+  const agentProfile = await getAgentProfileByUserId(user.id)
+  const isAgent = user.role === 'agent' || Boolean(agentProfile)
+
+  if (!isAgent || !agentProfile || agentProfile.is_active === false) {
+    res.status(403).json({ error: 'Agent access required' })
+    return null
+  }
+
+  return {
+    ...user,
+    role: 'agent',
+    agentProfile,
+  }
 }

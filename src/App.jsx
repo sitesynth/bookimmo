@@ -12,6 +12,8 @@ import DashboardHomePage from './pages/DashboardHomePage.jsx'
 import SearchPage from './pages/SearchPage.jsx'
 import ApplicationsPage from './pages/ApplicationsPage.jsx'
 import AgentPage from './pages/AgentPage.jsx'
+import AgentLogInPage from './pages/AgentLogInPage.jsx'
+import AgentWorkspacePage from './pages/AgentWorkspacePage.jsx'
 import SignUpPage from './pages/SignUpPage.jsx'
 import LogInPage from './pages/LogInPage.jsx'
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage.jsx'
@@ -63,8 +65,10 @@ export default function App() {
       <Route path="/search" element={<GeoLanguageRedirect path="/search" />} />
       <Route path="/applications" element={<GeoLanguageRedirect path="/applications" />} />
       <Route path="/agent" element={<GeoLanguageRedirect path="/agent" />} />
+      <Route path="/agent-workspace" element={<GeoLanguageRedirect path="/agent-workspace" />} />
       <Route path="/sign-up" element={<GeoLanguageRedirect path="/sign-up" />} />
       <Route path="/log-in" element={<GeoLanguageRedirect path="/log-in" />} />
+      <Route path="/agent-log-in" element={<GeoLanguageRedirect path="/agent-log-in" />} />
       <Route path="/privacy-policy" element={<GeoLanguageRedirect path="/privacy-policy" />} />
       <Route path="/terms-of-service" element={<GeoLanguageRedirect path="/terms-of-service" />} />
       <Route path="/Bookmark" element={<GeoLanguageRedirect path="/Bookmark" />} />
@@ -80,8 +84,10 @@ export default function App() {
         <Route path="search" element={<SearchPage />} />
         <Route path="applications" element={<ApplicationsPage />} />
         <Route path="agent" element={<AgentPage />} />
+        <Route path="agent-workspace" element={<AgentWorkspacePage />} />
         <Route path="sign-up" element={<SignUpPage />} />
         <Route path="log-in" element={<LogInPage />} />
+        <Route path="agent-log-in" element={<AgentLogInPage />} />
         <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="terms-of-service" element={<TermsOfServicePage />} />
         <Route path="Bookmark" element={<BookmarkPage />} />
@@ -99,8 +105,10 @@ export default function App() {
         <Route path="search" element={<SearchPage />} />
         <Route path="applications" element={<ApplicationsPage />} />
         <Route path="agent" element={<AgentPage />} />
+        <Route path="agent-workspace" element={<AgentWorkspacePage />} />
         <Route path="sign-up" element={<SignUpPage />} />
         <Route path="log-in" element={<LogInPage />} />
+        <Route path="agent-log-in" element={<AgentLogInPage />} />
         <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="terms-of-service" element={<TermsOfServicePage />} />
         <Route path="Bookmark" element={<BookmarkPage />} />
@@ -118,8 +126,10 @@ export default function App() {
         <Route path="search" element={<SearchPage />} />
         <Route path="applications" element={<ApplicationsPage />} />
         <Route path="agent" element={<AgentPage />} />
+        <Route path="agent-workspace" element={<AgentWorkspacePage />} />
         <Route path="sign-up" element={<SignUpPage />} />
         <Route path="log-in" element={<LogInPage />} />
+        <Route path="agent-log-in" element={<AgentLogInPage />} />
         <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="terms-of-service" element={<TermsOfServicePage />} />
         <Route path="Bookmark" element={<BookmarkPage />} />
@@ -137,8 +147,10 @@ export default function App() {
         <Route path="search" element={<SearchPage />} />
         <Route path="applications" element={<ApplicationsPage />} />
         <Route path="agent" element={<AgentPage />} />
+        <Route path="agent-workspace" element={<AgentWorkspacePage />} />
         <Route path="sign-up" element={<SignUpPage />} />
         <Route path="log-in" element={<LogInPage />} />
+        <Route path="agent-log-in" element={<AgentLogInPage />} />
         <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="terms-of-service" element={<TermsOfServicePage />} />
         <Route path="Bookmark" element={<BookmarkPage />} />
@@ -156,8 +168,10 @@ export default function App() {
         <Route path="search" element={<SearchPage />} />
         <Route path="applications" element={<ApplicationsPage />} />
         <Route path="agent" element={<AgentPage />} />
+        <Route path="agent-workspace" element={<AgentWorkspacePage />} />
         <Route path="sign-up" element={<SignUpPage />} />
         <Route path="log-in" element={<LogInPage />} />
+        <Route path="agent-log-in" element={<AgentLogInPage />} />
         <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="terms-of-service" element={<TermsOfServicePage />} />
         <Route path="Bookmark" element={<BookmarkPage />} />

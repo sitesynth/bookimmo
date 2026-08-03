@@ -7,6 +7,99 @@ console.log("🔄 ImmoScout Contact Logger Background Worker started");
 
 // Хранилище для логирования
 let contactLog = [];
+const recentExposeContexts = new Map();
+const linkedConversationKeys = new Set();
+
+function nowTs() {
+  return Date.now();
+}
+
+function extractExposeId(value) {
+  const match = String(value || "").match(/\/expose\/(\d+)/);
+  return match ? match[1] : null;
+}
+
+function extractConversationId(value) {
+  const match = String(value || "").match(/\/messenger\/messages\/([0-9a-f-]{8,})/i);
+  return match ? match[1] : null;
+}
+
+function rememberExposeContext(tabId, payload = {}) {
+  const exposeId = payload.exposeId || extractExposeId(payload.url);
+  if (!tabId || !exposeId) return null;
+
+  const context = {
+    tabId,
+    exposeId,
+    url: payload.url || "",
+    title: payload.title || "",
+    address: payload.address || "",
+    seenAt: nowTs()
+  };
+
+  recentExposeContexts.set(tabId, context);
+  return context;
+}
+
+function resolveRecentExposeContext(tabId, openerTabId = null) {
+  const cutoff = nowTs() - 10 * 60 * 1000;
+  const candidates = [];
+
+  if (tabId && recentExposeContexts.has(tabId)) {
+    candidates.push(recentExposeContexts.get(tabId));
+  }
+  if (openerTabId && recentExposeContexts.has(openerTabId)) {
+    candidates.push(recentExposeContexts.get(openerTabId));
+  }
+
+  for (const item of candidates) {
+    if (item && item.seenAt >= cutoff) {
+      return item;
+    }
+  }
+
+  return null;
+}
+
+function postJsonWithFallback(path, payload) {
+  return fetch(`http://localhost:5555${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  }).catch(() => {
+    return fetch(`http://192.168.0.105:5555${path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  });
+}
+
+function notifyProviderThreadLink(payload) {
+  const exposeId = payload.expose_id || payload.provider_expose_id;
+  const conversationId = payload.provider_conversation_id || payload.conversation_id || extractConversationId(payload.url);
+  if (!exposeId || !conversationId) return;
+
+  const dedupeKey = `${exposeId}:${conversationId}`;
+  if (linkedConversationKeys.has(dedupeKey)) return;
+  linkedConversationKeys.add(dedupeKey);
+
+  postJsonWithFallback("/provider_thread_link", {
+    ...payload,
+    expose_id: exposeId,
+    provider_expose_id: exposeId,
+    provider_conversation_id: conversationId,
+    provider_source: payload.provider_source || "is24",
+    timestamp: payload.timestamp || new Date().toISOString()
+  })
+    .then(() => {
+      console.log(`🔗 Provider thread linked: expose ${exposeId} -> ${conversationId}`);
+    })
+    .catch((err) => {
+      linkedConversationKeys.delete(dedupeKey);
+      console.log(`❌ Ошибка отправки provider thread link: ${err.message}`);
+    });
+}
 
 // Загружаем контакт-данные из локального сервера
 function loadContactData() {
@@ -119,6 +212,79 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     
     sendResponse({status: "logged"});
   }
+  else if (request.type === "expose_page_seen") {
+    rememberExposeContext(sender?.tab?.id, {
+      exposeId: request.exposeId,
+      url: request.url || sender?.url || "",
+      title: request.title || "",
+      address: request.address || ""
+    });
+    sendResponse({status: "ok"});
+  }
+  else if (request.type === "messenger_thread_seen") {
+    const tabId = sender?.tab?.id;
+    const openerTabId = sender?.tab?.openerTabId || null;
+    const context = resolveRecentExposeContext(tabId, openerTabId);
+    const exposeId = request.exposeId || context?.exposeId || null;
+    const address = request.listingAddress || context?.address || "";
+
+    if (exposeId) {
+      notifyProviderThreadLink({
+        expose_id: exposeId,
+        provider_conversation_id: request.conversationId,
+        provider_listing_address: address,
+        counterparty_name: request.counterpartyName || null,
+        counterparty_role: request.counterpartyRole || null,
+        account_label: request.accountLabel || null,
+        last_message_preview: request.lastMessagePreview || null,
+        last_message_at: request.lastMessageAt || null,
+        url: request.url || sender?.url || "",
+        raw_context: {
+          tabId,
+          openerTabId,
+          context
+        }
+      });
+    }
+
+    sendResponse({
+      status: "ok",
+      exposeId: exposeId || null
+    });
+  }
+});
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  const nextUrl = changeInfo.url || tab?.url || "";
+  if (!nextUrl) return;
+
+  const exposeId = extractExposeId(nextUrl);
+  if (exposeId) {
+    rememberExposeContext(tabId, {
+      exposeId,
+      url: nextUrl,
+      title: tab?.title || ""
+    });
+    return;
+  }
+
+  const conversationId = extractConversationId(nextUrl);
+  if (!conversationId) return;
+
+  const context = resolveRecentExposeContext(tabId, tab?.openerTabId || null);
+  if (!context?.exposeId) return;
+
+  notifyProviderThreadLink({
+    expose_id: context.exposeId,
+    provider_conversation_id: conversationId,
+    provider_listing_address: context.address || "",
+    url: nextUrl,
+    raw_context: {
+      tabId,
+      openerTabId: tab?.openerTabId || null,
+      context
+    }
+  });
 });
 
 // Слушаем установку расширения

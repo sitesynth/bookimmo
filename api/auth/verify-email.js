@@ -43,9 +43,42 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'This confirmation link is invalid or has expired.' })
     }
 
+    const [userResult, agentProfileResult] = await Promise.all([
+      query(
+        `SELECT id, email, role
+         FROM public.app_users
+         WHERE id = $1
+         LIMIT 1`,
+        [result],
+      ),
+      query(
+        `SELECT id, display_name, is_active
+         FROM public.agent_profiles
+         WHERE user_id = $1
+         LIMIT 1`,
+        [result],
+      ),
+    ])
+
+    const signedInUser = userResult.rows[0] || null
+    const agentProfile = agentProfileResult.rows[0] || null
+    const isAgent = signedInUser?.role === 'agent' || Boolean(agentProfile)
+
     const rawToken = await createSession(result)
     setSessionCookie(res, rawToken)
-    return res.status(200).json({ ok: true })
+    return res.status(200).json({
+      ok: true,
+      user: signedInUser ? {
+        id: signedInUser.id,
+        email: signedInUser.email,
+        role: isAgent ? 'agent' : (signedInUser.role || 'client'),
+        isAgent,
+        agentProfile: agentProfile ? {
+          id: agentProfile.id,
+          displayName: agentProfile.display_name || signedInUser.email,
+        } : null,
+      } : null,
+    })
   } catch (error) {
     console.error('verify_email_failed', error)
     return res.status(500).json({ error: 'Could not verify this email link.' })

@@ -55,10 +55,13 @@ export default function AuthCallbackPage() {
     apiRequest('/api/auth/verify-email', {
       method: 'POST',
       body: JSON.stringify({ token }),
-    }).then(() => {
+    }).then((result) => {
       if (!active) return
       window.dispatchEvent(new Event('bookimmo-auth-changed'))
-      navigate(`/${lang}/dashboard-home`, { replace: true })
+      const destination = result?.user?.isAgent || result?.user?.role === 'agent'
+        ? `/${lang}/agent-workspace`
+        : `/${lang}/dashboard-home`
+      navigate(destination, { replace: true })
     }).catch((error) => {
       if (!active) return
       const authError = describeAuthError('', String(error))

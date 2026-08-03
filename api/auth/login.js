@@ -7,11 +7,12 @@ export default async function handler(req, res) {
   if (await proxyToBridge(req, res)) return
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { email = '', password = '' } = req.body || {}
+  const { email = '', password = '', portal = 'client' } = req.body || {}
   const normalizedEmail = String(email).trim().toLowerCase()
+  const normalizedPortal = String(portal || 'client').trim().toLowerCase()
 
   const result = await query(
-    'SELECT id, email, password_hash, email_verified FROM public.app_users WHERE email = $1 LIMIT 1',
+    'SELECT id, email, password_hash, email_verified, role FROM public.app_users WHERE email = $1 LIMIT 1',
     [normalizedEmail],
   )
   let user = result.rows[0]
@@ -30,14 +31,14 @@ export default async function handler(req, res) {
 
       const userId = user?.id || legacyUser.id || newId()
       await client.query(
-        `INSERT INTO public.app_users (id, email, password_hash, name, preferred_language, email_verified, updated_at)
-         VALUES ($1, $2, $3, $4, $5, $6, NOW())
+        `INSERT INTO public.app_users (id, email, password_hash, name, preferred_language, email_verified, role, updated_at)
+         VALUES ($1, $2, $3, $4, $5, $6, COALESCE($7, 'client'), NOW())
          ON CONFLICT (email) DO UPDATE SET
            password_hash = EXCLUDED.password_hash,
            name = EXCLUDED.name,
            preferred_language = EXCLUDED.preferred_language,
-           email_verified = EXCLUDED.email_verified,
-           updated_at = NOW()`,
+            email_verified = EXCLUDED.email_verified,
+            updated_at = NOW()`,
         [
           userId,
           legacyUser.email,
@@ -45,6 +46,7 @@ export default async function handler(req, res) {
           legacyUser.name,
           legacyUser.preferredLanguage,
           legacyUser.emailVerified,
+          user?.role || 'client',
         ],
       )
 
@@ -117,7 +119,7 @@ export default async function handler(req, res) {
     })
 
     const refreshed = await query(
-      'SELECT id, email, password_hash, email_verified FROM public.app_users WHERE email = $1 LIMIT 1',
+      'SELECT id, email, password_hash, email_verified, role FROM public.app_users WHERE email = $1 LIMIT 1',
       [normalizedEmail],
     )
     user = refreshed.rows[0]
@@ -127,7 +129,35 @@ export default async function handler(req, res) {
     return res.status(409).json({ error: 'Please confirm your email before signing in.' })
   }
 
+  const agentProfileResult = await query(
+    `SELECT id, display_name, is_active
+     FROM public.agent_profiles
+     WHERE user_id = $1
+     LIMIT 1`,
+    [user.id],
+  )
+  const agentProfile = agentProfileResult.rows[0] || null
+  const isAgent = user.role === 'agent' || Boolean(agentProfile)
+
+  if (normalizedPortal === 'agent') {
+    if (!isAgent || agentProfile?.is_active === false) {
+      return res.status(403).json({ error: 'This account does not have Bookimmo agent access.' })
+    }
+  }
+
   const rawToken = await createSession(user.id)
   setSessionCookie(res, rawToken)
-  return res.status(200).json({ ok: true })
+  return res.status(200).json({
+    ok: true,
+    user: {
+      id: user.id,
+      email: user.email,
+      role: isAgent ? 'agent' : (user.role || 'client'),
+      isAgent,
+      agentProfile: agentProfile ? {
+        id: agentProfile.id,
+        displayName: agentProfile.display_name || user.email,
+      } : null,
+    },
+  })
 }

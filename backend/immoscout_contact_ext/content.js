@@ -9,6 +9,39 @@
 
 console.log("✅ ImmoScout Contact Auto-Fill & Send loaded on " + window.location.href);
 
+function textFromSelectors(selectors) {
+  for (const selector of selectors) {
+    const node = document.querySelector(selector);
+    const text = node?.textContent?.trim();
+    if (text) return text;
+  }
+  return "";
+}
+
+function getConversationIdFromUrl() {
+  const match = window.location.pathname.match(/\/messenger\/messages\/([0-9a-f-]{8,})/i);
+  return match ? match[1] : null;
+}
+
+function getExposeIdFromDom() {
+  const anchors = Array.from(document.querySelectorAll('a[href*="/expose/"]'));
+  for (const anchor of anchors) {
+    const match = anchor.href.match(/\/expose\/(\d+)/);
+    if (match) return match[1];
+  }
+  return null;
+}
+
+function notifyBackground(payload) {
+  try {
+    chrome.runtime.sendMessage(payload, () => {
+      void chrome.runtime.lastError;
+    });
+  } catch (e) {
+    console.log("⚠️  Не удалось отправить сообщение в background");
+  }
+}
+
 // 🟢 HEARTBEAT: Отправляю сигнал что расширение живо!
 // Это поможет нам узнать загружается ли расширение на Linux
 fetch('http://localhost:5555/api/extension-heartbeat', {
@@ -78,6 +111,58 @@ function getExposeIdFromUrl() {
   return match ? match[1] : null;
 }
 
+function reportExposePageSeen() {
+  const exposeId = getExposeIdFromUrl();
+  if (!exposeId) return;
+
+  notifyBackground({
+    type: "expose_page_seen",
+    exposeId,
+    url: window.location.href,
+    title: document.title || "",
+    address: textFromSelectors([
+      '[data-testid="object-address"]',
+      '.is24qa-objektadresse',
+      'div.address-block'
+    ])
+  });
+}
+
+function reportMessengerThreadSeen() {
+  const conversationId = getConversationIdFromUrl();
+  if (!conversationId) return false;
+
+  notifyBackground({
+    type: "messenger_thread_seen",
+    conversationId,
+    exposeId: getExposeIdFromDom(),
+    listingAddress: textFromSelectors([
+      '[data-testid="conversation-address"]',
+      '[data-testid="object-address"]',
+      '.is24qa-objektadresse',
+      'div.address-block'
+    ]),
+    counterpartyName: textFromSelectors([
+      '[data-testid="conversation-counterparty-name"]',
+      '[data-testid="contact-name"]',
+      'aside h2',
+      'main h2'
+    ]),
+    counterpartyRole: textFromSelectors([
+      '[data-testid="conversation-counterparty-role"]',
+      '[data-testid="contact-role"]'
+    ]),
+    lastMessagePreview: textFromSelectors([
+      '[data-testid="message-bubble"]:last-child',
+      '[data-testid="message-text"]:last-child'
+    ]),
+    lastMessageAt: new Date().toISOString(),
+    url: window.location.href
+  });
+
+  return true;
+}
+
 // Функция для извлечения адреса из HTML при удаленном объявлении
 function getAddressFromDeletedListing() {
   const addressBlock = document.querySelector('div.address-block');
@@ -140,3 +225,18 @@ setTimeout(() => {
     reportDeletedApartment();
   }
 }, 1000);
+
+if (window.location.pathname.includes('/expose/')) {
+  setTimeout(reportExposePageSeen, 1200);
+}
+
+if (window.location.pathname.includes('/messenger/messages/')) {
+  let messengerAttempts = 0;
+  const messengerTimer = setInterval(() => {
+    messengerAttempts += 1;
+    reportMessengerThreadSeen();
+    if (messengerAttempts >= 30) {
+      clearInterval(messengerTimer);
+    }
+  }, 1500);
+}

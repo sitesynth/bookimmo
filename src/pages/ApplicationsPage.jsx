@@ -9,7 +9,7 @@ export default function ApplicationsPage() {
       <SvgSprites />
       <CabinetLayout
         title="Applications"
-        subtitle="Track rental request drafts, return to shortlisted properties and move your tenant profile toward submission."
+        subtitle="Track application drafts, provider replies, agent activity and dossier readiness across your Bookimmo property flow."
       >
         <ApplicationsShell />
       </CabinetLayout>

@@ -2,6 +2,8 @@ import express from 'express'
 
 import applicationsHandler from '../api/applications.js'
 import favoritesHandler from '../api/favorites.js'
+import listingLookupHandler from '../api/listings/by-ids.js'
+import latestListingsHandler from '../api/listings/latest.js'
 import profileHandler from '../api/profile.js'
 import savedSearchesHandler from '../api/saved-searches.js'
 import forgotPasswordHandler from '../api/auth/forgot-password.js'
@@ -54,6 +56,8 @@ app.all('/api/profile', wrap(profileHandler))
 app.all('/api/favorites', wrap(favoritesHandler))
 app.all('/api/saved-searches', wrap(savedSearchesHandler))
 app.all('/api/applications', wrap(applicationsHandler))
+app.all('/api/listings/latest', wrap(latestListingsHandler))
+app.all('/api/listings/by-ids', wrap(listingLookupHandler))
 
 app.listen(port, '127.0.0.1', () => {
   console.log(`Bookimmo Oracle bridge listening on 127.0.0.1:${port}`)

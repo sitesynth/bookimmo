@@ -59,8 +59,6 @@ function ActionCard({ title, body, to, cta }) {
           display: 'inline-flex',
           marginTop: 'auto',
           alignSelf: 'flex-start',
-          position: 'relative',
-          top: 18,
           padding: '12px 16px',
           borderRadius: 16,
           textDecoration: 'none',

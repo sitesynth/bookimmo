@@ -61,18 +61,12 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
   return (
     <aside style={WRAP}>
       <div style={BRAND}>
-        <img src="/email-logo.png" alt="Bookimmo" style={BRAND_LOGO} />
-        <p
-          style={{
-            marginLeft: 96,
-            fontFamily: '"Lexend", sans-serif',
-            fontSize: 12,
-            lineHeight: 1.1,
-            color: 'rgba(25,26,32,0.58)',
-          }}
-        >
-          Client cabinet
-        </p>
+        <div>
+          <img src="/email-logo.png" alt="Bookimmo" style={BRAND_LOGO} />
+          <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.58)' }}>
+            Client cabinet
+          </p>
+        </div>
       </div>
 
       <nav style={NAV}>

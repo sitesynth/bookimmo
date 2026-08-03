@@ -99,7 +99,7 @@ function PasswordField({
 }
 
 // mode: 'signup' | 'login' | 'reset' | 'update'
-export default function SupabaseAuthForm({ mode = 'signup' }) {
+export default function SupabaseAuthForm({ mode = 'signup', portal = 'client' }) {
   const navigate = useNavigate()
   const location = useLocation()
   const [email, setEmail]       = useState('')
@@ -112,6 +112,7 @@ export default function SupabaseAuthForm({ mode = 'signup' }) {
   const pathLanguage = getPathLanguage(location.pathname)
   const lang = normalizeLanguage(pathLanguage, 'en')
   const dashboardHref = `/${lang}/dashboard-home`
+  const agentWorkspaceHref = `/${lang}/agent-workspace`
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
@@ -136,6 +137,9 @@ export default function SupabaseAuthForm({ mode = 'signup' }) {
     setMessage('')
 
     if (mode === 'signup') {
+      if (portal === 'agent') {
+        setStatus('error'); setMessage('Agent access is provisioned by Bookimmo. Use your assigned agent account to sign in.'); return
+      }
       if (password !== confirm) {
         setStatus('error'); setMessage('Passwords do not match.'); return
       }
@@ -157,12 +161,15 @@ export default function SupabaseAuthForm({ mode = 'signup' }) {
 
     } else if (mode === 'login') {
       try {
-        await apiRequest('/api/auth/login', {
+        const result = await apiRequest('/api/auth/login', {
           method: 'POST',
-          body: JSON.stringify({ email, password }),
+          body: JSON.stringify({ email, password, portal }),
         })
         window.dispatchEvent(new Event('bookimmo-auth-changed'))
-        setStatus('success'); setMessage('Signed in! Redirecting…'); setTimeout(() => navigate(dashboardHref), 700)
+        const destination = result?.user?.isAgent || result?.user?.role === 'agent'
+          ? agentWorkspaceHref
+          : dashboardHref
+        setStatus('success'); setMessage('Signed in! Redirecting…'); setTimeout(() => navigate(destination), 700)
       } catch (error) {
         setStatus('error'); setMessage(error.message)
       }
@@ -232,7 +239,7 @@ export default function SupabaseAuthForm({ mode = 'signup' }) {
       <button type="submit" disabled={isLoading} style={{...BTN_STYLE, opacity: isLoading ? 0.6 : 1}}>
         {isLoading ? 'Please wait…'
           : mode === 'signup' ? 'Create Account'
-          : mode === 'login'  ? 'Sign In'
+          : mode === 'login'  ? (portal === 'agent' ? 'Sign In As Agent' : 'Sign In')
           : mode === 'reset'  ? 'Send Reset Link'
           : 'Update Password'}
       </button>

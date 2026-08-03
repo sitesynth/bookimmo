@@ -154,6 +154,7 @@ function normalizePropertyForApplication(property) {
     address: property.address,
     source: property.source,
     url: property.url,
+    externalId: property.externalId || property.id,
   }
 }
 
