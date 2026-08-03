@@ -696,7 +696,8 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
             </div>
           </div>
           <div style={{ display: 'grid', gap: '10px' }}>
-            {agentStep === 1 ? (+              <>
+            {agentStep === 1 ? (
+              <>
             <div>
               <label style={LABEL_STYLE}>Account type</label>
               <div style={SEGMENTED_GROUP_STYLE}>
