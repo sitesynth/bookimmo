@@ -1,12 +1,13 @@
 import { requireUser } from './_lib/auth.js'
 import { proxyToBridge } from './_lib/bridge.js'
 import { newId, query } from './_lib/db.js'
+import { normalizePhoneToE164 } from '../shared/phone.js'
 
 function normalizeProfileRow(row = {}) {
   return {
     first_name: row.first_name ?? null,
     last_name: row.last_name ?? null,
-    phone: row.phone ?? null,
+    phone: row.phone ? normalizePhoneToE164(row.phone, 'DE') : null,
     preferred_language: row.preferred_language ?? 'en',
     current_city: row.current_city ?? null,
     current_address: row.current_address ?? null,

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useProfile } from '../../hooks/useProfile.js'
+import PhoneField from '../PhoneField.jsx'
 
 const INPUT = {
   width: '100%',
@@ -381,7 +382,12 @@ export default function ProfileShell() {
                   <input value={profile.lastName} onChange={(e) => updateField('lastName', e.target.value)} style={INPUT} />
                 </Field>
                 <Field label="Phone">
-                  <input value={profile.phone} onChange={(e) => updateField('phone', e.target.value)} style={INPUT} />
+                  <PhoneField
+                    value={profile.phone}
+                    onChange={(value) => updateField('phone', value)}
+                    style={INPUT}
+                    placeholder="Phone number"
+                  />
                 </Field>
                 <Field label="Preferred language">
                   <select value={profile.preferredLanguage} onChange={(e) => updateField('preferredLanguage', e.target.value)} style={INPUT}>

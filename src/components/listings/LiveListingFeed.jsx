@@ -105,7 +105,7 @@ function RailCard({ listing, lang, compact = false }) {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        height: compact ? 'auto' : '100%',
+        height: '100%',
         minWidth: 0,
         borderRadius: compact ? 22 : 28,
         overflow: 'hidden',
@@ -121,7 +121,7 @@ function RailCard({ listing, lang, compact = false }) {
           textDecoration: 'none',
           display: 'flex',
           flexDirection: 'column',
-          height: compact ? 'auto' : '100%',
+          height: '100%',
           minHeight: 0,
         }}
       >
@@ -204,7 +204,15 @@ function RailCard({ listing, lang, compact = false }) {
           </div>
         </div>
 
-        <div style={{ padding: compact ? 18 : 22, display: 'flex', flexDirection: 'column', gap: compact ? 10 : 12, flex: compact ? '0 0 auto' : 1, minHeight: 0 }}>
+        <div style={{
+          padding: compact ? 18 : 22,
+          display: 'grid',
+          gridTemplateRows: 'auto auto 1fr auto',
+          rowGap: compact ? 10 : 12,
+          flex: 1,
+          minHeight: 0,
+          height: '100%',
+        }}>
           <div>
             <h3 style={{
               fontFamily: '"Lexend", sans-serif',
@@ -256,8 +264,8 @@ function RailCard({ listing, lang, compact = false }) {
             justifyContent: 'space-between',
             alignItems: 'center',
             gap: 12,
-            marginTop: compact ? 8 : 'auto',
             flexWrap: compact ? 'wrap' : 'nowrap',
+            alignSelf: 'end',
           }}>
             <div style={{
               fontFamily: '"Lexend", sans-serif',

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { detectPreferredLanguage, getPathLanguage, normalizeLanguage } from '../lib/language.js'
 import { apiRequest } from '../lib/api.js'
+import PhoneField from './PhoneField.jsx'
 
 const INPUT_STYLE = {
   width: '100%', padding: '12px 16px', borderRadius: '8px',
@@ -225,6 +226,9 @@ export default function SupabaseAuthForm({ mode = 'signup', portal = 'client' })
         if (!name.trim() || !phone.trim() || !countryCode || !baseCityId) {
           setStatus('error'); setMessage('Fill in your full name, phone number, country and base city.'); return
         }
+        if (phone.replace(/\D/g, '').length < 6) {
+          setStatus('error'); setMessage('Enter a valid phone number.'); return
+        }
         if (accountType === 'company' && !companyName.trim()) {
           setStatus('error'); setMessage('Add the company or agency name.'); return
         }
@@ -342,14 +346,13 @@ export default function SupabaseAuthForm({ mode = 'signup', portal = 'client' })
             style={INPUT_STYLE}
             autoComplete="name"
           />
-          <input
-            type="tel"
-            placeholder="Phone number"
-            required
+          <PhoneField
             value={phone}
-            onChange={e => setPhone(e.target.value)}
+            onChange={setPhone}
+            countryCodeHint={countryCode}
+            required
+            placeholder="Phone number"
             style={INPUT_STYLE}
-            autoComplete="tel"
           />
           {showCompanyFields ? (
             <>

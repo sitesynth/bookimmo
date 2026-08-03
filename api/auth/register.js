@@ -2,6 +2,7 @@ import { hashPassword } from '../_lib/auth.js'
 import { proxyToBridge } from '../_lib/bridge.js'
 import { newId, query, sha256, withClient } from '../_lib/db.js'
 import { sendAgentVerifyEmail, sendVerifyEmail } from '../_lib/email-auth.js'
+import { isReasonablePhoneNumber, normalizePhoneToE164 } from '../../shared/phone.js'
 
 export default async function handler(req, res) {
   if (await proxyToBridge(req, res)) return
@@ -27,8 +28,8 @@ export default async function handler(req, res) {
   const normalizedPortal = String(portal || 'client').trim().toLowerCase() === 'agent' ? 'agent' : 'client'
   const normalizedAccountType = String(accountType || 'independent').trim().toLowerCase() === 'company' ? 'company' : 'independent'
   const normalizedName = String(name || normalizedEmail.split('@')[0]).trim()
-  const normalizedPhone = String(phone || '').trim()
   const normalizedCountryCode = String(countryCode || 'DE').trim().toUpperCase()
+  const normalizedPhone = normalizePhoneToE164(String(phone || '').trim(), normalizedCountryCode)
   const normalizedBaseCity = String(baseCity || '').trim()
   const normalizedBaseCityId = String(baseCityId || '').trim()
   const normalizedBio = String(bio || '').trim()
@@ -53,6 +54,9 @@ export default async function handler(req, res) {
     }
     if (!normalizedPhone) {
       return res.status(400).json({ error: 'Enter the agent phone number.' })
+    }
+    if (!isReasonablePhoneNumber(normalizedPhone, normalizedCountryCode)) {
+      return res.status(400).json({ error: 'Enter a valid phone number.' })
     }
     if (!normalizedCountryCode) {
       return res.status(400).json({ error: 'Choose the operating country.' })
