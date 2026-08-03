@@ -559,7 +559,7 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
           body: JSON.stringify({ email, password, portal }),
         })
         window.dispatchEvent(new Event('bookimmo-auth-changed'))
-        const destination = result?.user?.isAgent || result?.user?.role === 'agent'
+        const destination = portal === 'agent' || result?.user?.isAgent || result?.user?.role === 'agent'
           ? agentWorkspaceHref
           : dashboardHref
         setStatus('success')
