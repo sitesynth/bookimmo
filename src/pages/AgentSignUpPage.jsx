@@ -6,7 +6,15 @@ import SignUpPageDetails from '../components/SignUpPageDetails.jsx'
 export default function AgentSignUpPage() {
   useFramerAppear()
   return (
-    <div className="framer-Ivpik framer-0RYty framer-YPkpu framer-Xjiaj framer-152z66" style={{ minHeight: '100vh', width: 'auto' }}>
+    <div
+      className="framer-Ivpik framer-0RYty framer-YPkpu framer-Xjiaj framer-152z66"
+      style={{
+        minHeight: '100vh',
+        height: 'auto',
+        width: 'auto',
+        overflow: 'visible',
+      }}
+    >
       <SvgSprites />
       <SignUpPageDetails portal="agent" />
     </div>
