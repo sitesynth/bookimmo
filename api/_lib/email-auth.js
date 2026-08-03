@@ -130,6 +130,58 @@ export async function sendVerifyEmail({ email, language = 'en', token }) {
   })
 }
 
+export async function sendAgentVerifyEmail({ email, language = 'en', token }) {
+  const url = `${APP_URL.replace(/\/$/, '')}/${language}/auth/callback?token=${encodeURIComponent(token)}`
+  const copy = languageCopy(language)
+  const subject = language === 'de'
+    ? 'Bestaetige deinen Bookimmo Agenten-Account'
+    : 'Confirm your Bookimmo agent account'
+  const intro = language === 'de'
+    ? 'Dein Bookimmo Agenten-Workspace ist fast bereit. Bestaetige deine E-Mail-Adresse, um deinen Agenten-Account zu aktivieren.'
+    : 'Your Bookimmo agent workspace is almost ready. Confirm your email address to activate your agent account.'
+
+  const html = `<!doctype html>
+  <html lang="${language}">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>${subject}</title>
+    </head>
+    <body style="margin:0;padding:0;background:#f5f2ea;font-family:Inter,Arial,sans-serif;color:#191a20;">
+      <div style="max-width:640px;margin:0 auto;padding:40px 20px;">
+        <div style="background:#ffffff;border:1px solid rgba(25,26,32,0.08);border-radius:24px;overflow:hidden;box-shadow:0 24px 64px rgba(25,26,32,0.08);">
+          <div style="padding:32px 32px 20px;background:linear-gradient(135deg,#fffaf0 0%,#efe7d8 100%);border-bottom:1px solid rgba(25,26,32,0.08);">
+            <img src="${LOGO_URL}" alt="${copy.brand}" width="315" height="44" style="display:block;width:220px;height:auto;" />
+            <h1 style="margin:12px 0 0;font-size:30px;line-height:1.1;font-family:'Bricolage Grotesque',Inter,Arial,sans-serif;font-weight:600;color:#191a20;">
+              ${language === 'de' ? 'Agenten-Account bestaetigen' : 'Confirm your agent account'}
+            </h1>
+          </div>
+          <div style="padding:28px 32px 32px;">
+            <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:rgba(25,26,32,0.74);">${intro}</p>
+            <a href="${url}" style="display:inline-block;padding:14px 20px;border-radius:14px;background:#191a20;color:#f5f5f5;text-decoration:none;font-size:14px;font-weight:600;">
+              ${language === 'de' ? 'Agenten-Account aktivieren' : 'Activate agent account'}
+            </a>
+            <p style="margin:24px 0 10px;font-size:13px;line-height:1.6;color:rgba(25,26,32,0.6);">${copy.verify.secondary}</p>
+            <p style="margin:0 0 24px;font-size:13px;line-height:1.6;">
+              <a href="${url}" style="color:#191a20;font-weight:600;text-decoration:underline;">${copy.verify.directLinkLabel}</a>
+            </p>
+            <p style="margin:24px 0 0;font-size:13px;line-height:1.6;color:rgba(25,26,32,0.54);">${copy.verify.ignore}</p>
+          </div>
+        </div>
+        <p style="margin:16px 4px 0;font-size:12px;line-height:1.5;color:rgba(25,26,32,0.45);text-align:center;">
+          ${copy.footer}
+        </p>
+      </div>
+    </body>
+  </html>`
+
+  await sendEmail({
+    to: email,
+    subject,
+    html,
+  })
+}
+
 export async function sendPasswordResetEmail({ email, language = 'en', token }) {
   const url = `${APP_URL.replace(/\/$/, '')}/${language}/update-password?token=${encodeURIComponent(token)}`
   const html = renderEmailHtml({ language, mode: 'reset', url })

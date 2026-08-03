@@ -105,6 +105,11 @@ export default function SupabaseAuthForm({ mode = 'signup', portal = 'client' })
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
   const [confirm, setConfirm]   = useState('')
+  const [name, setName]         = useState('')
+  const [phone, setPhone]       = useState('')
+  const [baseCity, setBaseCity] = useState('')
+  const [serviceRegions, setServiceRegions] = useState('')
+  const [bio, setBio]           = useState('')
   const [status, setStatus]     = useState('idle')
   const [message, setMessage]   = useState('')
   const [passwordVisible, setPasswordVisible] = useState(false)
@@ -137,11 +142,13 @@ export default function SupabaseAuthForm({ mode = 'signup', portal = 'client' })
     setMessage('')
 
     if (mode === 'signup') {
-      if (portal === 'agent') {
-        setStatus('error'); setMessage('Agent access is provisioned by Bookimmo. Use your assigned agent account to sign in.'); return
-      }
       if (password !== confirm) {
         setStatus('error'); setMessage('Passwords do not match.'); return
+      }
+      if (portal === 'agent') {
+        if (!name.trim() || !phone.trim() || !baseCity.trim()) {
+          setStatus('error'); setMessage('Fill in your full name, phone number and base city.'); return
+        }
       }
       const preferredLanguage = await detectPreferredLanguage()
       const authLanguage = normalizeLanguage(pathLanguage || preferredLanguage, 'en')
@@ -152,9 +159,15 @@ export default function SupabaseAuthForm({ mode = 'signup', portal = 'client' })
             email,
             password,
             preferredLanguage: authLanguage,
+            name,
+            portal,
+            phone,
+            baseCity,
+            serviceRegions,
+            bio,
           }),
         })
-        setStatus('success'); setMessage('Check your email to confirm your account.')
+        setStatus('success'); setMessage(portal === 'agent' ? 'Check your email to confirm your agent account.' : 'Check your email to confirm your account.')
       } catch (error) {
         setStatus('error'); setMessage(error.message)
       }
@@ -206,9 +219,54 @@ export default function SupabaseAuthForm({ mode = 'signup', portal = 'client' })
   const showEmail   = mode !== 'update'
   const showPass    = mode !== 'reset'
   const showConfirm = mode === 'signup' || mode === 'update'
+  const showAgentFields = mode === 'signup' && portal === 'agent'
 
   return (
     <form onSubmit={handleSubmit} style={{display:'flex', flexDirection:'column', gap:'12px', width:'100%'}}>
+      {showAgentFields && (
+        <>
+          <input
+            type="text"
+            placeholder="Full name"
+            required
+            value={name}
+            onChange={e => setName(e.target.value)}
+            style={INPUT_STYLE}
+            autoComplete="name"
+          />
+          <input
+            type="tel"
+            placeholder="Phone number"
+            required
+            value={phone}
+            onChange={e => setPhone(e.target.value)}
+            style={INPUT_STYLE}
+            autoComplete="tel"
+          />
+          <input
+            type="text"
+            placeholder="Base city"
+            required
+            value={baseCity}
+            onChange={e => setBaseCity(e.target.value)}
+            style={INPUT_STYLE}
+            autoComplete="address-level2"
+          />
+          <input
+            type="text"
+            placeholder="Service regions (comma separated)"
+            value={serviceRegions}
+            onChange={e => setServiceRegions(e.target.value)}
+            style={INPUT_STYLE}
+          />
+          <textarea
+            placeholder="Short bio or service focus"
+            value={bio}
+            onChange={e => setBio(e.target.value)}
+            style={{ ...INPUT_STYLE, minHeight: '112px', resize: 'vertical' }}
+          />
+        </>
+      )}
       {showEmail && (
         <input
           type="email" placeholder="Email address" required
@@ -238,7 +296,7 @@ export default function SupabaseAuthForm({ mode = 'signup', portal = 'client' })
       )}
       <button type="submit" disabled={isLoading} style={{...BTN_STYLE, opacity: isLoading ? 0.6 : 1}}>
         {isLoading ? 'Please wait…'
-          : mode === 'signup' ? 'Create Account'
+          : mode === 'signup' ? (portal === 'agent' ? 'Create Agent Account' : 'Create Account')
           : mode === 'login'  ? (portal === 'agent' ? 'Sign In As Agent' : 'Sign In')
           : mode === 'reset'  ? 'Send Reset Link'
           : 'Update Password'}
