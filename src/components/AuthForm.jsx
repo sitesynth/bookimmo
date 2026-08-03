@@ -11,7 +11,7 @@ import { apiRequest } from '../lib/api.js'
 
 const INPUT_STYLE = {
   width: '100%',
-  padding: '14px 16px',
+  padding: '12px 16px',
   borderRadius: '16px',
   border: '1px solid rgba(25,26,32,0.14)',
   fontSize: '16px',
@@ -20,12 +20,12 @@ const INPUT_STYLE = {
   boxSizing: 'border-box',
   color: 'rgb(25,26,32)',
   background: '#fff',
-  minHeight: '56px',
+  minHeight: '52px',
 }
 
 const BTN_STYLE = {
   width: '100%',
-  padding: '14px 24px',
+  padding: '12px 24px',
   borderRadius: '18px',
   backgroundColor: 'rgb(25,26,32)',
   color: 'rgb(245,245,245)',
@@ -35,7 +35,7 @@ const BTN_STYLE = {
   fontWeight: 500,
   cursor: 'pointer',
   marginTop: '4px',
-  minHeight: '58px',
+  minHeight: '54px',
 }
 
 const MSG_STYLE = (isError) => ({
@@ -83,7 +83,7 @@ const SEGMENTED_GROUP_STYLE = {
 
 const SEGMENT_BUTTON_STYLE = (active) => ({
   width: '100%',
-  padding: '14px 16px',
+  padding: '12px 16px',
   borderRadius: '18px',
   border: `1px solid ${active ? 'rgb(25,26,32)' : 'rgba(25,26,32,0.15)'}`,
   background: active ? 'rgb(25,26,32)' : '#fff',
@@ -92,12 +92,12 @@ const SEGMENT_BUTTON_STYLE = (active) => ({
   fontFamily: '"Lexend", sans-serif',
   fontWeight: 500,
   cursor: 'pointer',
-  minHeight: '56px',
+  minHeight: '52px',
 })
 
 const LABEL_STYLE = {
   display: 'block',
-  marginBottom: '8px',
+  marginBottom: '6px',
   color: 'rgba(25,26,32,0.72)',
   fontSize: '13px',
   fontFamily: '"Lexend", sans-serif',
@@ -160,7 +160,7 @@ const PHONE_INPUT_STYLE = {
 
 const PHONE_SELECTOR_STYLE_PROPS = {
   buttonStyle: {
-    minHeight: '56px',
+    minHeight: '52px',
     borderRadius: '16px 0 0 16px',
     border: '1px solid rgba(25,26,32,0.14)',
     borderRight: 'none',
@@ -677,10 +677,10 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
   const cityOptions = useMemo(() => cities, [cities])
 
   return (
-    <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+    <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: showAgentFields ? '9px' : '12px', width: '100%' }}>
       {showAgentFields ? (
         <>
-          <div style={{ display: 'grid', gap: '8px', marginBottom: '4px' }} aria-label="Registration progress">
+          <div style={{ display: 'grid', gap: '6px', marginBottom: '2px' }} aria-label="Registration progress">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
               <p style={{ ...LABEL_STYLE, marginBottom: 0 }}>Registration</p>
               <p style={{ ...HELP_STYLE, margin: 0 }}>Step {agentStep} of 2</p>
@@ -695,7 +695,7 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
               ))}
             </div>
           </div>
-          <div style={{ display: 'grid', gap: '10px' }}>
+          <div style={{ display: 'grid', gap: '8px' }}>
             {agentStep === 1 ? (
               <>
             <div>
@@ -864,7 +864,7 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
                 placeholder="Tell clients what you specialize in, which cities you cover, and how you usually help with rentals or sales."
                 style={{
                   ...INPUT_STYLE,
-                  minHeight: '132px',
+                  minHeight: '112px',
                   resize: 'vertical',
                   borderColor: agentForm.formState.errors.bio ? 'rgba(192,57,43,0.42)' : INPUT_STYLE.border,
                 }}
@@ -878,7 +878,7 @@ export default function AuthForm({ mode = 'signup', portal = 'client' }) {
             </button>
               </>
             ) : (
-              <div data-agent-signup-step="2" style={{ display: 'grid', gap: '10px' }}>
+              <div data-agent-signup-step="2" style={{ display: 'grid', gap: '8px' }}>
 
             <div>
               <label style={LABEL_STYLE}>Email</label>

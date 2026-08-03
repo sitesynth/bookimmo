@@ -19,7 +19,7 @@ export default function SignUpPageDetails({ portal = 'client' }) {
         alignItems: 'stretch',
         justifyContent: 'flex-start',
         overflow: 'visible',
-        padding: '56px 40px 64px',
+        padding: '34px 40px 44px',
         boxSizing: 'border-box',
       }
     : {}
