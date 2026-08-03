@@ -681,7 +681,7 @@ export default function SearchMain() {
       return
     }
 
-    setUiNotice(result.fallbackLocal ? 'Supabase save failed, so this search was stored locally.' : 'Search workspace saved.')
+    setUiNotice(result.fallbackLocal ? 'Server save failed, so this search was stored locally.' : 'Search workspace saved.')
   }
 
   function applySavedSearch(item) {
@@ -703,7 +703,7 @@ export default function SearchMain() {
       return
     }
 
-    setUiNotice(result.fallbackLocal ? 'Supabase delete failed, local copy was removed.' : 'Saved search removed.')
+    setUiNotice(result.fallbackLocal ? 'Server delete failed, local copy was removed.' : 'Saved search removed.')
   }
 
   async function handleFavorite(property) {

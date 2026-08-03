@@ -104,7 +104,7 @@ export default function DashboardOverview() {
         <StatCard
           label="Profile"
           value={profileLoading ? '…' : `${completionPercent}%`}
-          hint="Completion score is calculated from the renter profile fields already stored in Supabase."
+          hint="Completion score is calculated from the renter profile fields already stored in your Bookimmo account."
         />
         <StatCard
           label="Applications"

@@ -117,7 +117,7 @@ function PasswordField({
 }
 
 // mode: 'signup' | 'login' | 'reset' | 'update'
-export default function SupabaseAuthForm({ mode = 'signup', portal = 'client' }) {
+export default function AuthForm({ mode = 'signup', portal = 'client' }) {
   const navigate = useNavigate()
   const location = useLocation()
   const [email, setEmail]       = useState('')
