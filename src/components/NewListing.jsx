@@ -14,8 +14,8 @@ export default function NewListing() {
       <div style={{ maxWidth: 1320, margin: '0 auto' }}>
         <LiveListingFeed
           eyebrow="New Listing"
-          title="Fresh Germany listings, linked to real property pages."
-          description="The homepage now surfaces the newest imported apartments from the database cache instead of static demo apartments, so every card opens an existing Bookimmo detail route."
+          title="Fresh properties for your next move."
+          description="Explore the latest homes and apartments available across Germany, with clear details and a direct path to every listing."
           limit={3}
           compact
           ctaLabel="Browse live search"

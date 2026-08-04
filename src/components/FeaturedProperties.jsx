@@ -11,8 +11,8 @@ export default function FeaturedProperties() {
       <div style={{ maxWidth: 1320, margin: '0 auto' }}>
         <LiveListingFeed
           eyebrow="Featured Properties"
-          title="Provider-backed cards instead of placeholder content."
-          description="This section now reuses the same live listing layer, so clicks from the homepage always resolve to an existing detail page instead of a dead mock route."
+          title="Homes worth taking a closer look at."
+          description="Discover a considered selection of current properties from our network, chosen to make your search easier and more focused."
           limit={3}
           compact
           ctaLabel="Explore all listings"
