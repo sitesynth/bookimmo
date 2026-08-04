@@ -106,7 +106,7 @@ function RailCard({ listing, lang, compact = false }) {
         display: 'flex',
         flexDirection: 'column',
         height: 'auto',
-        minHeight: '100%',
+        minHeight: 0,
         minWidth: 0,
         borderRadius: compact ? 22 : 28,
         overflow: 'hidden',
@@ -123,7 +123,8 @@ function RailCard({ listing, lang, compact = false }) {
           display: 'flex',
           flexDirection: 'column',
           height: 'auto',
-          minHeight: '100%',
+          minHeight: 0,
+          flex: 1,
         }}
       >
         <div style={{ position: 'relative', aspectRatio: compact ? '1.14 / 1' : '1.3 / 1', backgroundColor: 'rgb(244,239,231)' }}>
@@ -492,6 +493,8 @@ export default function LiveListingFeed({
       <div style={{
         display: 'grid',
         gridTemplateColumns: compact ? 'repeat(auto-fit, minmax(260px, 1fr))' : 'repeat(auto-fit, minmax(300px, 1fr))',
+        gridAutoRows: 'max-content',
+        alignItems: 'stretch',
         gap: 18,
       }}>
         {cards.map((listing) => (

@@ -16,7 +16,7 @@ export default function NewListing() {
           eyebrow="New Listing"
           title="Fresh Germany listings, linked to real property pages."
           description="The homepage now surfaces the newest imported apartments from the database cache instead of static demo apartments, so every card opens an existing Bookimmo detail route."
-          limit={4}
+          limit={3}
           compact
           ctaLabel="Browse live search"
           sourceMode="database-cache"
