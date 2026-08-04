@@ -27,10 +27,10 @@ export default function AgentSidebar({ isAuthenticated, userEmail, onSignOut }) 
       border: '1px solid rgba(25,26,32,0.08)',
       boxShadow: '0 24px 60px rgba(25,26,32,0.08)',
     }}>
-      <div>
+      <div style={{ width: '100%' }}>
         <img src="/email-logo.png" alt="Bookimmo" style={{ display: 'block', width: 170, maxWidth: '100%', height: 'auto' }} />
-        <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.58)' }}>
-          Agent workspace
+        <p style={{ width: '100%', textAlign: 'right', fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.58)' }}>
+          Agent Workspace
         </p>
       </div>
 
