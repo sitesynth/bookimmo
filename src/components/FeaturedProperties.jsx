@@ -14,6 +14,8 @@ export default function FeaturedProperties() {
           title="Homes worth taking a closer look at."
           description="Discover a considered selection of current properties from our network, chosen to make your search easier and more focused."
           limit={3}
+          skip={3}
+          prioritizeDistinctAddresses
           compact
           ctaLabel="Explore all listings"
           sourceMode="database-cache"

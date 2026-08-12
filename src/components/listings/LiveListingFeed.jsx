@@ -55,6 +55,32 @@ function dedupeListings(listings = []) {
   })
 }
 
+function prioritizeListingsByAddress(listings = []) {
+  const seenAddresses = new Set()
+  const distinct = []
+  const repeated = []
+
+  listings.forEach((item) => {
+    const address = [item?.address, item?.postcode, item?.district]
+      .filter(Boolean)
+      .join(' ')
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim()
+
+    if (!address || !seenAddresses.has(address)) {
+      if (address) seenAddresses.add(address)
+      distinct.push(item)
+    } else {
+      repeated.push(item)
+    }
+  })
+
+  return [...distinct, ...repeated]
+}
+
 function tokenizeSoftMatch(text) {
   return String(text || '')
     .split(/[,\s]+/)
@@ -305,6 +331,8 @@ export default function LiveListingFeed({
   eyebrow,
   description,
   limit = 4,
+  skip = 0,
+  prioritizeDistinctAddresses = false,
   compact = false,
   useProfileSeed = false,
   geocodes = null,
@@ -358,15 +386,17 @@ export default function LiveListingFeed({
   }, [seededTokens, sourceListings, sourceMode])
 
   const cards = useMemo(() => (
-    dedupeListings(filteredSourceListings)
+    (prioritizeDistinctAddresses
+      ? prioritizeListingsByAddress(dedupeListings(filteredSourceListings))
+      : dedupeListings(filteredSourceListings))
       .filter((item) => item?.id && item?.source)
       .sort((left, right) => {
         const leftImported = new Date(left?.importedAt || 0).getTime()
         const rightImported = new Date(right?.importedAt || 0).getTime()
         return rightImported - leftImported
       })
-      .slice(0, limit)
-  ), [filteredSourceListings, limit])
+      .slice(skip, skip + limit)
+  ), [filteredSourceListings, limit, prioritizeDistinctAddresses, skip])
 
   const totalResults = sourceMode === 'database-cache' ? filteredSourceListings.length : liveSearch.totalResults
 

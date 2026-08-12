@@ -17,6 +17,7 @@ export default function NewListing() {
           title="Fresh properties for your next move."
           description="Explore the latest homes and apartments available across Germany, with clear details and a direct path to every listing."
           limit={3}
+          prioritizeDistinctAddresses
           compact
           ctaLabel="Browse live search"
           sourceMode="database-cache"
