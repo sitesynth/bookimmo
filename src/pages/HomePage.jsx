@@ -13,7 +13,6 @@ import FAQ from '../components/FAQ.jsx'
 import GETMORE from '../components/GETMORE.jsx'
 import REALESTATEAGENT from '../components/REALESTATEAGENT.jsx'
 import NEWSLETTER from '../components/NEWSLETTER.jsx'
-import GETINTOUCH from '../components/GETINTOUCH.jsx'
 import Footer from '../components/Footer.jsx'
 import Variant1 from '../components/Variant1.jsx'
 import AuthGateModal from '../components/AuthGateModal.jsx'
@@ -54,7 +53,6 @@ export default function HomePage() {
       <GETMORE />
       <REALESTATEAGENT />
       <NEWSLETTER />
-      <GETINTOUCH />
       <Footer />
       <Variant1 />
 
