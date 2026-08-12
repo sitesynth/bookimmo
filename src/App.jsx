@@ -19,6 +19,7 @@ import SignUpPage from './pages/SignUpPage.jsx'
 import LogInPage from './pages/LogInPage.jsx'
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage.jsx'
 import TermsOfServicePage from './pages/TermsOfServicePage.jsx'
+import ImprintPage from './pages/ImprintPage.jsx'
 import BookmarkPage from './pages/BookmarkPage.jsx'
 import AccountPage from './pages/AccountPage.jsx'
 import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx'
@@ -73,6 +74,7 @@ export default function App() {
       <Route path="/agent-log-in" element={<GeoLanguageRedirect path="/agent-log-in" />} />
       <Route path="/privacy-policy" element={<GeoLanguageRedirect path="/privacy-policy" />} />
       <Route path="/terms-of-service" element={<GeoLanguageRedirect path="/terms-of-service" />} />
+      <Route path="/imprint" element={<GeoLanguageRedirect path="/imprint" />} />
       <Route path="/Bookmark" element={<GeoLanguageRedirect path="/Bookmark" />} />
       <Route path="/account" element={<GeoLanguageRedirect path="/account" />} />
       <Route path="/forgot-password" element={<GeoLanguageRedirect path="/forgot-password" />} />
@@ -93,6 +95,7 @@ export default function App() {
         <Route path="agent-log-in" element={<AgentLogInPage />} />
         <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="terms-of-service" element={<TermsOfServicePage />} />
+        <Route path="imprint" element={<ImprintPage />} />
         <Route path="Bookmark" element={<BookmarkPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
@@ -115,6 +118,7 @@ export default function App() {
         <Route path="agent-log-in" element={<AgentLogInPage />} />
         <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="terms-of-service" element={<TermsOfServicePage />} />
+        <Route path="imprint" element={<ImprintPage />} />
         <Route path="Bookmark" element={<BookmarkPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
@@ -137,6 +141,7 @@ export default function App() {
         <Route path="agent-log-in" element={<AgentLogInPage />} />
         <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="terms-of-service" element={<TermsOfServicePage />} />
+        <Route path="imprint" element={<ImprintPage />} />
         <Route path="Bookmark" element={<BookmarkPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
@@ -159,6 +164,7 @@ export default function App() {
         <Route path="agent-log-in" element={<AgentLogInPage />} />
         <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="terms-of-service" element={<TermsOfServicePage />} />
+        <Route path="imprint" element={<ImprintPage />} />
         <Route path="Bookmark" element={<BookmarkPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
@@ -181,6 +187,7 @@ export default function App() {
         <Route path="agent-log-in" element={<AgentLogInPage />} />
         <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="terms-of-service" element={<TermsOfServicePage />} />
+        <Route path="imprint" element={<ImprintPage />} />
         <Route path="Bookmark" element={<BookmarkPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
