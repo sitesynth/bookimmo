@@ -448,7 +448,7 @@ export default function LiveListingFeed({
           fontSize: 13,
           color: 'rgb(25,26,32)',
         }}>
-          {loading ? 'Loading live inventory…' : `${cards.length} visible cards`}
+          {loading ? 'Loading properties…' : 'Verified listings'}
         </span>
         <span style={{
           padding: '10px 14px',
@@ -459,7 +459,7 @@ export default function LiveListingFeed({
           fontSize: 13,
           color: 'rgb(25,26,32)',
         }}>
-          {loading ? 'Checking locations…' : sourceMode === 'database-cache' ? 'Latest from database' : locationSummary}
+          {loading ? 'Checking locations…' : sourceMode === 'database-cache' ? 'Across Germany' : locationSummary}
         </span>
         <span style={{
           padding: '10px 14px',
@@ -470,7 +470,7 @@ export default function LiveListingFeed({
           fontSize: 13,
           color: 'rgb(25,26,32)',
         }}>
-          {loading ? 'Syncing providers…' : sourceMode === 'database-cache' ? `${totalResults} cached listings` : `${totalResults} live results`}
+          {loading ? 'Updating listings…' : sourceMode === 'database-cache' ? 'Updated regularly' : 'Live availability'}
         </span>
       </div>
 
