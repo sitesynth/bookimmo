@@ -3,6 +3,8 @@ import { proxyToBridge } from '../_lib/bridge.js'
 import { fetchImmoweltListings } from '../_lib/immowelt.js'
 import { getLatestCachedListings, upsertListingsCache } from '../_lib/listings-cache.js'
 
+const CACHE_MAX_AGE_MS = 15 * 60 * 1000
+
 function normalizeRows(rows = []) {
   return rows.map((row) => ({
     source: row.source,
@@ -59,7 +61,10 @@ export default async function handler(req, res) {
       rows = await getLatestCachedListings({ limit })
     }
 
-    if (!rows.length) {
+    const latestImportedAt = rows[0]?.imported_at ? new Date(rows[0].imported_at).getTime() : 0
+    const cacheIsStale = !latestImportedAt || (Date.now() - latestImportedAt) > CACHE_MAX_AGE_MS
+
+    if (!rows.length || cacheIsStale) {
       try {
         await warmCache(limit)
         rows = await getLatestCachedListings({ limit, text })

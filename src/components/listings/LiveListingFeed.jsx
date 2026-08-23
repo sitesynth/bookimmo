@@ -387,14 +387,19 @@ export default function LiveListingFeed({
 
   const cards = useMemo(() => (
     (prioritizeDistinctAddresses
-      ? prioritizeListingsByAddress(dedupeListings(filteredSourceListings))
-      : dedupeListings(filteredSourceListings))
+      ? prioritizeListingsByAddress(
+          dedupeListings(filteredSourceListings).sort((left, right) => {
+            const leftImported = new Date(left?.importedAt || 0).getTime()
+            const rightImported = new Date(right?.importedAt || 0).getTime()
+            return rightImported - leftImported
+          }),
+        )
+      : dedupeListings(filteredSourceListings).sort((left, right) => {
+          const leftImported = new Date(left?.importedAt || 0).getTime()
+          const rightImported = new Date(right?.importedAt || 0).getTime()
+          return rightImported - leftImported
+        }))
       .filter((item) => item?.id && item?.source)
-      .sort((left, right) => {
-        const leftImported = new Date(left?.importedAt || 0).getTime()
-        const rightImported = new Date(right?.importedAt || 0).getTime()
-        return rightImported - leftImported
-      })
       .slice(skip, skip + limit)
   ), [filteredSourceListings, limit, prioritizeDistinctAddresses, skip])
 
