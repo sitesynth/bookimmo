@@ -319,9 +319,9 @@ body { margin:0; height:100vh; overflow:hidden; display:flex; align-items:center
     </div>
     <div class="fade-up" style="transition-delay:.1s">
       <div class="stats-row">
-        <div class="cstat"><div class="v">$50K</div><div class="l">инвестиция на старте</div></div>
-        <div class="cstat"><div class="v">€335K</div><div class="l">выручка, 12 мес после запуска</div></div>
-        <div class="cstat"><div class="v">Дек</div><div class="l">точка безубыточности</div></div>
+        <div class="cstat"><div class="v" id="cover-invest">—</div><div class="l">инвестиция на старте</div></div>
+        <div class="cstat"><div class="v" id="cover-rev">—</div><div class="l">выручка, 12 мес после запуска</div></div>
+        <div class="cstat"><div class="v" id="cover-breakeven">—</div><div class="l">точка безубыточности</div></div>
       </div>
     </div>
     <div class="footer-row fade-up" style="transition-delay:.15s">
@@ -358,12 +358,7 @@ body { margin:0; height:100vh; overflow:hidden; display:flex; align-items:center
     <span class="tag fade-up">Монетизация</span>
     <h1 class="fade-up" style="transition-delay:.05s">Четыре потока <em>выручки</em></h1>
     <div class="sub fade-up" style="transition-delay:.08s">Деньги приходят только с закрытых сделок — интересы выровнены с агентствами и клиентом.</div>
-    <div class="grid4 fade-up" style="transition-delay:.1s;flex:1;min-height:0;">
-      <div class="card gcard"><div class="gcard-tag">R1 · Аренда</div><div class="gcard-t">Сплит комиссии маклера</div><div class="gcard-unit">€605 <small>/ сделка</small></div><div class="gcard-b">Маклер получает ~2 Kaltmieten (€2 000–2 400) по Bestellerprinzip. Доля book.immo — 27,5%.</div></div>
-      <div class="card gcard"><div class="gcard-tag">R2 · Продажа</div><div class="gcard-t">Tippgeberprovision</div><div class="gcard-unit">€2 400 <small>/ сделка</small></div><div class="gcard-b">20% от комиссии маклера (~€12 000 при цене €400K × 3%). Стандартная реферальная практика.</div></div>
-      <div class="card gcard"><div class="gcard-tag">R3 · B2C</div><div class="gcard-t">ИИ-сервис, pay-per-result</div><div class="gcard-unit">€149 <small>/ договор</small></div><div class="gcard-b">Success fee за автоматизацию: заявки, мониторинг, документы. Юридически — плата за софт.</div></div>
-      <div class="card gcard"><div class="gcard-tag">R4 · С M6</div><div class="gcard-t">Upsell агентствам</div><div class="gcard-unit">€2,3K <small>/ мес к M12</small></div><div class="gcard-b">Zolak staging, ИИ-экспозе, premium-лиды — маржа поверх комиссионного сплита.</div></div>
-    </div>
+    <div class="grid4 fade-up" id="streams" style="transition-delay:.1s;flex:1;min-height:0;"></div>
   </div>
 </section>
 
@@ -393,19 +388,9 @@ body { margin:0; height:100vh; overflow:hidden; display:flex; align-items:center
   <div class="pagenum">05</div>
   <div class="inner">
     <span class="tag fade-up">Pre-launch</span>
-    <h1 class="fade-up" style="transition-delay:.05s">Бюджет <em>$30 000</em></h1>
-    <div class="sub fade-up" style="transition-delay:.08s">Апрель–август 2026. Инвестиция $50K: $30K на запуск, $20K резерв на маркетинг после старта.</div>
-    <div class="budget fade-up" style="transition-delay:.1s">
-      <div class="brow"><div class="n">Разработка (фронт / бэк / парсер)</div><div class="bar"><i style="width:100%"></i></div><div class="s">$14 000</div></div>
-      <div class="brow"><div class="n">Legal и юрлицо</div><div class="bar"><i style="width:17.9%"></i></div><div class="s">$2 500</div></div>
-      <div class="brow"><div class="n">Дизайн / UX</div><div class="bar"><i style="width:17.9%"></i></div><div class="s">$2 500</div></div>
-      <div class="brow"><div class="n">Инфраструктура</div><div class="bar"><i style="width:14.3%"></i></div><div class="s">$2 000</div></div>
-      <div class="brow"><div class="n">Pre-launch маркетинг</div><div class="bar"><i style="width:14.3%"></i></div><div class="s">$2 000</div></div>
-      <div class="brow"><div class="n">Data-инфраструктура</div><div class="bar"><i style="width:10.7%"></i></div><div class="s">$1 500</div></div>
-      <div class="brow"><div class="n">AI / LLM API</div><div class="bar"><i style="width:10.7%"></i></div><div class="s">$1 500</div></div>
-      <div class="brow"><div class="n">Домен + товарный знак</div><div class="bar"><i style="width:7.1%"></i></div><div class="s">$1 000</div></div>
-      <div class="brow"><div class="n">Tools & Буфер</div><div class="bar"><i style="width:17.3%"></i></div><div class="s">$2 420</div></div>
-    </div>
+    <h1 class="fade-up" id="budget-title" style="transition-delay:.05s">Бюджет</h1>
+    <div class="sub fade-up" id="budget-sub" style="transition-delay:.08s"></div>
+    <div class="budget fade-up" id="budget" style="transition-delay:.1s"></div>
     <div class="bottom fade-up" style="transition-delay:.16s"><b>Построено:</b> сайт (5 языков, SEO), собственный бэкенд PostgreSQL + API, парсер IS24/Immowelt с ИИ-контактом, CMS + email + Telegram, MVP ИИ-автоподбора.</div>
   </div>
 </section>
@@ -416,7 +401,7 @@ body { margin:0; height:100vh; overflow:hidden; display:flex; align-items:center
   <div class="inner">
     <span class="tag fade-up">Прогноз</span>
     <h1 class="fade-up" style="transition-delay:.05s">Выручка после <em>запуска</em></h1>
-    <div class="sub fade-up" style="transition-delay:.08s">BASE-сценарий: 3 агентства в сентябре → 32 через год · 85% сделок — аренда.</div>
+    <div class="sub fade-up" id="chart-sub" style="transition-delay:.08s"></div>
     <div class="chart-card fade-up" style="transition-delay:.1s">
       <div class="legend"><span><i class="sw"></i>Выручка, €/мес</span><span><i class="sw line"></i>EBITDA, €/мес</span></div>
       <svg id="chart" viewBox="0 0 960 300" role="img" aria-label="Выручка и EBITDA по месяцам"></svg>
@@ -432,9 +417,9 @@ body { margin:0; height:100vh; overflow:hidden; display:flex; align-items:center
     <h1 class="fade-up" style="transition-delay:.05s">Цифры и <em>рамки</em></h1>
     <div class="fade-up" style="transition-delay:.1s;display:grid;grid-template-columns:15em 1fr;gap:1.3em;flex:1;min-height:0;">
       <div style="display:flex;flex-direction:column;gap:0.8em;">
-        <div class="stat-card"><div class="snum">€335K</div><div class="sdesc">выручка, 12 месяцев</div></div>
-        <div class="stat-card dark"><div class="snum">€211K</div><div class="sdesc">EBITDA, 12 месяцев</div></div>
-        <div class="stat-card"><div class="snum">€229K</div><div class="sdesc">кэш на конец года 1</div></div>
+        <div class="stat-card"><div class="snum" id="kpi-rev">—</div><div class="sdesc">выручка, 12 месяцев</div></div>
+        <div class="stat-card dark"><div class="snum" id="kpi-ebitda">—</div><div class="sdesc">EBITDA, 12 месяцев</div></div>
+        <div class="stat-card"><div class="snum" id="kpi-cash">—</div><div class="sdesc">кэш на конец года 1</div></div>
       </div>
       <div class="legal-grid">
         <div class="law"><h3>Wohnungsvermittlungsgesetz</h3><p>С арендатора нельзя брать комиссию за посредничество. B2C-fee — плата за софт, без слова «Vermittlung» в договоре.</p></div>
@@ -500,21 +485,77 @@ function checkOrientation() {
 window.addEventListener('resize', checkOrientation);
 checkOrientation();
 
-// chart
-(function(){
-  const months = ['Сен','Окт','Ноя','Дек','Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг'];
-  const rev =    [2066, 3834, 7649, 10590, 15577, 21362, 27970, 34578, 42210, 48818, 56300, 63634];
-  const ebitda = [-5634, -4116, -551, 1240, 5977, 11712, 16970, 23528, 30910, 36868, 43600, 50884];
+// ── single source of truth: plan-data.json (edit that file, this page + xlsx stay in sync) ──
+fetch('../plan-data.json').then(r => r.json()).then(renderAll).catch(err => console.error('plan-data.json load failed', err));
+
+const RU_MONTH = { Sep: 'Сен', Oct: 'Окт', Nov: 'Ноя', Dec: 'Дек', Jan: 'Янв', Feb: 'Фев', Mar: 'Мар', Apr: 'Апр', May: 'Май', Jun: 'Июн', Jul: 'Июл', Aug: 'Авг' };
+
+function renderAll(data) {
+  const { meta, budget, revenue, streams } = data;
+
+  // budget title/sub
+  const totalBudget = budget.rows.reduce((s, r) => s + r.vals.reduce((a, b) => a + b, 0), 0);
+  document.getElementById('budget-title').innerHTML = `Бюджет <em>$${totalBudget.toLocaleString('en-US')}</em>`;
+  document.getElementById('budget-sub').textContent = `${budget.months[0]}–${budget.months[budget.months.length - 1]} 2026. Инвестиция $${meta.investmentUSD.toLocaleString('en-US')}: $${meta.spentUSD.toLocaleString('en-US')} на запуск, $${meta.reserveUSD.toLocaleString('en-US')} резерв на маркетинг после старта.`;
+
+  // budget bars
+  const rowsWithTotal = budget.rows.map(r => ({ name: r.name, total: r.vals.reduce((a, b) => a + b, 0) }));
+  const maxRow = Math.max(...rowsWithTotal.map(r => r.total));
+  document.getElementById('budget').innerHTML = rowsWithTotal.map(r =>
+    `<div class="brow"><div class="n">${r.name}</div><div class="bar"><i style="width:${(r.total / maxRow * 100).toFixed(1)}%"></i></div><div class="s">$${r.total.toLocaleString('en-US')}</div></div>`
+  ).join('');
+
+  // revenue streams
+  document.getElementById('streams').innerHTML = streams.map(s =>
+    `<div class="card gcard"><div class="gcard-tag">${s.tag}</div><div class="gcard-t">${s.title}</div><div class="gcard-unit">${s.unit} <small>${s.unitLabel}</small></div><div class="gcard-b">${s.desc}</div></div>`
+  ).join('');
+
+  // compute revenue/costs/ebitda from drivers (mirrors scripts/build-plan-xlsx.py)
+  const d = revenue.drivers, ue = revenue.unitEconomics;
+  const months = revenue.months;
+  const closedDeals = d.activeAgencies.map((ag, i) => Math.round(ag * d.dealsPerAgency[i]));
+  const rev1 = closedDeals.map(cd => Math.round(cd * d.pctRental * ue.rentalSplitEUR));
+  const rev2 = closedDeals.map(cd => Math.round(cd * (1 - d.pctRental) * ue.saleSplitEUR));
+  const rev3 = d.b2cDeals.map(n => n * ue.b2cFeeEUR);
+  const rev4 = d.upsells;
+  const revTotal = months.map((_, i) => rev1[i] + rev2[i] + rev3[i] + rev4[i]);
+  const costTotal = months.map((_, i) => revenue.costs.rows.reduce((s, r) => s + r.vals[i], 0));
+  const ebitda = months.map((_, i) => revTotal[i] - costTotal[i]);
+
+  const yearRev = revTotal.reduce((a, b) => a + b, 0);
+  const yearEbitda = ebitda.reduce((a, b) => a + b, 0);
+  let cash = meta.reserveEUR;
+  let breakevenMonth = null;
+  ebitda.forEach((v, i) => { cash += v; if (breakevenMonth === null && v >= 0) breakevenMonth = months[i]; });
+
+  const fmtK = n => (n / 1000 >= 100 ? Math.round(n / 1000) : (n / 1000).toFixed(0)) + 'K';
+  document.getElementById('cover-invest').textContent = `$${(meta.investmentUSD / 1000).toFixed(0)}K`;
+  document.getElementById('cover-rev').textContent = `€${fmtK(yearRev)}`;
+  document.getElementById('cover-breakeven').textContent = (RU_MONTH[breakevenMonth] || breakevenMonth) || '—';
+  document.getElementById('kpi-rev').textContent = `€${yearRev.toLocaleString('ru-RU')}`;
+  document.getElementById('kpi-ebitda').textContent = `€${fmtK(yearEbitda)}`;
+  document.getElementById('kpi-cash').textContent = `€${fmtK(cash)}`;
+
+  document.getElementById('chart-sub').textContent =
+    `BASE-сценарий: ${d.activeAgencies[0]} агентства в ${(RU_MONTH[months[0]] || months[0]).toLowerCase()} → ${d.activeAgencies[d.activeAgencies.length - 1]} через год · ${Math.round(d.pctRental * 100)}% сделок — аренда.`;
+
+  drawChart(months, revTotal, ebitda, breakevenMonth);
+}
+
+function drawChart(months, rev, ebitda, breakevenMonth) {
   const svg = document.getElementById('chart');
   const W = 960, H = 300, padL = 58, padR = 12, padT = 14, padB = 30;
-  const yMin = -10000, yMax = 70000;
+  const dataMin = Math.min(0, ...ebitda), dataMax = Math.max(...rev, ...ebitda);
+  const yMin = Math.floor(dataMin / 10000) * 10000;
+  const yMax = Math.ceil(dataMax / 10000) * 10000;
+  const step = (yMax - yMin) / 4;
   const py = v => padT + (yMax - v) / (yMax - yMin) * (H - padT - padB);
-  const slot = (W - padL - padR) / 12;
+  const slot = (W - padL - padR) / months.length;
   let s = '';
-  [-10000, 0, 20000, 40000, 60000].forEach(t => {
+  [0, 1, 2, 3, 4].map(i => yMin + step * i).forEach(t => {
     const y = py(t);
     s += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="${t === 0 ? '#191a20' : 'rgba(25,26,32,.08)'}" stroke-width="${t === 0 ? 1.2 : 1}"/>`;
-    s += `<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="11" fill="rgba(25,26,32,.42)" font-family="Inter">${t === 0 ? '0' : (t / 1000) + 'K'}</text>`;
+    s += `<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="11" fill="rgba(25,26,32,.42)" font-family="Inter">${t === 0 ? '0' : (Math.round(t / 1000)) + 'K'}</text>`;
   });
   rev.forEach((v, i) => {
     const x = padL + slot * i + slot * 0.18;
@@ -525,17 +566,22 @@ checkOrientation();
   const pts = ebitda.map((v, i) => [padL + slot * i + slot * 0.5, py(v)]);
   s += `<polyline points="${pts.map(p => p.map(n => n.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="#191a20" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`;
   pts.forEach((p, i) => {
-    s += `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${i === 11 ? 4.6 : 3.2}" fill="${ebitda[i] < 0 ? '#c0392b' : '#2e7d4f'}" stroke="#fff8f4" stroke-width="1.4"><title>${months[i]}: EBITDA €${ebitda[i].toLocaleString('ru-RU')}</title></circle>`;
+    s += `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${i === months.length - 1 ? 4.6 : 3.2}" fill="${ebitda[i] < 0 ? '#c0392b' : '#2e7d4f'}" stroke="#fff8f4" stroke-width="1.4"><title>${months[i]}: EBITDA €${ebitda[i].toLocaleString('ru-RU')}</title></circle>`;
   });
-  s += `<text x="${(pts[11][0] - 6).toFixed(1)}" y="${(pts[11][1] - 10).toFixed(1)}" text-anchor="end" font-size="12" font-weight="700" fill="#2e7d4f" font-family="Inter">+€50,9K</text>`;
-  s += `<text x="${pts[3][0].toFixed(1)}" y="${(py(0) - 54).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ff6625" font-family="Inter">breakeven</text>`;
-  s += `<line x1="${pts[3][0]}" y1="${(py(0) - 47).toFixed(1)}" x2="${pts[3][0]}" y2="${(pts[3][1] - 7).toFixed(1)}" stroke="#ff6625" stroke-width="1.1" stroke-dasharray="3 3"/>`;
+  const lastIdx = pts.length - 1;
+  const lastLabel = (ebitda[lastIdx] >= 0 ? '+' : '') + '€' + (Math.round(ebitda[lastIdx] / 100) / 10).toLocaleString('ru-RU') + 'K';
+  s += `<text x="${(pts[lastIdx][0] - 6).toFixed(1)}" y="${(pts[lastIdx][1] - 10).toFixed(1)}" text-anchor="end" font-size="12" font-weight="700" fill="${ebitda[lastIdx] >= 0 ? '#2e7d4f' : '#c0392b'}" font-family="Inter">${lastLabel}</text>`;
+  const beIdx = months.indexOf(breakevenMonth);
+  if (beIdx > -1) {
+    s += `<text x="${pts[beIdx][0].toFixed(1)}" y="${(py(0) - 54).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ff6625" font-family="Inter">breakeven</text>`;
+    s += `<line x1="${pts[beIdx][0]}" y1="${(py(0) - 47).toFixed(1)}" x2="${pts[beIdx][0]}" y2="${(pts[beIdx][1] - 7).toFixed(1)}" stroke="#ff6625" stroke-width="1.1" stroke-dasharray="3 3"/>`;
+  }
   months.forEach((m, i) => {
-    s += `<text x="${(padL + slot * i + slot * 0.5).toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="11" fill="rgba(25,26,32,.6)" font-family="Inter">${m}</text>`;
+    s += `<text x="${(padL + slot * i + slot * 0.5).toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="11" fill="rgba(25,26,32,.6)" font-family="Inter">${RU_MONTH[m] || m}</text>`;
   });
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svg.innerHTML = s;
-})();
+}
 </script>
 
 </body>
