@@ -2,5 +2,13 @@
   "buildCommand": "npm run build:ssg",
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/" }
+  ],
+  "headers": [
+    {
+      "source": "/plan/plan-data.json",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, must-revalidate" }
+      ]
+    }
   ]
 }

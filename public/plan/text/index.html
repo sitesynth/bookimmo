@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<title>Бизнес-план book.immo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f5f2ea; --card:#fff8f4; --ink:#191a20; --muted:rgba(25,26,32,.62);
+  --faint:rgba(25,26,32,.40); --line:rgba(25,26,32,.12); --line-soft:rgba(25,26,32,.07);
+  --accent:#ff6625; --accent-deep:#de6e21; --accent-soft:rgba(255,102,37,.12);
+  --good:#2e7d4f; --bad:#c0392b; --ink-inv:#f5f5f5;
+  --shadow:0 24px 64px rgba(25,26,32,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16171c; --card:#1f2128; --ink:#f5f2ea; --muted:rgba(245,242,234,.64);
+    --faint:rgba(245,242,234,.42); --line:rgba(245,242,234,.14); --line-soft:rgba(245,242,234,.08);
+    --accent:#ff6625; --accent-deep:#ffaf8d; --accent-soft:rgba(255,102,37,.16);
+    --good:#5abf86; --bad:#e07060; --ink-inv:#191a20;
+    --shadow:0 24px 64px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16171c; --card:#1f2128; --ink:#f5f2ea; --muted:rgba(245,242,234,.64);
+  --faint:rgba(245,242,234,.42); --line:rgba(245,242,234,.14); --line-soft:rgba(245,242,234,.08);
+  --accent:#ff6625; --accent-deep:#ffaf8d; --accent-soft:rgba(255,102,37,.16);
+  --good:#5abf86; --bad:#e07060; --ink-inv:#191a20;
+  --shadow:0 24px 64px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:15px; line-height:1.65; margin:0;
+}
+.wrap{max-width:960px; margin:0 auto; padding:56px 24px 80px}
+h1,h2,h3{font-family:'Bricolage Grotesque','Inter',sans-serif; text-wrap:balance; margin:0}
+.eyebrow{
+  font-size:12px; letter-spacing:.14em; text-transform:uppercase; font-weight:600;
+  color:var(--accent); margin-bottom:14px;
+}
+.hero h1{font-size:56px; font-weight:700; line-height:1.02; letter-spacing:-.02em}
+.hero h1 .dot{color:var(--accent)}
+.thesis{font-size:19px; color:var(--muted); max-width:640px; margin:20px 0 0}
+.thesis b{color:var(--ink); font-weight:600}
+.stats{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:36px}
+.stat{
+  background:var(--card); border:1px solid var(--line); border-radius:18px;
+  padding:20px 22px;
+}
+.stat .v{font-family:'Bricolage Grotesque',sans-serif; font-size:30px; font-weight:700; line-height:1.1; font-variant-numeric:tabular-nums}
+.stat .v em{font-style:normal; color:var(--accent)}
+.stat .l{font-size:12.5px; color:var(--muted); margin-top:6px}
+section{margin-top:72px}
+h2{font-size:30px; font-weight:700; letter-spacing:-.01em; margin-bottom:8px}
+.lede{color:var(--muted); max-width:620px; margin:0 0 28px}
+/* flywheel */
+.fly{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; counter-reset:fly}
+.fly .step{
+  background:var(--card); border:1px solid var(--line); border-radius:18px; padding:20px;
+  counter-increment:fly; position:relative;
+}
+.fly .step::before{
+  content:counter(fly); position:absolute; top:16px; right:18px;
+  font-family:'Bricolage Grotesque',sans-serif; font-size:26px; font-weight:700;
+  color:var(--accent-soft); -webkit-text-stroke:1px var(--accent); color:transparent;
+}
+.fly .step h3{font-size:16px; font-weight:600; margin-bottom:8px; padding-right:34px}
+.fly .step p{font-size:13.5px; color:var(--muted); margin:0}
+/* revenue streams */
+.streams{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
+.stream{background:var(--card); border:1px solid var(--line); border-radius:18px; padding:22px}
+.stream .tag{
+  display:inline-block; font-size:11px; font-weight:600; letter-spacing:.1em;
+  color:var(--accent); background:var(--accent-soft); border-radius:8px; padding:3px 9px; margin-bottom:12px;
+}
+.stream h3{font-size:17px; font-weight:600}
+.stream .unit{
+  font-family:'Bricolage Grotesque',sans-serif; font-size:26px; font-weight:700; margin:10px 0 8px;
+  font-variant-numeric:tabular-nums;
+}
+.stream .unit small{font-size:14px; font-weight:500; color:var(--muted); font-family:'Inter',sans-serif}
+.stream p{font-size:13.5px; color:var(--muted); margin:0}
+/* vs table */
+.vs{width:100%; border-collapse:collapse; background:var(--card); border-radius:18px; overflow:hidden; border:1px solid var(--line)}
+.vs-box{overflow-x:auto; border-radius:18px}
+.vs th,.vs td{padding:14px 18px; text-align:left; font-size:14px; border-top:1px solid var(--line-soft); vertical-align:top}
+.vs thead th{border-top:none; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:600}
+.vs thead th.us{color:var(--accent)}
+.vs td:first-child{font-weight:600; width:24%}
+.vs td.them{color:var(--muted)}
+/* budget */
+.budget{display:flex; flex-direction:column; gap:10px}
+.brow{display:grid; grid-template-columns:250px 1fr 84px; gap:14px; align-items:center}
+.brow .n{font-size:13.5px}
+.brow .bar{height:22px; border-radius:7px; background:var(--line-soft); overflow:hidden}
+.brow .bar i{display:block; height:100%; border-radius:7px; background:var(--accent)}
+.brow.alt .bar i{background:var(--accent-deep); opacity:.55}
+.brow .s{font-size:13.5px; font-weight:600; text-align:right; font-variant-numeric:tabular-nums}
+.btotal{display:flex; justify-content:space-between; border-top:1px solid var(--line); margin-top:8px; padding-top:14px; font-weight:600}
+.built{margin:26px 0 0; padding:0; list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:8px 20px}
+.built li{font-size:13.5px; color:var(--muted); padding-left:18px; position:relative}
+.built li::before{content:''; position:absolute; left:0; top:8px; width:7px; height:7px; border-radius:50%; background:var(--accent)}
+/* chart */
+.chartcard{background:var(--card); border:1px solid var(--line); border-radius:20px; padding:26px 22px 16px; box-shadow:var(--shadow)}
+.legend{display:flex; gap:22px; font-size:12.5px; color:var(--muted); padding:0 6px 14px}
+.legend span{display:inline-flex; align-items:center; gap:7px}
+.sw{width:14px; height:10px; border-radius:3px; background:var(--accent)}
+.sw.line{height:3px; border-radius:2px; background:var(--ink)}
+.chart-scroll{overflow-x:auto}
+.chart-scroll svg{min-width:640px; display:block; width:100%}
+.kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:16px}
+.kpi{border:1px solid var(--line); border-radius:14px; padding:14px 16px; background:var(--card)}
+.kpi .v{font-family:'Bricolage Grotesque',sans-serif; font-size:21px; font-weight:700; font-variant-numeric:tabular-nums}
+.kpi .v.good{color:var(--good)}
+.kpi .l{font-size:12px; color:var(--muted); margin-top:3px}
+/* lead channels */
+.channels{display:flex; flex-direction:column; gap:10px}
+.channel{
+  display:grid; grid-template-columns:170px 1fr 110px; gap:16px; align-items:center;
+  background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 18px;
+}
+.channel .cn{font-size:14px; font-weight:600}
+.channel .cn small{display:block; font-size:11.5px; font-weight:400; color:var(--muted); margin-top:2px}
+.channel .cd{font-size:13px; color:var(--muted); line-height:1.5}
+.channel .cq{text-align:right}
+.channel .cq b{display:block; font-size:15px; font-weight:700; font-variant-numeric:tabular-nums}
+.channel .cq b.hi{color:var(--good)}
+.channel .cq b.mid{color:var(--accent-deep)}
+.channel .cq span{font-size:11px; color:var(--muted)}
+/* funnel */
+.funnel{display:flex; flex-direction:column; gap:0}
+.fstep{
+  display:grid; grid-template-columns:36px 1fr 130px; gap:14px; align-items:center;
+  padding:13px 4px; border-bottom:1px solid var(--line-soft);
+}
+.fstep:last-child{border-bottom:none}
+.fstep .fn{
+  font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:15px; color:var(--accent);
+  width:36px; height:36px; border-radius:50%; background:var(--accent-soft);
+  display:flex; align-items:center; justify-content:center;
+}
+.fstep .ft{font-size:13.5px; font-weight:600}
+.fstep .ft small{display:block; font-weight:400; color:var(--muted); font-size:12px; margin-top:2px}
+.fstep .fv{text-align:right; font-variant-numeric:tabular-nums}
+.fstep .fv b{font-size:15px; font-weight:700}
+.fstep .fv span{display:block; font-size:11px; color:var(--muted)}
+/* legal */
+.legal{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.law{border-left:3px solid var(--accent); background:var(--card); border-radius:0 14px 14px 0; padding:16px 18px}
+.law h3{font-size:14.5px; font-weight:600; margin-bottom:6px}
+.law p{font-size:13px; color:var(--muted); margin:0}
+/* risks */
+.risks{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:10px}
+.risks li{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 18px; font-size:13.5px}
+.risks li b{font-weight:600}
+.risks li span{color:var(--muted)}
+footer{margin-top:80px; padding-top:24px; border-top:1px solid var(--line); display:flex; justify-content:space-between; font-size:12.5px; color:var(--faint)}
+@media (max-width:720px){
+  .hero h1{font-size:40px}
+  .stats,.fly,.streams,.legal,.built{grid-template-columns:1fr}
+  .kpis{grid-template-columns:1fr 1fr}
+  .brow{grid-template-columns:1fr 60px; }
+  .brow .bar{display:none}
+  .channel{grid-template-columns:1fr; text-align:left}
+  .channel .cq{text-align:left; margin-top:4px}
+  .fstep{grid-template-columns:28px 1fr; }
+  .fstep .fv{grid-column:2; text-align:left; margin-top:4px}
+}
+</style>
+
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">Бизнес-план · запуск сентябрь 2026</div>
+  <h1>book<span class="dot">.</span>immo</h1>
+  <p class="thesis">Забираем долю рынка у европейских агрегаторов, начиная с Германии. Агентства отдают нам эксклюзивы из своих CRM <b>до публикации на ImmoScout24 и Immowelt</b> — потому что у нас размещение бесплатное, а платят они только при закрытой сделке.</p>
+  <div class="stats">
+    <div class="stat"><div class="v">$50K</div><div class="l">инвестиция на старте · $30K потрачено, $20K резерв</div></div>
+    <div class="stat"><div class="v">€335K</div><div class="l">выручка за первые 12 месяцев (BASE-сценарий)</div></div>
+    <div class="stat"><div class="v"><em>M4</em> · дек</div><div class="l">точка безубыточности, EBITDA год 1 ≈ €211K</div></div>
+  </div>
+</header>
+
+<section>
+  <h2>Как работает бизнес-модель</h2>
+  <p class="lede">Шесть звеньев одного цикла: чем больше агентств — тем больше эксклюзивов, тем сильнее магнит для B2C, тем больше сделок и комиссий, которыми мы делимся с агентствами.</p>
+  <div class="fly">
+    <div class="step"><h3>Агентства подключают CRM</h3><p>Размещение бесплатно — агрегаторы за это берут деньги. Взамен агентство делится комиссией при сделке.</p></div>
+    <div class="step"><h3>Эксклюзивы до агрегаторов</h3><p>Объекты приходят из CRM до платной публикации на витринах. Эксклюзивы — в топе выдачи по гео.</p></div>
+    <div class="step"><h3>Парсинг насыщает базу</h3><p>Витрины ImmoScout24 и Immowelt дают полноту каталога и SEO-трафик. Неэксклюзивно, но бесплатно.</p></div>
+    <div class="step"><h3>B2C получает автопилот</h3><p>ИИ сам пишет письма, рассылает заявки, отслеживает новые квартиры под критерии клиента.</p></div>
+    <div class="step"><h3>Сделку закрывает маклер</h3><p>Мы передаём квалифицированного клиента агентству — комиссия делится между book.immo и маклером.</p></div>
+    <div class="step"><h3>Агентства получают больше</h3><p>Zolak virtual staging, ИИ-экспозе, лиды из B2C-базы — причины оставаться и отдавать эксклюзивы раньше.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Потоки выручки</h2>
+  <p class="lede">Деньги приходят только с закрытых сделок — интересы выровнены с агентствами и клиентом.</p>
+  <div class="streams">
+    <div class="stream"><span class="tag">R1 · АРЕНДА</span><h3>Сплит комиссии маклера</h3>
+      <div class="unit">€605 <small>/ сделка</small></div>
+      <p>Маклер получает ~2 Kaltmieten (€2 000–2 400) с собственника по Bestellerprinzip. Доля book.immo — 27,5%.</p></div>
+    <div class="stream"><span class="tag">R2 · ПРОДАЖА</span><h3>Tippgeberprovision</h3>
+      <div class="unit">€2 400 <small>/ сделка</small></div>
+      <p>20% от комиссии маклера (~€12 000 при цене объекта €400K × 3%). Стандартная практика реферальных выплат.</p></div>
+    <div class="stream"><span class="tag">R3 · B2C</span><h3>ИИ-сервис, pay-per-result</h3>
+      <div class="unit">€149 <small>/ подписанный договор</small></div>
+      <p>Success fee за автоматизацию: заявки, мониторинг, документы. Юридически — плата за софт, не за посредничество.</p></div>
+    <div class="stream"><span class="tag">R4 · UPSELL · с M6</span><h3>Сервисы для агентств</h3>
+      <div class="unit">€500→2 300 <small>/ мес</small></div>
+      <p>Zolak staging, ИИ-экспозе, premium-лиды — аффилиатная маржа поверх комиссионного сплита.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Откуда лиды и почему они не мусорные</h2>
+  <p class="lede">Юнит-экономика работает только если в систему приходят люди с реальным намерением снять или купить — а не случайные клики. Вот конкретные источники и то, как мы их фильтруем до передачи агентству.</p>
+
+  <h3 style="font-size:16px;font-weight:600;margin:22px 0 10px;">Каналы привлечения</h3>
+  <div class="channels">
+    <div class="channel">
+      <div class="cn">Эксклюзив как магнит<small>основной канал</small></div>
+      <div class="cd">Реальная квартира, которой нет на IS24/Immowelt — люди целенаправленно ищут именно её (перешлют друзьям, сохранят, вернутся). Интент максимальный: это не абстрактный трафик, а спрос на конкретный объект.</div>
+      <div class="cq"><b class="hi">Высокое</b><span>качество лида</span></div>
+    </div>
+    <div class="channel">
+      <div class="cn">SEO / long-tail<small>«3-Zimmer Kreuzberg mieten»</small></div>
+      <div class="cd">Prerender уже построен (5 языков, гео-страницы). Люди, ищущие конкретный район/тип квартиры, показывают чёткое намерение — конверсия выше, чем у общих запросов «Wohnung Berlin».</div>
+      <div class="cq"><b class="hi">Высокое</b><span>качество лида</span></div>
+    </div>
+    <div class="channel">
+      <div class="cn">Агентство как со-маркетолог<small>нулевой CAC</small></div>
+      <div class="cd">Агентство само промотирует свой листинг на book.immo своим клиентам и в соцсетях — им выгодно закрыть сделку быстрее. Мы получаем трафик их аудитории бесплатно.</div>
+      <div class="cq"><b class="hi">Высокое</b><span>качество лида</span></div>
+    </div>
+    <div class="channel">
+      <div class="cn">Реферальная программа<small>от закрытых сделок</small></div>
+      <div class="cd">Клиент, которому ИИ реально нашёл жильё, рекомендует сервис знакомым в похожей ситуации (релокация, студенты, экспаты) — самый дешёвый и самый горячий канал.</div>
+      <div class="cq"><b class="hi">Высокое</b><span>качество лида</span></div>
+    </div>
+    <div class="channel">
+      <div class="cn">Relocation-партнёрства<small>HR-отделы, вузы, экспат-комьюнити</small></div>
+      <div class="cd">Компании, которые релоцируют сотрудников, и вузы с иностранными студентами — предсказуемый поток людей, которым жильё нужно к конкретной дате. Партнёрский канал, не перформанс.</div>
+      <div class="cq"><b class="hi">Высокое</b><span>качество лида</span></div>
+    </div>
+    <div class="channel">
+      <div class="cn">Performance (Google/Meta)<small>дополняющий канал</small></div>
+      <div class="cd">Ретаргетинг тех, кто уже смотрел объявление, и брендовые/near-brand запросы. Используется для добора объёма, не как основной источник — трафик с холодных широких запросов сюда не идёт.</div>
+      <div class="cq"><b class="mid">Среднее</b><span>качество лида</span></div>
+    </div>
+  </div>
+
+  <h3 style="font-size:16px;font-weight:600;margin:28px 0 10px;">Фильтр качества: воронка до передачи агентству</h3>
+  <p class="lede" style="margin-bottom:14px;">Немецкий рынок аренды — 50–100 заявок на квартиру. Агентства ценят нас, только если мы не добавляем им лишний шум. Поэтому ИИ квалифицирует заявку ДО передачи, а не после.</p>
+  <div class="funnel">
+    <div class="fstep"><div class="fn">1</div><div class="ft">Заявка на конкретный объект<small>не общая форма «подберите мне что-нибудь»</small></div><div class="fv"><b>100%</b><span>входящий трафик</span></div></div>
+    <div class="fstep"><div class="fn">2</div><div class="ft">ИИ-скрининг<small>доход, занятость, состав семьи, дата въезда, Schufa-готовность</small></div><div class="fv"><b>~55%</b><span>проходят фильтр</span></div></div>
+    <div class="fstep"><div class="fn">3</div><div class="ft">Пакет документов собран автоматически<small>ИИ формирует Bewerbungsmappe до контакта с агентством</small></div><div class="fv"><b>~40%</b><span>с полным пакетом</span></div></div>
+    <div class="fstep"><div class="fn">4</div><div class="ft">Передача агентству<small>только квалифицированные — экономит их время на просмотре заявок</small></div><div class="fv"><b>~40%</b><span>от исходных заявок</span></div></div>
+    <div class="fstep"><div class="fn">5</div><div class="ft">Закрытая сделка<small>агентство выбирает финального кандидата из уже качественного пула</small></div><div class="fv"><b>см. R1/R2</b><span>сплит комиссии</span></div></div>
+  </div>
+
+  <h3 style="font-size:16px;font-weight:600;margin:28px 0 10px;">Юнит-экономика лида</h3>
+  <div class="kpis">
+    <div class="kpi"><div class="v">€43</div><div class="l">маркетинг-CAC на 1 сконвертированный B2C-лид (год 1)</div></div>
+    <div class="kpi"><div class="v">€109</div><div class="l">стоимость привлечения агентства на 1 закрытую сделку (BD-бюджет)</div></div>
+    <div class="kpi"><div class="v">€874</div><div class="l">средняя выручка book.immo с одной агентской сделки (85% аренда / 15% продажа)</div></div>
+    <div class="kpi"><div class="v good">~10×</div><div class="l">блендед LTV / CAC по агентскому каналу</div></div>
+  </div>
+  <p class="lede" style="margin-top:14px;">Источник цифр: годовые бюджеты «Бюджет развития» выше и драйверы модели (agencies × deals/agency) — см. также вкладку Revenue Plan в скачиваемом .xlsx.</p>
+</section>
+
+<section>
+  <h2>Против агрегаторов</h2>
+  <div class="vs-box"><table class="vs">
+    <thead><tr><th></th><th>ImmoScout24 / Immowelt</th><th class="us">book.immo</th></tr></thead>
+    <tbody>
+      <tr><td>Деньги с агентств</td><td class="them">€100–500+/мес за размещение, независимо от результата</td><td>€0 за размещение — сплит комиссии только при сделке</td></tr>
+      <tr><td>Скорость инвентаря</td><td class="them">Объект появляется, когда агентство оплатит публикацию</td><td>Pre-market: объект виден сразу из CRM, до витрин</td></tr>
+      <tr><td>Роль для клиента</td><td class="them">Витрина: ищи и пиши письма сам</td><td>Автопилот: ИИ пишет, подаёт заявки, отслеживает</td></tr>
+      <tr><td>Стимул платформы</td><td class="them">Продавать показы и клики</td><td>Довести клиента до подписания договора</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Бюджет pre-launch — $30 000</h2>
+  <p class="lede">Апрель–август 2026, пять месяцев разработки до запуска. USD.</p>
+  <div class="budget" id="budget"></div>
+  <div class="btotal"><span>Итого апрель–август</span><span>$29 920</span></div>
+  <ul class="built">
+    <li>Сайт book.immo: React SPA, 5 языков, SEO-prerender, поиск по гео</li>
+    <li>Собственный бэкенд: PostgreSQL + API — без vendor lock-in</li>
+    <li>Парсер IS24/Immowelt + ИИ-контакт-автоматизация</li>
+    <li>CMS, email-инфраструктура, Telegram-интеграция</li>
+    <li>ИИ-автоподбор и автозаявки (MVP)</li>
+    <li>Юрлицо, DPA-шаблоны, домен и товарный знак</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Выручка после запуска</h2>
+  <p class="lede">BASE-сценарий: 3 агентства в сентябре → 32 через год; 0,4 → 1,5 сделки на агентство в месяц; 85% сделок — аренда.</p>
+  <div class="chartcard">
+    <div class="legend">
+      <span><i class="sw"></i>Выручка, €/мес</span>
+      <span><i class="sw line"></i>EBITDA, €/мес</span>
+    </div>
+    <div class="chart-scroll"><svg id="chart" viewBox="0 0 960 340" role="img" aria-label="Выручка и EBITDA по месяцам"></svg></div>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><div class="v">€334 588</div><div class="l">выручка, 12 мес</div></div>
+    <div class="kpi"><div class="v good">€211 388</div><div class="l">EBITDA, 12 мес</div></div>
+    <div class="kpi"><div class="v">−€10 301</div><div class="l">макс. просадка — покрыта резервом $20K</div></div>
+    <div class="kpi"><div class="v">€229K</div><div class="l">кэш на конец года 1</div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Юридический контур</h2>
+  <div class="legal">
+    <div class="law"><h3>Wohnungsvermittlungsgesetz</h3><p>С арендатора нельзя брать комиссию за посредничество. B2C-fee оформлен как плата за технологический сервис — в договоре нет слова «Vermittlung».</p></div>
+    <div class="law"><h3>Bestellerprinzip</h3><p>Комиссию за аренду платит собственник маклеру. Наш сплит — из комиссии маклера по B2B-агентскому договору. Легально.</p></div>
+    <div class="law"><h3>GDPR</h3><p>DPA-договор с каждым агентством на данные из CRM; consent B2C-клиента на передачу его заявки агентству.</p></div>
+    <div class="law"><h3>Парсинг</h3><p>Только публичные витрины, фото — с обработкой. Рост доли эксклюзивов снижает зависимость от парсинга.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Бюджет развития</h2>
+  <p class="lede">Операционные расходы после запуска, сентябрь 2026 — август 2027 (EUR). Растут вместе с масштабом: команда, продажи агентствам, маркетинг B2C.</p>
+  <div class="budget" id="growth-budget"></div>
+  <div class="btotal"><span>Итого сентябрь–август</span><span id="growth-total"></span></div>
+</section>
+
+<footer>
+  <span>book.immo · бизнес-план v2</span>
+  <span>сентябрь 2026 · Германия</span>
+</footer>
+</div>
+
+<script>
+// budget bars
+const budget = [
+  ['Разработка (фронт / бэк / парсер)', 14000],
+  ['Legal и юрлицо', 2500],
+  ['Дизайн / UX', 2500],
+  ['Инфраструктура (Vercel, серверы, CMS)', 2000],
+  ['Pre-launch маркетинг', 2000],
+  ['Data-инфраструктура (прокси, Chrome)', 1500],
+  ['AI / LLM API', 1500],
+  ['Буфер / прочее', 1420],
+  ['Домен book.immo + TM', 1000],
+  ['Tools & software', 1000],
+];
+const bmax = 14000;
+document.getElementById('budget').innerHTML = budget.map(([n, v], i) =>
+  `<div class="brow${i % 2 ? ' alt' : ''}"><div class="n">${n}</div>` +
+  `<div class="bar"><i style="width:${(v / bmax * 100).toFixed(1)}%"></i></div>` +
+  `<div class="s">$${v.toLocaleString('en-US')}</div></div>`
+).join('');
+
+// growth budget (post-launch opex, Sep 2026 - Aug 2027)
+const growthBudget = [
+  ['Команда: dev/support (контракторы)', 45000],
+  ['Маркетинг B2C (performance + контент + SEO)', 32200],
+  ['Продажи агентствам / партнёрства (BD)', 26500],
+  ['Инфраструктура + AI API', 11700],
+  ['Tools, legal, прочее', 7800],
+];
+const gbmax = 45000;
+document.getElementById('growth-budget').innerHTML = growthBudget.map(([n, v], i) =>
+  `<div class="brow${i % 2 ? ' alt' : ''}"><div class="n">${n}</div>` +
+  `<div class="bar"><i style="width:${(v / gbmax * 100).toFixed(1)}%"></i></div>` +
+  `<div class="s">€${v.toLocaleString('en-US')}</div></div>`
+).join('');
+document.getElementById('growth-total').textContent =
+  '€' + growthBudget.reduce((s, [, v]) => s + v, 0).toLocaleString('en-US');
+
+// chart
+const months = ['Сен','Окт','Ноя','Дек','Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг'];
+const rev =    [2066, 3834, 7649, 10590, 15577, 21362, 27970, 34578, 42210, 48818, 56300, 63634];
+const ebitda = [-5634, -4116, -551, 1240, 5977, 11712, 16970, 23528, 30910, 36868, 43600, 50884];
+const svg = document.getElementById('chart');
+const ink = () => getComputedStyle(document.body).color;
+const W = 960, H = 340, padL = 64, padR = 16, padT = 18, padB = 34;
+const yMin = -10000, yMax = 70000;
+const py = v => padT + (yMax - v) / (yMax - yMin) * (H - padT - padB);
+const slot = (W - padL - padR) / 12;
+let s = '';
+// gridlines + y labels
+[-10000, 0, 20000, 40000, 60000].forEach(t => {
+  const y = py(t);
+  s += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="${t === 0 ? 'var(--ink)' : 'var(--line-soft)'}" stroke-width="${t === 0 ? 1.2 : 1}" ${t === 0 ? '' : ''}/>`;
+  s += `<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="11.5" fill="var(--faint)" style="font-variant-numeric:tabular-nums">${t === 0 ? '0' : (t / 1000) + 'K'}</text>`;
+});
+// bars
+rev.forEach((v, i) => {
+  const x = padL + slot * i + slot * 0.18;
+  const w = slot * 0.44;
+  const y = py(v);
+  s += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${(py(0) - y).toFixed(1)}" rx="5" fill="var(--accent)"><title>${months[i]}: выручка €${v.toLocaleString('ru-RU')}</title></rect>`;
+});
+// ebitda line
+const pts = ebitda.map((v, i) => [padL + slot * i + slot * 0.5, py(v)]);
+s += `<polyline points="${pts.map(p => p.map(n => n.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
+pts.forEach((p, i) => {
+  s += `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${i === 11 ? 5 : 3.4}" fill="${ebitda[i] < 0 ? 'var(--bad)' : 'var(--good)'}" stroke="var(--card)" stroke-width="1.6"><title>${months[i]}: EBITDA €${ebitda[i].toLocaleString('ru-RU')}</title></circle>`;
+});
+// endpoint label
+s += `<text x="${(pts[11][0] - 8).toFixed(1)}" y="${(pts[11][1] - 12).toFixed(1)}" text-anchor="end" font-size="12.5" font-weight="600" fill="var(--good)" style="font-variant-numeric:tabular-nums">+€50,9K</text>`;
+// breakeven marker (Dec, i=3)
+s += `<text x="${pts[3][0].toFixed(1)}" y="${(py(0) - 64).toFixed(1)}" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--accent)">breakeven</text>`;
+s += `<line x1="${pts[3][0]}" y1="${(py(0) - 56).toFixed(1)}" x2="${pts[3][0]}" y2="${(pts[3][1] - 8).toFixed(1)}" stroke="var(--accent)" stroke-width="1.2" stroke-dasharray="3 3"/>`;
+// month labels
+months.forEach((m, i) => {
+  s += `<text x="${(padL + slot * i + slot * 0.5).toFixed(1)}" y="${H - 10}" text-anchor="middle" font-size="11.5" fill="var(--muted)">${m}</text>`;
+});
+svg.innerHTML = s;
+</script>
+
+</body>
+</html>
