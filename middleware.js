@@ -2,9 +2,15 @@ export const config = { matcher: '/plan/:path*' }
 
 const COOKIE_NAME = 'bookimmo_plan'
 
+function getCookie(req, name) {
+  const header = req.headers.get('cookie') || ''
+  const match = header.split(';').map(s => s.trim()).find(s => s.startsWith(name + '='))
+  return match ? decodeURIComponent(match.slice(name.length + 1)) : undefined
+}
+
 export default function middleware(req) {
   const password = process.env.PLAN_PASSWORD || 'bookimmo2026'
-  const cookie = req.cookies.get(COOKIE_NAME)?.value
+  const cookie = getCookie(req, COOKIE_NAME)
   if (cookie === password) return
 
   const url = new URL(req.url)
