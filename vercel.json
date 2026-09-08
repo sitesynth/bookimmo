@@ -5,9 +5,10 @@
   ],
   "headers": [
     {
-      "source": "/plan/plan-data.json",
+      "source": "/plan/:path*",
       "headers": [
-        { "key": "Cache-Control", "value": "no-store, must-revalidate" }
+        { "key": "Cache-Control", "value": "no-store, must-revalidate" },
+        { "key": "Pragma", "value": "no-cache" }
       ]
     }
   ]
