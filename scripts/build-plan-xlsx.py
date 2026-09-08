@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Regenerate public/plan/bookimmo_business_plan_v2.xlsx from public/plan/plan-data.json.
+"""Regenerate public/plan/bookimmo_business_plan_v2.xlsx from public/plan/plan-data-v3.json.
 
-Single source of truth: plan-data.json. Edit that file, then run this script.
+Single source of truth: plan-data-v3.json. Edit that file, then run this script.
 The deck and plan HTML pages fetch the same JSON at runtime, so all three
 (xlsx, /plan page, /plan/deck) stay in sync from one edit.
 
@@ -15,7 +15,7 @@ from openpyxl.styles import Font, PatternFill, Alignment
 from openpyxl.utils import get_column_letter
 
 ROOT = Path(__file__).resolve().parent.parent
-DATA_PATH = ROOT / 'public' / 'plan' / 'plan-data.json'
+DATA_PATH = ROOT / 'public' / 'plan' / 'plan-data-v3.json'
 OUT_PATH = ROOT / 'public' / 'plan' / 'bookimmo_business_plan_v2.xlsx'
 
 data = json.loads(DATA_PATH.read_text())

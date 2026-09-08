@@ -487,7 +487,7 @@ checkOrientation();
 
 // ── single source of truth: plan-data.json (edit that file, this page + xlsx stay in sync) ──
 function loadPlanData(attempt = 1) {
-  fetch('./plan-data.json?v=' + Date.now(), { cache: 'no-store' })
+  fetch('./plan-data-v3.json?v=' + Date.now(), { cache: 'no-store' })
     .then(r => {
       console.log('plan-data.json response:', r.status, r.headers.get('content-type'));
       if (!r.ok) throw new Error('HTTP ' + r.status);
