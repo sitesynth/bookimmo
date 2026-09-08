@@ -313,10 +313,33 @@ const RU_MONTH = { Sep:'Сен', Oct:'Окт', Nov:'Ноя', Dec:'Дек', Jan:'
 const ruM = m => RU_MONTH[m] || m;
 const fmtK = n => '€' + Math.round(n / 1000) + 'K';
 
-fetch('/plan/plan-data.json?v=' + Date.now(), { cache: 'no-store' })
-  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-  .then(renderAll)
-  .catch(err => console.error('plan-data.json load failed', err));
+function loadPlanData(attempt = 1) {
+  fetch('/plan/plan-data.json?v=' + Date.now(), { cache: 'no-store' })
+    .then(r => {
+      console.log('plan-data.json response:', r.status, r.headers.get('content-type'));
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(renderAll)
+    .catch(err => {
+      console.error('plan-data.json load failed (attempt ' + attempt + ')', err);
+      if (attempt < 3) {
+        setTimeout(() => loadPlanData(attempt + 1), 800 * attempt);
+      } else {
+        showDataError();
+      }
+    });
+}
+
+function showDataError() {
+  const banner = document.createElement('div');
+  banner.style.cssText = 'position:fixed;top:1.3em;left:50%;transform:translateX(-50%);z-index:999;background:#c0392b;color:#fff;font-family:Inter,sans-serif;font-size:13px;font-weight:600;padding:0.7em 1.2em;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.25);display:flex;align-items:center;gap:0.8em;';
+  banner.innerHTML = 'Не удалось загрузить данные плана. <button style="background:#fff;color:#c0392b;border:none;border-radius:6px;padding:0.4em 0.9em;font-weight:700;cursor:pointer;font-family:inherit;font-size:inherit;">Обновить</button>';
+  banner.querySelector('button').onclick = () => location.reload();
+  document.body.appendChild(banner);
+}
+
+loadPlanData();
 
 function renderAll(data) {
   const base = computeScenario(data, 'base');
