@@ -95,6 +95,9 @@ h2{font-size:30px; font-weight:700; letter-spacing:-.01em; margin-bottom:8px}
 .vs thead th.us{color:var(--accent)}
 .vs td:first-child{font-weight:600; width:24%}
 .vs td.them{color:var(--muted)}
+.vs td.num{font-variant-numeric:tabular-nums}
+.vs td.bad{color:var(--bad)}
+.vs td.good{color:var(--good); font-weight:600}
 /* budget */
 .budget{display:flex; flex-direction:column; gap:10px}
 .brow{display:grid; grid-template-columns:250px 1fr 84px; gap:14px; align-items:center}
@@ -180,11 +183,11 @@ footer{margin-top:80px; padding-top:24px; border-top:1px solid var(--line); disp
 <header class="hero">
   <div class="eyebrow">Бизнес-план · запуск сентябрь 2026</div>
   <h1>book<span class="dot">.</span>immo</h1>
-  <p class="thesis">Забираем долю рынка у европейских агрегаторов, начиная с Германии. Агентства отдают нам эксклюзивы из своих CRM <b>до публикации на ImmoScout24 и Immowelt</b> — потому что у нас размещение бесплатное, а платят они только при закрытой сделке.</p>
+  <p class="thesis">Забираем долю рынка у европейских агрегаторов, старт — <b>Берлин</b>. Агентства отдают нам эксклюзивы из своих CRM <b>до публикации на ImmoScout24 и Immowelt</b> — потому что у нас размещение бесплатное, а платят они только при закрытой сделке.</p>
   <div class="stats">
     <div class="stat"><div class="v">$50K</div><div class="l">инвестиция на старте · $30K потрачено, $20K резерв</div></div>
-    <div class="stat"><div class="v">€335K</div><div class="l">выручка за первые 12 месяцев (BASE-сценарий)</div></div>
-    <div class="stat"><div class="v"><em>M4</em> · дек</div><div class="l">точка безубыточности, EBITDA год 1 ≈ €211K</div></div>
+    <div class="stat"><div class="v" id="hero-rev">—</div><div class="l">выручка за первые 12 месяцев (BASE-сценарий)</div></div>
+    <div class="stat"><div class="v" id="hero-be">—</div><div class="l" id="hero-be-l">точка безубыточности</div></div>
   </div>
 </header>
 
@@ -225,57 +228,16 @@ footer{margin-top:80px; padding-top:24px; border-top:1px solid var(--line); disp
   <p class="lede">Юнит-экономика работает только если в систему приходят люди с реальным намерением снять или купить — а не случайные клики. Вот конкретные источники и то, как мы их фильтруем до передачи агентству.</p>
 
   <h3 style="font-size:16px;font-weight:600;margin:22px 0 10px;">Каналы привлечения</h3>
-  <div class="channels">
-    <div class="channel">
-      <div class="cn">Эксклюзив как магнит<small>основной канал</small></div>
-      <div class="cd">Реальная квартира, которой нет на IS24/Immowelt — люди целенаправленно ищут именно её (перешлют друзьям, сохранят, вернутся). Интент максимальный: это не абстрактный трафик, а спрос на конкретный объект.</div>
-      <div class="cq"><b class="hi">Высокое</b><span>качество лида</span></div>
-    </div>
-    <div class="channel">
-      <div class="cn">SEO / long-tail<small>«3-Zimmer Kreuzberg mieten»</small></div>
-      <div class="cd">Prerender уже построен (5 языков, гео-страницы). Люди, ищущие конкретный район/тип квартиры, показывают чёткое намерение — конверсия выше, чем у общих запросов «Wohnung Berlin».</div>
-      <div class="cq"><b class="hi">Высокое</b><span>качество лида</span></div>
-    </div>
-    <div class="channel">
-      <div class="cn">Агентство как со-маркетолог<small>нулевой CAC</small></div>
-      <div class="cd">Агентство само промотирует свой листинг на book.immo своим клиентам и в соцсетях — им выгодно закрыть сделку быстрее. Мы получаем трафик их аудитории бесплатно.</div>
-      <div class="cq"><b class="hi">Высокое</b><span>качество лида</span></div>
-    </div>
-    <div class="channel">
-      <div class="cn">Реферальная программа<small>от закрытых сделок</small></div>
-      <div class="cd">Клиент, которому ИИ реально нашёл жильё, рекомендует сервис знакомым в похожей ситуации (релокация, студенты, экспаты) — самый дешёвый и самый горячий канал.</div>
-      <div class="cq"><b class="hi">Высокое</b><span>качество лида</span></div>
-    </div>
-    <div class="channel">
-      <div class="cn">Relocation-партнёрства<small>HR-отделы, вузы, экспат-комьюнити</small></div>
-      <div class="cd">Компании, которые релоцируют сотрудников, и вузы с иностранными студентами — предсказуемый поток людей, которым жильё нужно к конкретной дате. Партнёрский канал, не перформанс.</div>
-      <div class="cq"><b class="hi">Высокое</b><span>качество лида</span></div>
-    </div>
-    <div class="channel">
-      <div class="cn">Performance (Google/Meta)<small>дополняющий канал</small></div>
-      <div class="cd">Ретаргетинг тех, кто уже смотрел объявление, и брендовые/near-brand запросы. Используется для добора объёма, не как основной источник — трафик с холодных широких запросов сюда не идёт.</div>
-      <div class="cq"><b class="mid">Среднее</b><span>качество лида</span></div>
-    </div>
-  </div>
+  <p class="lede" style="margin-bottom:14px;" id="channels-sub"></p>
+  <div class="channels" id="channels"></div>
 
   <h3 style="font-size:16px;font-weight:600;margin:28px 0 10px;">Фильтр качества: воронка до передачи агентству</h3>
-  <p class="lede" style="margin-bottom:14px;">Немецкий рынок аренды — 50–100 заявок на квартиру. Агентства ценят нас, только если мы не добавляем им лишний шум. Поэтому ИИ квалифицирует заявку ДО передачи, а не после.</p>
-  <div class="funnel">
-    <div class="fstep"><div class="fn">1</div><div class="ft">Заявка на конкретный объект<small>не общая форма «подберите мне что-нибудь»</small></div><div class="fv"><b>100%</b><span>входящий трафик</span></div></div>
-    <div class="fstep"><div class="fn">2</div><div class="ft">ИИ-скрининг<small>доход, занятость, состав семьи, дата въезда, Schufa-готовность</small></div><div class="fv"><b>~55%</b><span>проходят фильтр</span></div></div>
-    <div class="fstep"><div class="fn">3</div><div class="ft">Пакет документов собран автоматически<small>ИИ формирует Bewerbungsmappe до контакта с агентством</small></div><div class="fv"><b>~40%</b><span>с полным пакетом</span></div></div>
-    <div class="fstep"><div class="fn">4</div><div class="ft">Передача агентству<small>только квалифицированные — экономит их время на просмотре заявок</small></div><div class="fv"><b>~40%</b><span>от исходных заявок</span></div></div>
-    <div class="fstep"><div class="fn">5</div><div class="ft">Закрытая сделка<small>агентство выбирает финального кандидата из уже качественного пула</small></div><div class="fv"><b>см. R1/R2</b><span>сплит комиссии</span></div></div>
-  </div>
+  <p class="lede" style="margin-bottom:14px;">Берлин: 50–100 заявок на квартиру. Агентства ценят нас, только если мы не добавляем им лишний шум. Поэтому ИИ квалифицирует заявку ДО передачи, а не после. Экспатам без немецких справок — доводим документы (Bürgschaft, письмо работодателя, Schufa через нас), а не отсеиваем.</p>
+  <div class="funnel" id="funnel"></div>
 
-  <h3 style="font-size:16px;font-weight:600;margin:28px 0 10px;">Юнит-экономика лида</h3>
-  <div class="kpis">
-    <div class="kpi"><div class="v">€43</div><div class="l">маркетинг-CAC на 1 сконвертированный B2C-лид (год 1)</div></div>
-    <div class="kpi"><div class="v">€109</div><div class="l">стоимость привлечения агентства на 1 закрытую сделку (BD-бюджет)</div></div>
-    <div class="kpi"><div class="v">€874</div><div class="l">средняя выручка book.immo с одной агентской сделки (85% аренда / 15% продажа)</div></div>
-    <div class="kpi"><div class="v good">~10×</div><div class="l">блендед LTV / CAC по агентскому каналу</div></div>
-  </div>
-  <p class="lede" style="margin-top:14px;">Источник цифр: годовые бюджеты «Бюджет развития» выше и драйверы модели (agencies × deals/agency) — см. также вкладку Revenue Plan в скачиваемом .xlsx.</p>
+  <h3 style="font-size:16px;font-weight:600;margin:28px 0 10px;">Юнит-экономика (BASE, год 1)</h3>
+  <div class="kpis" id="unit-econ"></div>
+  <p class="lede" style="margin-top:14px;">Формулы — в скачиваемом .xlsx (вкладки BASE / PESSIMISTIC): меняешь драйвер канала — пересчитывается вся воронка и P&amp;L.</p>
 </section>
 
 <section>
@@ -308,7 +270,7 @@ footer{margin-top:80px; padding-top:24px; border-top:1px solid var(--line); disp
 
 <section>
   <h2>Выручка после запуска</h2>
-  <p class="lede">BASE-сценарий: 3 агентства в сентябре → 32 через год; 0,4 → 1,5 сделки на агентство в месяц; 85% сделок — аренда.</p>
+  <p class="lede" id="chart-sub"></p>
   <div class="chartcard">
     <div class="legend">
       <span><i class="sw"></i>Выручка, €/мес</span>
@@ -316,12 +278,10 @@ footer{margin-top:80px; padding-top:24px; border-top:1px solid var(--line); disp
     </div>
     <div class="chart-scroll"><svg id="chart" viewBox="0 0 960 340" role="img" aria-label="Выручка и EBITDA по месяцам"></svg></div>
   </div>
-  <div class="kpis">
-    <div class="kpi"><div class="v">€334 588</div><div class="l">выручка, 12 мес</div></div>
-    <div class="kpi"><div class="v good">€211 388</div><div class="l">EBITDA, 12 мес</div></div>
-    <div class="kpi"><div class="v">−€10 301</div><div class="l">макс. просадка — покрыта резервом $20K</div></div>
-    <div class="kpi"><div class="v">€229K</div><div class="l">кэш на конец года 1</div></div>
-  </div>
+  <div class="kpis" id="rev-kpis"></div>
+
+  <h3 style="font-size:16px;font-weight:600;margin:28px 0 10px;">Сравнение сценариев</h3>
+  <div class="vs-box"><table class="vs" id="scenario-table"></table></div>
 </section>
 
 <section>
@@ -336,9 +296,9 @@ footer{margin-top:80px; padding-top:24px; border-top:1px solid var(--line); disp
 
 <section>
   <h2>Бюджет развития</h2>
-  <p class="lede">Операционные расходы после запуска, сентябрь 2026 — август 2027 (EUR). Растут вместе с масштабом: команда, продажи агентствам, маркетинг B2C.</p>
+  <p class="lede">Операционные расходы после запуска (BASE), сентябрь 2026 — август 2027 (EUR). Paid-маркетинг считается отдельно — это переменная часть воронки, см. драйверы выше.</p>
   <div class="budget" id="growth-budget"></div>
-  <div class="btotal"><span>Итого сентябрь–август</span><span id="growth-total"></span></div>
+  <div class="btotal"><span>Итого сентябрь–август (opex, без paid)</span><span id="growth-total"></span></div>
 </section>
 
 <footer>
@@ -347,84 +307,145 @@ footer{margin-top:80px; padding-top:24px; border-top:1px solid var(--line); disp
 </footer>
 </div>
 
+<script src="/plan/model.js"></script>
 <script>
-// budget bars
-const budget = [
-  ['Разработка (фронт / бэк / парсер)', 14000],
-  ['Legal и юрлицо', 2500],
-  ['Дизайн / UX', 2500],
-  ['Инфраструктура (Vercel, серверы, CMS)', 2000],
-  ['Pre-launch маркетинг', 2000],
-  ['Data-инфраструктура (прокси, Chrome)', 1500],
-  ['AI / LLM API', 1500],
-  ['Буфер / прочее', 1420],
-  ['Домен book.immo + TM', 1000],
-  ['Tools & software', 1000],
-];
-const bmax = 14000;
-document.getElementById('budget').innerHTML = budget.map(([n, v], i) =>
-  `<div class="brow${i % 2 ? ' alt' : ''}"><div class="n">${n}</div>` +
-  `<div class="bar"><i style="width:${(v / bmax * 100).toFixed(1)}%"></i></div>` +
-  `<div class="s">$${v.toLocaleString('en-US')}</div></div>`
-).join('');
+const RU_MONTH = { Sep:'Сен', Oct:'Окт', Nov:'Ноя', Dec:'Дек', Jan:'Янв', Feb:'Фев', Mar:'Мар', Apr:'Апр', May:'Май', Jun:'Июн', Jul:'Июл', Aug:'Авг' };
+const ruM = m => RU_MONTH[m] || m;
+const fmtK = n => '€' + Math.round(n / 1000) + 'K';
 
-// growth budget (post-launch opex, Sep 2026 - Aug 2027)
-const growthBudget = [
-  ['Команда: dev/support (контракторы)', 45000],
-  ['Маркетинг B2C (performance + контент + SEO)', 32200],
-  ['Продажи агентствам / партнёрства (BD)', 26500],
-  ['Инфраструктура + AI API', 11700],
-  ['Tools, legal, прочее', 7800],
-];
-const gbmax = 45000;
-document.getElementById('growth-budget').innerHTML = growthBudget.map(([n, v], i) =>
-  `<div class="brow${i % 2 ? ' alt' : ''}"><div class="n">${n}</div>` +
-  `<div class="bar"><i style="width:${(v / gbmax * 100).toFixed(1)}%"></i></div>` +
-  `<div class="s">€${v.toLocaleString('en-US')}</div></div>`
-).join('');
-document.getElementById('growth-total').textContent =
-  '€' + growthBudget.reduce((s, [, v]) => s + v, 0).toLocaleString('en-US');
+fetch('/plan/plan-data.json?v=' + Date.now(), { cache: 'no-store' })
+  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  .then(renderAll)
+  .catch(err => console.error('plan-data.json load failed', err));
 
-// chart
-const months = ['Сен','Окт','Ноя','Дек','Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг'];
-const rev =    [2066, 3834, 7649, 10590, 15577, 21362, 27970, 34578, 42210, 48818, 56300, 63634];
-const ebitda = [-5634, -4116, -551, 1240, 5977, 11712, 16970, 23528, 30910, 36868, 43600, 50884];
-const svg = document.getElementById('chart');
-const ink = () => getComputedStyle(document.body).color;
-const W = 960, H = 340, padL = 64, padR = 16, padT = 18, padB = 34;
-const yMin = -10000, yMax = 70000;
-const py = v => padT + (yMax - v) / (yMax - yMin) * (H - padT - padB);
-const slot = (W - padL - padR) / 12;
-let s = '';
-// gridlines + y labels
-[-10000, 0, 20000, 40000, 60000].forEach(t => {
-  const y = py(t);
-  s += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="${t === 0 ? 'var(--ink)' : 'var(--line-soft)'}" stroke-width="${t === 0 ? 1.2 : 1}" ${t === 0 ? '' : ''}/>`;
-  s += `<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="11.5" fill="var(--faint)" style="font-variant-numeric:tabular-nums">${t === 0 ? '0' : (t / 1000) + 'K'}</text>`;
-});
-// bars
-rev.forEach((v, i) => {
-  const x = padL + slot * i + slot * 0.18;
-  const w = slot * 0.44;
-  const y = py(v);
-  s += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${(py(0) - y).toFixed(1)}" rx="5" fill="var(--accent)"><title>${months[i]}: выручка €${v.toLocaleString('ru-RU')}</title></rect>`;
-});
-// ebitda line
-const pts = ebitda.map((v, i) => [padL + slot * i + slot * 0.5, py(v)]);
-s += `<polyline points="${pts.map(p => p.map(n => n.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
-pts.forEach((p, i) => {
-  s += `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${i === 11 ? 5 : 3.4}" fill="${ebitda[i] < 0 ? 'var(--bad)' : 'var(--good)'}" stroke="var(--card)" stroke-width="1.6"><title>${months[i]}: EBITDA €${ebitda[i].toLocaleString('ru-RU')}</title></circle>`;
-});
-// endpoint label
-s += `<text x="${(pts[11][0] - 8).toFixed(1)}" y="${(pts[11][1] - 12).toFixed(1)}" text-anchor="end" font-size="12.5" font-weight="600" fill="var(--good)" style="font-variant-numeric:tabular-nums">+€50,9K</text>`;
-// breakeven marker (Dec, i=3)
-s += `<text x="${pts[3][0].toFixed(1)}" y="${(py(0) - 64).toFixed(1)}" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--accent)">breakeven</text>`;
-s += `<line x1="${pts[3][0]}" y1="${(py(0) - 56).toFixed(1)}" x2="${pts[3][0]}" y2="${(pts[3][1] - 8).toFixed(1)}" stroke="var(--accent)" stroke-width="1.2" stroke-dasharray="3 3"/>`;
-// month labels
-months.forEach((m, i) => {
-  s += `<text x="${(padL + slot * i + slot * 0.5).toFixed(1)}" y="${H - 10}" text-anchor="middle" font-size="11.5" fill="var(--muted)">${m}</text>`;
-});
-svg.innerHTML = s;
+function renderAll(data) {
+  const base = computeScenario(data, 'base');
+  const pess = computeScenario(data, 'pessimistic');
+
+  // hero
+  document.getElementById('hero-rev').textContent = fmtK(base.year.revenue);
+  document.getElementById('hero-be').innerHTML = base.breakeven ? `<em>${ruM(base.breakeven)}</em>` : '—';
+  document.getElementById('hero-be-l').textContent = `точка безубыточности, EBITDA год 1 ≈ ${fmtK(base.year.ebitda)}`;
+
+  // pre-launch budget
+  const rowsWithTotal = data.budget.rows.map(r => ({ name: r.name, total: r.vals.reduce((a, b) => a + b, 0) }));
+  const maxRow = Math.max(...rowsWithTotal.map(r => r.total));
+  document.getElementById('budget').innerHTML = rowsWithTotal.map((r, i) =>
+    `<div class="brow${i % 2 ? ' alt' : ''}"><div class="n">${r.name}</div>` +
+    `<div class="bar"><i style="width:${(r.total / maxRow * 100).toFixed(1)}%"></i></div>` +
+    `<div class="s">$${r.total.toLocaleString('en-US')}</div></div>`
+  ).join('');
+
+  // lead channels — qualified-lead share from BASE
+  const qualByCh = {};
+  base.rows.forEach(r => Object.entries(r.qualifiedBy).forEach(([k, v]) => { qualByCh[k] = (qualByCh[k] || 0) + v; }));
+  const totalQual = Object.values(qualByCh).reduce((a, b) => a + b, 0);
+  document.getElementById('channels-sub').textContent =
+    `Юнит-экономика работает только если в систему приходят люди с реальным намерением. ${data.meta.geo}, BASE: ${Math.round(totalQual).toLocaleString('ru-RU')} квалифицированных лидов за год при €${base.year.marketing.toLocaleString('ru-RU')} paid-бюджета.`;
+  document.getElementById('channels').innerHTML = data.channels.map(c => {
+    const share = totalQual ? Math.round(qualByCh[c.key] / totalQual * 100) : 0;
+    return `<div class="channel"><div class="cn">${c.name}<small>квалификация ${Math.round(c.qualifiedRate * 100)}%</small></div>` +
+      `<div class="cd">${c.desc}</div>` +
+      `<div class="cq"><b class="${c.quality === 'high' ? 'hi' : 'mid'}">${share}%</b><span>лидов года · BASE</span></div></div>`;
+  }).join('');
+
+  // funnel
+  const y = base.year;
+  const totalSignups = base.rows.reduce((s, r) => s + r.signups, 0);
+  const fv = [
+    `${totalSignups.toLocaleString('ru-RU')}`,
+    `${y.qualified.toLocaleString('ru-RU')} (${Math.round(y.qualified / totalSignups * 100)}%)`,
+    'минуты после публикации',
+    `${y.agencyDeals} передано`,
+    `${y.deals} сделок`,
+  ];
+  document.getElementById('funnel').innerHTML = data.funnel.map((f, i) =>
+    `<div class="fstep"><div class="fn">${i + 1}</div><div class="ft">${f.step}<small>${f.desc}</small></div><div class="fv"><b>${fv[i]}</b><span>&nbsp;</span></div></div>`
+  ).join('');
+
+  // unit economics
+  document.getElementById('unit-econ').innerHTML = `
+    <div class="kpi"><div class="v">€${y.cacPerQualified}</div><div class="l">CAC на квалифицированного лида (paid / всего квал.)</div></div>
+    <div class="kpi"><div class="v">€${y.cacPerDeal}</div><div class="l">CAC на сделку</div></div>
+    <div class="kpi"><div class="v">€${y.blendedAgencyDeal}</div><div class="l">выручка book.immo с одной агентской сделки</div></div>
+    <div class="kpi"><div class="v good">${(y.blendedAgencyDeal / y.cacPerDeal).toFixed(1)}×</div><div class="l">LTV / CAC по агентскому каналу</div></div>`;
+
+  // growth budget (opex, excl. paid — shown separately as a channel driver)
+  const rowsG = data.scenarios.base.costs.map(r => ({ name: r.name, total: r.vals.reduce((a, b) => a + b, 0) }));
+  const maxG = Math.max(...rowsG.map(r => r.total));
+  document.getElementById('growth-budget').innerHTML = rowsG.map((r, i) =>
+    `<div class="brow${i % 2 ? ' alt' : ''}"><div class="n">${r.name}</div>` +
+    `<div class="bar"><i style="width:${(r.total / maxG * 100).toFixed(1)}%"></i></div>` +
+    `<div class="s">€${r.total.toLocaleString('en-US')}</div></div>`
+  ).join('');
+  document.getElementById('growth-total').textContent = '€' + rowsG.reduce((s, r) => s + r.total, 0).toLocaleString('en-US') +
+    ` (+ €${y.marketing.toLocaleString('en-US')} paid-маркетинг)`;
+
+  // revenue section
+  document.getElementById('chart-sub').textContent =
+    `BASE, ${data.meta.geo}: ${data.scenarios.base.drivers.activeAgencies[0]} агентства на старте → ${data.scenarios.base.drivers.activeAgencies[11]} через год. ${Math.round(y.agencyDeals / y.deals * 100)}% сделок — через эксклюзивы агентств, остальное — на каталоге IS24/Immowelt.`;
+  document.getElementById('rev-kpis').innerHTML = `
+    <div class="kpi"><div class="v">€${y.revenue.toLocaleString('ru-RU')}</div><div class="l">выручка, 12 мес</div></div>
+    <div class="kpi"><div class="v good">€${y.ebitda.toLocaleString('ru-RU')}</div><div class="l">EBITDA, 12 мес</div></div>
+    <div class="kpi"><div class="v${base.minCash < 0 ? '' : ''}">€${base.minCash.toLocaleString('ru-RU')}</div><div class="l">минимум кэша (старт €${data.meta.reserveEUR.toLocaleString('ru-RU')})</div></div>
+    <div class="kpi"><div class="v">€${base.endCash.toLocaleString('ru-RU')}</div><div class="l">кэш на конец года 1</div></div>`;
+
+  // scenario comparison table
+  const row = (label, b, p, fmt = x => x.toLocaleString('ru-RU')) =>
+    `<tr><td>${label}</td><td class="num">${fmt(b)}</td><td class="num them">${fmt(p)}</td></tr>`;
+  document.getElementById('scenario-table').innerHTML = `
+    <thead><tr><th></th><th class="us">BASE</th><th>PESSIMISTIC</th></tr></thead>
+    <tbody>
+      ${row('Выручка, год 1', y.revenue, pess.year.revenue, x => '€' + x.toLocaleString('ru-RU'))}
+      ${row('EBITDA, год 1', y.ebitda, pess.year.ebitda, x => '€' + x.toLocaleString('ru-RU'))}
+      ${row('Сделок всего', y.deals, pess.year.deals)}
+      ${row('Breakeven', base.breakeven ? ruM(base.breakeven) : '—', pess.breakeven ? ruM(pess.breakeven) : 'не наступает', x => x)}
+      ${row('Минимум кэша', base.minCash, pess.minCash, x => '€' + x.toLocaleString('ru-RU'))}
+      ${row('CAC на сделку', y.cacPerDeal, pess.year.cacPerDeal, x => '€' + x)}
+    </tbody>`;
+
+  drawChart(data.months, base.rows.map(r => r.revenue), base.rows.map(r => r.ebitda), base.breakeven);
+}
+
+function drawChart(months, rev, ebitda, breakevenMonth) {
+  const svg = document.getElementById('chart');
+  const W = 960, H = 340, padL = 64, padR = 16, padT = 18, padB = 34;
+  const dataMin = Math.min(0, ...ebitda), dataMax = Math.max(...rev, ...ebitda);
+  const yMin = Math.floor(dataMin / 10000) * 10000;
+  const yMax = Math.ceil(dataMax / 10000) * 10000;
+  const step = (yMax - yMin) / 4;
+  const py = v => padT + (yMax - v) / (yMax - yMin) * (H - padT - padB);
+  const slot = (W - padL - padR) / months.length;
+  let s = '';
+  [0, 1, 2, 3, 4].map(i => yMin + step * i).forEach(t => {
+    const y = py(t);
+    s += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="${t === 0 ? 'var(--ink)' : 'var(--line-soft)'}" stroke-width="${t === 0 ? 1.2 : 1}"/>`;
+    s += `<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="11.5" fill="var(--faint)" style="font-variant-numeric:tabular-nums">${t === 0 ? '0' : Math.round(t / 1000) + 'K'}</text>`;
+  });
+  rev.forEach((v, i) => {
+    const x = padL + slot * i + slot * 0.18;
+    const w = slot * 0.44;
+    const y = py(v);
+    s += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${(py(0) - y).toFixed(1)}" rx="5" fill="var(--accent)"><title>${ruM(months[i])}: выручка €${v.toLocaleString('ru-RU')}</title></rect>`;
+  });
+  const pts = ebitda.map((v, i) => [padL + slot * i + slot * 0.5, py(v)]);
+  s += `<polyline points="${pts.map(p => p.map(n => n.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
+  pts.forEach((p, i) => {
+    s += `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${i === months.length - 1 ? 5 : 3.4}" fill="${ebitda[i] < 0 ? 'var(--bad)' : 'var(--good)'}" stroke="var(--card)" stroke-width="1.6"><title>${ruM(months[i])}: EBITDA €${ebitda[i].toLocaleString('ru-RU')}</title></circle>`;
+  });
+  const lastIdx = pts.length - 1;
+  const lastLabel = (ebitda[lastIdx] >= 0 ? '+' : '') + '€' + (Math.round(ebitda[lastIdx] / 100) / 10).toLocaleString('ru-RU') + 'K';
+  s += `<text x="${(pts[lastIdx][0] - 8).toFixed(1)}" y="${(pts[lastIdx][1] - 12).toFixed(1)}" text-anchor="end" font-size="12.5" font-weight="600" fill="${ebitda[lastIdx] >= 0 ? 'var(--good)' : 'var(--bad)'}" style="font-variant-numeric:tabular-nums">${lastLabel}</text>`;
+  const beIdx = months.indexOf(breakevenMonth);
+  if (beIdx > -1) {
+    s += `<text x="${pts[beIdx][0].toFixed(1)}" y="${(py(0) - 64).toFixed(1)}" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--accent)">breakeven</text>`;
+    s += `<line x1="${pts[beIdx][0]}" y1="${(py(0) - 56).toFixed(1)}" x2="${pts[beIdx][0]}" y2="${(pts[beIdx][1] - 8).toFixed(1)}" stroke="var(--accent)" stroke-width="1.2" stroke-dasharray="3 3"/>`;
+  }
+  months.forEach((m, i) => {
+    s += `<text x="${(padL + slot * i + slot * 0.5).toFixed(1)}" y="${H - 10}" text-anchor="middle" font-size="11.5" fill="var(--muted)">${ruM(m)}</text>`;
+  });
+  svg.innerHTML = s;
+}
 </script>
 
 </body>
