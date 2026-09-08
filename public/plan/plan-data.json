@@ -146,7 +146,9 @@
     "pctRental": 0.85,
     "b2cFeeEUR": 149,
     "feeShareOnAgencyDeals": 0.5,
-    "bdCommissionOnAgencyRevenue": 0.08
+    "bdCommissionOnAgencyRevenue": 0.08,
+    "furnitureAvgTicketEUR": 3000,
+    "furnitureCommissionPct": 0.015
   },
   "channels": [
     {
@@ -642,6 +644,13 @@
       "unit": "€1,1K",
       "unitLabel": "/ мес к M12",
       "desc": "Zolak virtual staging, автогенерация Exposé (презентация объекта: фото, описание, планировка — из сырых данных), premium-лиды — маржа поверх комиссионного сплита."
+    },
+    {
+      "tag": "R5 · Furniture",
+      "title": "Реферал на мебель через Zolak",
+      "unit": "€45",
+      "unitLabel": "/ сделка",
+      "desc": "Новый жилец обставляет квартиру через встроенную в Zolak рефералку с мебельным магазином. Средний чек ~€3 000, наша доля 1–2% — отдельно от подписки агентств на Zolak (R4)."
     }
   ]
 }

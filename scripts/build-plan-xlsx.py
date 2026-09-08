@@ -206,6 +206,8 @@ def scenario_sheet(key):
     scalar('B2C fee, €', 'fee', ue['b2cFeeEUR'])
     scalar('Доля агентских сделок, платящих B2C fee', 'feeShare', ue['feeShareOnAgencyDeals'])
     scalar('Продажник: % от выручки агентских сделок', 'bdPct', ue.get('bdCommissionOnAgencyRevenue', 0))
+    scalar('Zolak: средний чек мебели, €', 'furnTicket', ue.get('furnitureAvgTicketEUR', 0))
+    scalar('Zolak: наша доля от мебели', 'furnPct', ue.get('furnitureCommissionPct', 0))
     put('Upsell агентствам, €/мес', 'upsell', d['upsells'], is_input=True, total='sum')
     row[0] += 1
 
@@ -238,7 +240,8 @@ def scenario_sheet(key):
     put('R1+R2: сплит комиссии (аренда/продажа)', 'revAg', formula=lambda c, i: f'=ROUND({R("agDeals", c)}*({S("pctRent")}*{S("rent")}+(1-{S("pctRent")})*{S("sale")}),0)', total='sum')
     put('R3: B2C fee', 'revFee', formula=lambda c, i: f'={R("feeDeals", c)}*{S("fee")}', total='sum')
     put('R4: upsell', 'revUp', formula=lambda c, i: f'={R("upsell", c)}', total='sum')
-    put('TOTAL REVENUE', 'rev', formula=lambda c, i: f'={R("revAg", c)}+{R("revFee", c)}+{R("revUp", c)}', total='sum', bold=True)
+    put('R5: реферал на мебель (Zolak)', 'revFurn', formula=lambda c, i: f'=ROUND({R("deals", c)}*{S("furnTicket")}*{S("furnPct")},0)', total='sum')
+    put('TOTAL REVENUE', 'rev', formula=lambda c, i: f'={R("revAg", c)}+{R("revFee", c)}+{R("revUp", c)}+{R("revFurn", c)}', total='sum', bold=True)
     row[0] += 1
 
     section('РАСХОДЫ')

@@ -9,6 +9,7 @@ function computeScenario(data, key) {
   const n = data.months.length;
   const rate = Object.fromEntries(data.channels.map(c => [c.key, c.qualifiedRate]));
   const blendedAgencyDeal = ue.pctRental * ue.rentalSplitEUR + (1 - ue.pctRental) * ue.saleSplitEUR;
+  const furniturePerDeal = (ue.furnitureAvgTicketEUR || 0) * (ue.furnitureCommissionPct || 0);
 
   const rows = [];
   let prevDeals = 0;
@@ -33,7 +34,8 @@ function computeScenario(data, key) {
     const selfDeals = Math.round(qualified * d.qualToSelfDeal);
     const feeDeals = selfDeals + Math.round(agencyDeals * ue.feeShareOnAgencyDeals);
     const revenueAgency = agencyDeals * blendedAgencyDeal;
-    const revenue = Math.round(revenueAgency + feeDeals * ue.b2cFeeEUR + d.upsells[i]);
+    const furnitureRevenue = Math.round((agencyDeals + selfDeals) * furniturePerDeal);
+    const revenue = Math.round(revenueAgency + feeDeals * ue.b2cFeeEUR + d.upsells[i] + furnitureRevenue);
     const marketing = d.paidSpend[i];
     const bdCommission = Math.round(revenueAgency * (ue.bdCommissionOnAgencyRevenue || 0));
     const opex = sc.costs.reduce((s, r) => s + r.vals[i], 0) + bdCommission;
@@ -45,7 +47,7 @@ function computeScenario(data, key) {
       qualified: Math.round(qualified),
       qualifiedBy,
       agencyDeals, selfDeals, feeDeals,
-      revenue, marketing, opex, cost, bdCommission,
+      revenue, marketing, opex, cost, bdCommission, furnitureRevenue,
       ebitda: revenue - cost,
     });
   }
@@ -69,6 +71,7 @@ function computeScenario(data, key) {
       cacPerDeal: yearDeals ? Math.round(yearMarketing / yearDeals) : null,
       blendedAgencyDeal: Math.round(blendedAgencyDeal),
       bdCommission: sum('bdCommission'),
+      furnitureRevenue: sum('furnitureRevenue'),
     },
     breakeven, minCash: Math.round(minCash), endCash: Math.round(cash),
   };
