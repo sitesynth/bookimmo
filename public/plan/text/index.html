@@ -364,13 +364,26 @@ function renderAll(data) {
   const qualByCh = {};
   base.rows.forEach(r => Object.entries(r.qualifiedBy).forEach(([k, v]) => { qualByCh[k] = (qualByCh[k] || 0) + v; }));
   const totalQual = Object.values(qualByCh).reduce((a, b) => a + b, 0);
+  const avgPaid = Math.round(base.year.marketing / base.rows.length);
+  const contentRow = data.scenarios.base.costs.find(r => /контент|content/i.test(r.name));
+  const avgContent = contentRow ? Math.round(contentRow.vals.reduce((a, b) => a + b, 0) / contentRow.vals.length) : 0;
+  const bdRow = data.scenarios.base.costs.find(r => /продажник|bd/i.test(r.name));
+  const avgBd = bdRow ? Math.round(bdRow.vals.reduce((a, b) => a + b, 0) / bdRow.vals.length) : 0;
+  const channelCost = {
+    paid: `€${avgPaid.toLocaleString('ru-RU')}/мес медиа`,
+    community: 'орг. время, 0 медиа',
+    partners: `BD-время (€${avgBd.toLocaleString('ru-RU')}/мес база + % с агентств)`,
+    seo: `€${avgContent.toLocaleString('ru-RU')}/мес контент`,
+    referral: 'встроено в продукт, ~€0',
+    agencies: `BD-время (€${avgBd.toLocaleString('ru-RU')}/мес база + % с агентств)`,
+  };
   document.getElementById('channels-sub').textContent =
-    `Юнит-экономика работает только если в систему приходят люди с реальным намерением. ${data.meta.geo}, BASE: ${Math.round(totalQual).toLocaleString('ru-RU')} квалифицированных лидов за год при €${base.year.marketing.toLocaleString('ru-RU')} paid-бюджета.`;
+    `Юнит-экономика работает только если в систему приходят люди с реальным намерением. ${data.meta.geo}, BASE: ${Math.round(totalQual).toLocaleString('ru-RU')} квалифицированных лидов за год — €${avgPaid.toLocaleString('ru-RU')}/мес paid + €${avgContent.toLocaleString('ru-RU')}/мес контент + BD-бюджет продажника.`;
   document.getElementById('channels').innerHTML = data.channels.map(c => {
     const share = totalQual ? Math.round(qualByCh[c.key] / totalQual * 100) : 0;
     return `<div class="channel"><div class="cn">${c.name}<small>квалификация ${Math.round(c.qualifiedRate * 100)}%</small></div>` +
       `<div class="cd">${c.desc}</div>` +
-      `<div class="cq"><b class="${c.quality === 'high' ? 'hi' : 'mid'}">${share}%</b><span>лидов года · BASE</span></div></div>`;
+      `<div class="cq"><b class="${c.quality === 'high' ? 'hi' : 'mid'}">${share}%</b><span>лидов · ${channelCost[c.key] || ''}</span></div></div>`;
   }).join('');
 
   // funnel

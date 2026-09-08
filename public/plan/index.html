@@ -567,12 +567,25 @@ function renderAll(data) {
   const qualByCh = {};
   base.rows.forEach(r => Object.entries(r.qualifiedBy).forEach(([k, v]) => { qualByCh[k] = (qualByCh[k] || 0) + v; }));
   const totalQual = Object.values(qualByCh).reduce((a, b) => a + b, 0);
+  const avgPaid = Math.round(base.year.marketing / base.rows.length);
+  const contentRow = data.scenarios.base.costs.find(r => /контент|content/i.test(r.name));
+  const avgContent = contentRow ? Math.round(contentRow.vals.reduce((a, b) => a + b, 0) / contentRow.vals.length) : 0;
+  const bdRow = data.scenarios.base.costs.find(r => /продажник|bd/i.test(r.name));
+  const avgBd = bdRow ? Math.round(bdRow.vals.reduce((a, b) => a + b, 0) / bdRow.vals.length) : 0;
+  const channelCost = {
+    paid: `€${avgPaid.toLocaleString('ru-RU')}/мес медиа`,
+    community: 'орг. время, 0 медиа',
+    partners: `BD-время (€${avgBd.toLocaleString('ru-RU')}/мес база + % с агентств)`,
+    seo: `€${avgContent.toLocaleString('ru-RU')}/мес контент`,
+    referral: 'встроено в продукт, ~€0',
+    agencies: `BD-время (€${avgBd.toLocaleString('ru-RU')}/мес база + % с агентств)`,
+  };
   document.getElementById('channels').innerHTML = channels.map(c => {
     const share = totalQual ? Math.round(qualByCh[c.key] / totalQual * 100) : 0;
-    return `<div class="card gcard"><div class="gcard-tag ${c.quality === 'high' ? 'hi' : 'mid'}">квалификация ${Math.round(c.qualifiedRate * 100)}%</div><div class="gcard-t">${c.name}</div><div class="gcard-b">${c.desc}</div><div class="gq">${share}% <span>квалифицированных лидов года · BASE</span></div></div>`;
+    return `<div class="card gcard"><div class="gcard-tag ${c.quality === 'high' ? 'hi' : 'mid'}">квалификация ${Math.round(c.qualifiedRate * 100)}%</div><div class="gcard-t">${c.name}</div><div class="gcard-b">${c.desc}</div><div class="gq">${share}% лидов года · BASE <span>· ${channelCost[c.key] || ''}</span></div></div>`;
   }).join('');
   document.getElementById('channels-sub').textContent =
-    `${meta.geo}: ${base.year.qualified.toLocaleString('ru-RU')} квалифицированных лидов за год при €${base.year.marketing.toLocaleString('ru-RU')} paid-бюджета — CAC €${base.year.cacPerQualified} на лида. Экспаты и paid — дешёвые, но с низкой квалификацией; партнёрства и агентства — дорогие в BD, но почти без брака.`;
+    `${meta.geo}: ${base.year.qualified.toLocaleString('ru-RU')} квалифицированных лидов за год — €${avgPaid.toLocaleString('ru-RU')}/мес paid + €${avgContent.toLocaleString('ru-RU')}/мес контент + BD-бюджет продажника. CAC €${base.year.cacPerQualified} на квал. лида. Экспаты и paid — дешёвые, но с низкой квалификацией; партнёрства и агентства — дорогие в BD-времени, но почти без брака.`;
 
   // funnel
   const y = base.year;
