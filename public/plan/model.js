@@ -32,9 +32,11 @@ function computeScenario(data, key) {
     const agencyDeals = Math.round(Math.min(qualified * d.qualToAgencyDeal, d.activeAgencies[i] * d.dealsCapPerAgency[i]));
     const selfDeals = Math.round(qualified * d.qualToSelfDeal);
     const feeDeals = selfDeals + Math.round(agencyDeals * ue.feeShareOnAgencyDeals);
-    const revenue = Math.round(agencyDeals * blendedAgencyDeal + feeDeals * ue.b2cFeeEUR + d.upsells[i]);
+    const revenueAgency = agencyDeals * blendedAgencyDeal;
+    const revenue = Math.round(revenueAgency + feeDeals * ue.b2cFeeEUR + d.upsells[i]);
     const marketing = d.paidSpend[i];
-    const opex = sc.costs.reduce((s, r) => s + r.vals[i], 0);
+    const bdCommission = Math.round(revenueAgency * (ue.bdCommissionOnAgencyRevenue || 0));
+    const opex = sc.costs.reduce((s, r) => s + r.vals[i], 0) + bdCommission;
     const cost = marketing + opex;
     prevDeals = agencyDeals + selfDeals;
     rows.push({
@@ -43,7 +45,7 @@ function computeScenario(data, key) {
       qualified: Math.round(qualified),
       qualifiedBy,
       agencyDeals, selfDeals, feeDeals,
-      revenue, marketing, opex, cost,
+      revenue, marketing, opex, cost, bdCommission,
       ebitda: revenue - cost,
     });
   }
@@ -66,6 +68,7 @@ function computeScenario(data, key) {
       cacPerQualified: yearQualified ? Math.round(yearMarketing / yearQualified) : null,
       cacPerDeal: yearDeals ? Math.round(yearMarketing / yearDeals) : null,
       blendedAgencyDeal: Math.round(blendedAgencyDeal),
+      bdCommission: sum('bdCommission'),
     },
     breakeven, minCash: Math.round(minCash), endCash: Math.round(cash),
   };

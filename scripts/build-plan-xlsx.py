@@ -205,6 +205,7 @@ def scenario_sheet(key):
     scalar('Доля аренды', 'pctRent', ue['pctRental'])
     scalar('B2C fee, €', 'fee', ue['b2cFeeEUR'])
     scalar('Доля агентских сделок, платящих B2C fee', 'feeShare', ue['feeShareOnAgencyDeals'])
+    scalar('Продажник: % от выручки агентских сделок', 'bdPct', ue.get('bdCommissionOnAgencyRevenue', 0))
     put('Upsell агентствам, €/мес', 'upsell', d['upsells'], is_input=True, total='sum')
     row[0] += 1
 
@@ -247,6 +248,8 @@ def scenario_sheet(key):
         k = f'c{j}'
         cost_keys.append(k)
         put(cr['name'], k, cr['vals'], is_input=True, total='sum')
+    put('Продажник: комиссия (% от R1+R2)', 'bdComm', formula=lambda c, i: f'=ROUND({R("revAg", c)}*{S("bdPct")},0)', total='sum')
+    cost_keys.append('bdComm')
     put('TOTAL COSTS', 'cost', formula=lambda c, i: '=' + '+'.join([R('cPaid', c)] + [R(k, c) for k in cost_keys]), total='sum', bold=True)
     row[0] += 1
 

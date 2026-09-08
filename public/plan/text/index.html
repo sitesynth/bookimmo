@@ -119,6 +119,7 @@ h2{font-size:30px; font-weight:700; letter-spacing:-.01em; margin-bottom:8px}
 .chart-scroll{overflow-x:auto}
 .chart-scroll svg{min-width:640px; display:block; width:100%}
 .kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:16px}
+.kpis-5{grid-template-columns:repeat(5,1fr)}
 .kpi{border:1px solid var(--line); border-radius:14px; padding:14px 16px; background:var(--card)}
 .kpi .v{font-family:'Bricolage Grotesque',sans-serif; font-size:21px; font-weight:700; font-variant-numeric:tabular-nums}
 .kpi .v.good{color:var(--good)}
@@ -236,7 +237,7 @@ footer{margin-top:80px; padding-top:24px; border-top:1px solid var(--line); disp
   <div class="funnel" id="funnel"></div>
 
   <h3 style="font-size:16px;font-weight:600;margin:28px 0 10px;">Юнит-экономика (BASE, год 1)</h3>
-  <div class="kpis" id="unit-econ"></div>
+  <div class="kpis kpis-5" id="unit-econ"></div>
   <p class="lede" style="margin-top:14px;">Формулы — в скачиваемом .xlsx (вкладки BASE / PESSIMISTIC): меняешь драйвер канала — пересчитывается вся воронка и P&amp;L.</p>
 </section>
 
@@ -245,7 +246,7 @@ footer{margin-top:80px; padding-top:24px; border-top:1px solid var(--line); disp
   <div class="vs-box"><table class="vs">
     <thead><tr><th></th><th>ImmoScout24 / Immowelt</th><th class="us">book.immo</th></tr></thead>
     <tbody>
-      <tr><td>Деньги с агентств</td><td class="them">€100–500+/мес за размещение, независимо от результата</td><td>€0 за размещение — сплит комиссии только при сделке</td></tr>
+      <tr><td>Деньги с агентств</td><td class="them">~€1 114/мес в среднем (ARPU Professional Segment Scout24, 2023) — €400–5000+/мес по объёму, +10%/год, независимо от результата</td><td>€0 за размещение — сплит комиссии только при сделке</td></tr>
       <tr><td>Скорость инвентаря</td><td class="them">Объект появляется, когда агентство оплатит публикацию</td><td>Pre-market: объект виден сразу из CRM, до витрин</td></tr>
       <tr><td>Роль для клиента</td><td class="them">Витрина: ищи и пиши письма сам</td><td>Автопилот: ИИ пишет, подаёт заявки, отслеживает</td></tr>
       <tr><td>Стимул платформы</td><td class="them">Продавать показы и клики</td><td>Довести клиента до подписания договора</td></tr>
@@ -391,7 +392,8 @@ function renderAll(data) {
     <div class="kpi"><div class="v">€${y.cacPerQualified}</div><div class="l">CAC на квалифицированного лида (paid / всего квал.)</div></div>
     <div class="kpi"><div class="v">€${y.cacPerDeal}</div><div class="l">CAC на сделку</div></div>
     <div class="kpi"><div class="v">€${y.blendedAgencyDeal}</div><div class="l">выручка book.immo с одной агентской сделки</div></div>
-    <div class="kpi"><div class="v good">${(y.blendedAgencyDeal / y.cacPerDeal).toFixed(1)}×</div><div class="l">LTV / CAC по агентскому каналу</div></div>`;
+    <div class="kpi"><div class="v good">${(y.blendedAgencyDeal / y.cacPerDeal).toFixed(1)}×</div><div class="l">LTV / CAC по агентскому каналу</div></div>
+    <div class="kpi"><div class="v">€${y.bdCommission.toLocaleString('ru-RU')}</div><div class="l">продажнику за год: база + ${Math.round(data.unitEconomics.bdCommissionOnAgencyRevenue * 100)}% от R1+R2</div></div>`;
 
   // growth budget (opex, excl. paid — shown separately as a channel driver)
   const rowsG = data.scenarios.base.costs.map(r => ({ name: r.name, total: r.vals.reduce((a, b) => a + b, 0) }));
