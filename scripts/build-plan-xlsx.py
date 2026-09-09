@@ -182,10 +182,11 @@ def scenario_sheet(key):
     scalar('Лидов на партнёра / мес', 'leadsPerPartner', d['leadsPerPartner'])
     put('SEO: визитов/мес', 'seo', d['seoVisits'], is_input=True, total='sum')
     scalar('SEO: визит → регистрация', 'seoSignup', d['seoSignupRate'])
-    put('Активные агентства (накопл.)', 'agencies', d['activeAgencies'], is_input=True)
+    put('Агентства: холодный BD (накопл.)', 'agencies', d['activeAgencies'], is_input=True)
     scalar('Визитов от агентства / мес', 'agVisits', d['agencyVisitsPerAgency'])
     scalar('Агентства: визит → регистрация', 'agSignup', d['agencySignupRate'])
     scalar('Referral: лидов на сделку прошлого месяца', 'refK', d['referralPerDeal'])
+    scalar('Тёплый вход: доля self-deals -> партнёр-агентство', 'warmRate', d.get('catalogAgencyConversionRate', 0))
     row[0] += 1
 
     section('КВАЛИФИКАЦИЯ по каналу (доля регистраций, прошедших скрининг)')
@@ -212,10 +213,13 @@ def scenario_sheet(key):
     row[0] += 1
 
     section('ВОРОНКА')
+    # placeholder: cumulative warm-onboarded agencies (filled after selfDeals is defined below)
+    warm_row = put('Тёплые агентства (накопл., от прошлых self-deals)', 'cumWarm', values=0)
+    put('Эффективные агентства (холодные + тёплые)', 'effAg', formula=lambda c, i: f'={R("agencies", c)}+{R("cumWarm", c)}', bold=False)
     put('Регистрации: paid', 's_paid', formula=lambda c, i: f'={R("paid", c)}/{S("cpc")}*{S("paidSignup")}', total='sum')
     put('Регистрации: комьюнити', 's_comm', formula=lambda c, i: f'={R("community", c)}', total='sum')
     put('Регистрации: SEO', 's_seo', formula=lambda c, i: f'={R("seo", c)}*{S("seoSignup")}', total='sum')
-    put('Регистрации: агентства', 's_ag', formula=lambda c, i: f'={R("agencies", c)}*{S("agVisits")}*{S("agSignup")}', total='sum')
+    put('Регистрации: агентства', 's_ag', formula=lambda c, i: f'={R("effAg", c)}*{S("agVisits")}*{S("agSignup")}', total='sum')
     put('Лиды: партнёры (уже квалифицированы)', 's_part', formula=lambda c, i: f'={R("partners", c)}*{S("leadsPerPartner")}', total='sum')
     put('Итого регистраций', 'signups', formula=lambda c, i: f'={R("s_paid", c)}+{R("s_comm", c)}+{R("s_seo", c)}+{R("s_ag", c)}+{R("s_part", c)}', total='sum', bold=True)
     put('Квалифицировано: paid', 'q1', formula=lambda c, i: f'={R("s_paid", c)}*{S("q_paid")}', total='sum')
@@ -226,13 +230,17 @@ def scenario_sheet(key):
     # referral depends on previous month's deals → defined after deals rows; placeholder row now
     ref_row = put('Квалифицировано: referral', 'q6', values=0, total='sum')
     put('Итого квалифицированных', 'qual', formula=lambda c, i: f'={R("q1", c)}+{R("q2", c)}+{R("q3", c)}+{R("q4", c)}+{R("q5", c)}+{R("q6", c)}', total='sum', bold=True)
-    put('Сделки через агентства', 'agDeals', formula=lambda c, i: f'=ROUND(MIN({R("qual", c)}*{S("toAg")},{R("agencies", c)}*{R("cap", c)}),0)', total='sum')
+    put('Сделки через агентства', 'agDeals', formula=lambda c, i: f'=ROUND(MIN({R("qual", c)}*{S("toAg")},{R("effAg", c)}*{R("cap", c)}),0)', total='sum')
     put('Сделки на каталоге IS24', 'selfDeals', formula=lambda c, i: f'=ROUND({R("qual", c)}*{S("toSelf")},0)', total='sum')
     put('Сделок всего', 'deals', formula=lambda c, i: f'={R("agDeals", c)}+{R("selfDeals", c)}', total='sum', bold=True)
     # fill referral formulas now that deals row exists
     for i, c in enumerate(COLS):
         cell = ws.cell(row=ref_row, column=2 + i)
         cell.value = 0 if i == 0 else f'={COLS[i-1]}{ref["deals"]}*{S("refK")}*{S("q_referral")}'
+    # fill warm-agency cumulative now that selfDeals is defined: this month's warm = prev cumWarm + prev selfDeals*rate
+    for i, c in enumerate(COLS):
+        cell = ws.cell(row=warm_row, column=2 + i)
+        cell.value = 0 if i == 0 else f'={COLS[i-1]}{ref["cumWarm"]}+ROUND({COLS[i-1]}{ref["selfDeals"]}*{S("warmRate")},0)'
     put('Сделок с B2C fee', 'feeDeals', formula=lambda c, i: f'={R("selfDeals", c)}+ROUND({R("agDeals", c)}*{S("feeShare")},0)', total='sum')
     row[0] += 1
 

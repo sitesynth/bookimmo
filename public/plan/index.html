@@ -395,9 +395,28 @@ body { margin:0; height:100vh; overflow:hidden; display:flex; align-items:center
   </div>
 </section>
 
-<!-- ══ 06 VS AGGREGATORS ══ -->
+<!-- ══ 06 WARM AGENCY ENTRY ══ -->
 <section class="slide">
   <div class="pagenum">06</div>
+  <div class="inner">
+    <span class="tag fade-up">Механизм роста</span>
+    <h1 class="fade-up" style="transition-delay:.05s">Тёплый вход <em>в агентства</em></h1>
+    <div class="sub fade-up" style="transition-delay:.08s">Каталог IS24/Immowelt - не только заполнение базы. Каждая заявка на конкретный листинг - повод предложить его агентству сплит вместо оплаты IS24.</div>
+    <div class="fade-up" style="transition-delay:.1s;display:grid;grid-template-columns:1.3fr 1fr;gap:1.4em;flex:1;min-height:0;">
+      <div class="items" id="warm-steps"></div>
+      <div style="display:flex;flex-direction:column;gap:0.8em;">
+        <div class="stat-card"><div class="snum" id="warm-added">-</div><div class="sdesc">новых агентств за год - без cold BD, только тёплый вход</div></div>
+        <div class="stat-card dark"><div class="snum" id="warm-rev">-</div><div class="sdesc" id="warm-rev-l">доп. выручка год 1</div></div>
+        <div class="stat-card"><div class="snum" id="warm-deals">-</div><div class="sdesc">доп. сделок за счёт этого канала</div></div>
+      </div>
+    </div>
+    <div class="bottom fade-up" id="warm-bottom" style="transition-delay:.16s"></div>
+  </div>
+</section>
+
+<!-- ══ 07 VS AGGREGATORS ══ -->
+<section class="slide">
+  <div class="pagenum">07</div>
   <div class="inner">
     <span class="tag fade-up">Отличие</span>
     <h1 class="fade-up" style="transition-delay:.05s">Против <em>агрегаторов</em></h1>
@@ -418,7 +437,7 @@ body { margin:0; height:100vh; overflow:hidden; display:flex; align-items:center
 
 <!-- ══ 05 BUDGET $30K ══ -->
 <section class="slide">
-  <div class="pagenum">07</div>
+  <div class="pagenum">08</div>
   <div class="inner">
     <span class="tag fade-up">Pre-launch</span>
     <h1 class="fade-up" id="budget-title" style="transition-delay:.05s">Бюджет</h1>
@@ -430,7 +449,7 @@ body { margin:0; height:100vh; overflow:hidden; display:flex; align-items:center
 
 <!-- ══ 06 REVENUE CHART ══ -->
 <section class="slide">
-  <div class="pagenum">08</div>
+  <div class="pagenum">09</div>
   <div class="inner">
     <span class="tag fade-up">Прогноз</span>
     <h1 class="fade-up" style="transition-delay:.05s">Выручка после <em>запуска</em></h1>
@@ -444,7 +463,7 @@ body { margin:0; height:100vh; overflow:hidden; display:flex; align-items:center
 
 <!-- ══ 07 KPI + LEGAL ══ -->
 <section class="slide">
-  <div class="pagenum">09</div>
+  <div class="pagenum">10</div>
   <div class="inner">
     <span class="tag fade-up">Итоги года 1 · Юридический контур</span>
     <h1 class="fade-up" style="transition-delay:.05s">Два сценария <em>и рамки</em></h1>
@@ -606,6 +625,28 @@ function renderAll(data) {
   ).join('');
   document.getElementById('funnel-bottom').innerHTML =
     `<b>Ограничение - предложение, не спрос:</b> сделки через агентства упираются в потолок ${data.scenarios.base.drivers.dealsCapPerAgency[0]}→${data.scenarios.base.drivers.dealsCapPerAgency[11]} сделки на агентство в месяц. Рост = новые агентства и их эксклюзивы, а не больше рекламы.`;
+
+  // warm agency entry: counterfactual vs the warm channel switched off
+  const dataNoWarm = JSON.parse(JSON.stringify(data));
+  dataNoWarm.scenarios.base.drivers.catalogAgencyConversionRate = 0;
+  const baseNoWarm = computeScenario(dataNoWarm, 'base');
+  const warmRevUplift = y.revenue - baseNoWarm.year.revenue;
+  const warmDealsUplift = y.deals - baseNoWarm.year.deals;
+  const warmSteps = [
+    ['Лид хочет конкретный объект', 'Кликнул на листинг из каталога IS24/Immowelt - у него уже есть адрес и агентство-владелец объявления.'],
+    ['У нас готовый кандидат', 'Bewerbungsmappe собрана, доход и дата въезда подтверждены - до звонка агентству, а не после.'],
+    ['Предлагаем сплит вместо IS24', '«Берёте проверенного арендатора бесплатно, платите только со сделки» - против €400-5000/мес, которые агентство платит IS24.'],
+    [`${Math.round((data.scenarios.base.drivers.catalogAgencyConversionRate || 0) * 100)}% соглашаются`, 'Становятся партнёром: следующие объекты - уже эксклюзивы, до публикации на витринах.'],
+  ];
+  document.getElementById('warm-steps').innerHTML = warmSteps.map((s, i) =>
+    `<div class="item"><div class="item-num">${i + 1}.</div><div><div class="item-t">${s[0]}</div><div class="item-b">${s[1]}</div></div></div>`
+  ).join('');
+  document.getElementById('warm-added').textContent = `+${y.warmAgenciesAdded}`;
+  document.getElementById('warm-rev').textContent = `+${fmtK(warmRevUplift)}`;
+  document.getElementById('warm-rev-l').textContent = `доп. выручка год 1 (+${Math.round(warmRevUplift / baseNoWarm.year.revenue * 100)}%)`;
+  document.getElementById('warm-deals').textContent = `+${warmDealsUplift}`;
+  document.getElementById('warm-bottom').innerHTML =
+    `<b>Продажник не звонит вхолодную:</b> заявка на конкретный объект - готовый повод для разговора с его агентством. К M12: ${y.coldAgenciesEndOfYear} агентств через cold BD + ${y.warmAgenciesEndOfYear} через тёплый вход = ${y.coldAgenciesEndOfYear + y.warmAgenciesEndOfYear} эффективных агентств.`;
 
   // budget (pre-launch)
   const totalBudget = budget.rows.reduce((s, r) => s + r.vals.reduce((a, b) => a + b, 0), 0);

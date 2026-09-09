@@ -13,12 +13,15 @@ function computeScenario(data, key) {
 
   const rows = [];
   let prevDeals = 0;
+  let cumWarmAgencies = 0; // agencies onboarded via warm catalogue-listing touch, added on top of cold-BD ramp
   for (let i = 0; i < n; i++) {
+    const coldAgencies = d.activeAgencies[i];
+    const effectiveAgencies = coldAgencies + cumWarmAgencies;
     const signups = {
       paid: (d.paidSpend[i] / d.cpc) * d.paidSignupRate,
       community: d.communitySignups[i],
       seo: d.seoVisits[i] * d.seoSignupRate,
-      agencies: d.activeAgencies[i] * d.agencyVisitsPerAgency * d.agencySignupRate,
+      agencies: effectiveAgencies * d.agencyVisitsPerAgency * d.agencySignupRate,
     };
     const qualifiedBy = {
       paid: signups.paid * rate.paid,
@@ -30,7 +33,7 @@ function computeScenario(data, key) {
     };
     const totalSignups = Object.values(signups).reduce((a, b) => a + b, 0) + d.partners[i] * d.leadsPerPartner;
     const qualified = Object.values(qualifiedBy).reduce((a, b) => a + b, 0);
-    const agencyDeals = Math.round(Math.min(qualified * d.qualToAgencyDeal, d.activeAgencies[i] * d.dealsCapPerAgency[i]));
+    const agencyDeals = Math.round(Math.min(qualified * d.qualToAgencyDeal, effectiveAgencies * d.dealsCapPerAgency[i]));
     const selfDeals = Math.round(qualified * d.qualToSelfDeal);
     const feeDeals = selfDeals + Math.round(agencyDeals * ue.feeShareOnAgencyDeals);
     const revenueAgency = agencyDeals * blendedAgencyDeal;
@@ -41,11 +44,15 @@ function computeScenario(data, key) {
     const opex = sc.costs.reduce((s, r) => s + r.vals[i], 0) + bdCommission;
     const cost = marketing + opex;
     prevDeals = agencyDeals + selfDeals;
+    // warm touch: a share of this month's catalogue self-deals converts their listing agency into a partner, live from next month
+    const newWarmAgencies = Math.round(selfDeals * (d.catalogAgencyConversionRate || 0));
+    cumWarmAgencies += newWarmAgencies;
     rows.push({
       month: data.months[i],
       signups: Math.round(totalSignups),
       qualified: Math.round(qualified),
       qualifiedBy,
+      coldAgencies, warmAgencies: cumWarmAgencies, effectiveAgencies, newWarmAgencies,
       agencyDeals, selfDeals, feeDeals,
       revenue, marketing, opex, cost, bdCommission, furnitureRevenue,
       ebitda: revenue - cost,
@@ -72,6 +79,9 @@ function computeScenario(data, key) {
       blendedAgencyDeal: Math.round(blendedAgencyDeal),
       bdCommission: sum('bdCommission'),
       furnitureRevenue: sum('furnitureRevenue'),
+      warmAgenciesAdded: sum('newWarmAgencies'),
+      warmAgenciesEndOfYear: rows.length ? rows[rows.length - 1].warmAgencies : 0,
+      coldAgenciesEndOfYear: rows.length ? rows[rows.length - 1].coldAgencies : 0,
     },
     breakeven, minCash: Math.round(minCash), endCash: Math.round(cash),
   };
