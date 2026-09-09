@@ -8,17 +8,64 @@ function getCookie(req, name) {
   return match ? decodeURIComponent(match.slice(name.length + 1)) : undefined
 }
 
+// Link-preview crawlers only ever read <head> meta tags — never JS, never the
+// password form. Serving them a small static teaser (no real numbers, no data
+// fetch, no download links) lets Slack/Telegram/WhatsApp/LinkedIn show a real
+// card without opening the deck itself to anyone who spoofs a bot User-Agent.
+const BOT_UA = /facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|TelegramBot|WhatsApp|Discordbot|redditbot|SkypeUriPreview|Googlebot|Google-InspectionTool|Applebot|vkShare|Pinterest|iMessageBot|Embedly|Quora Link Preview|W3C_Validator|Bitrix|GPTBot/i
+
 export default function middleware(req) {
+  const url = new URL(req.url)
+  const ua = req.headers.get('user-agent') || ''
+  const isPlanRoot = url.pathname === '/plan' || url.pathname === '/plan/'
+  if (isPlanRoot && BOT_UA.test(ua)) {
+    return new Response(ogTeaserHtml(url.origin), {
+      status: 200,
+      headers: { 'content-type': 'text/html; charset=utf-8' },
+    })
+  }
+
   const password = process.env.PLAN_PASSWORD || 'bookimmo2026'
   const cookie = getCookie(req, COOKIE_NAME)
   if (cookie === password) return
 
-  const url = new URL(req.url)
   const showError = url.searchParams.get('err') === '1'
   return new Response(gateHtml(url.pathname, showError), {
     status: 401,
     headers: { 'content-type': 'text/html; charset=utf-8' },
   })
+}
+
+function ogTeaserHtml(origin) {
+  const title = 'book.immo — Business Plan'
+  const desc = 'Эксклюзивы до агрегаторов: book.immo подключает CRM берлинских агентств бесплатно и получает объекты раньше ImmoScout24 и Immowelt. Investor deck, приватный доступ.'
+  const image = `${origin}/plan/og-image.jpg`
+  const url = `${origin}/plan/`
+  return `<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${title}</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="${desc}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="${title}">
+<meta property="og:description" content="${desc}">
+<meta property="og:image" content="${image}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="${url}">
+<meta property="og:site_name" content="book.immo">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${title}">
+<meta name="twitter:description" content="${desc}">
+<meta name="twitter:image" content="${image}">
+</head>
+<body>
+<p>book.immo — приватный бизнес-план. Запросите пароль у команды.</p>
+</body>
+</html>`
 }
 
 function gateHtml(redirectTo, showError) {
