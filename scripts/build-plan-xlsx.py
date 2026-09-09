@@ -8,6 +8,8 @@ logic as live Excel formulas so drivers can be changed inside the workbook.
 Usage: python3 scripts/build-plan-xlsx.py
 """
 import json
+import shutil
+import zipfile
 from pathlib import Path
 
 from openpyxl import Workbook
@@ -26,11 +28,11 @@ YEAR_COL = L(2 + N)                           # N
 hdr = Font(bold=True, size=11)
 title_f = Font(bold=True, size=14)
 sub_f = Font(italic=True, size=10, color='666666')
-input_f = Font(color='1F4E79')
-sec_fill = PatternFill('solid', fgColor='E8F0E8')
-tot_fill = PatternFill('solid', fgColor='D9E8D9')
-inp_fill = PatternFill('solid', fgColor='FFF7E0')
-hdr_fill = PatternFill('solid', fgColor='DDE8F0')
+input_f = Font(color='FF1F4E79')
+sec_fill = PatternFill('solid', fgColor='FFE8F0E8')
+tot_fill = PatternFill('solid', fgColor='FFD9E8D9')
+inp_fill = PatternFill('solid', fgColor='FFFFF7E0')
+hdr_fill = PatternFill('solid', fgColor='FFDDE8F0')
 
 wb = Workbook()
 
@@ -284,4 +286,41 @@ for key in ['base', 'pessimistic']:
 
 OUT.parent.mkdir(parents=True, exist_ok=True)
 wb.save(OUT)
+
+
+def fix_app_xml(path, sheet_names):
+    """openpyxl omits docProps/app.xml's HeadingPairs/TitlesOfParts (the sheet-name
+    manifest some Excel builds cross-check against xl/workbook.xml's <sheets>).
+    Rewrite that one part in place with proper values."""
+    ns_vt = 'http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes'
+    titles = ''.join(f'<vt:lpstr>{n}</vt:lpstr>' for n in sheet_names)
+    app_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+        '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
+        f'xmlns:vt="{ns_vt}">'
+        '<Application>Microsoft Excel</Application>'
+        '<DocSecurity>0</DocSecurity>'
+        '<ScaleCrop>false</ScaleCrop>'
+        '<HeadingPairs>'
+        f'<vt:vector size="2" baseType="variant">'
+        f'<vt:variant><vt:lpstr>Worksheets</vt:lpstr></vt:variant>'
+        f'<vt:variant><vt:i4>{len(sheet_names)}</vt:i4></vt:variant>'
+        f'</vt:vector>'
+        '</HeadingPairs>'
+        f'<TitlesOfParts><vt:vector size="{len(sheet_names)}" baseType="lpstr">{titles}</vt:vector></TitlesOfParts>'
+        '<LinksUpToDate>false</LinksUpToDate>'
+        '<SharedDoc>false</SharedDoc>'
+        '<HyperlinksChanged>false</HyperlinksChanged>'
+        '<AppVersion>16.0300</AppVersion>'
+        '</Properties>'
+    )
+    tmp = path.with_suffix('.tmp.xlsx')
+    with zipfile.ZipFile(path, 'r') as zin, zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED) as zout:
+        for item in zin.infolist():
+            data = app_xml.encode('utf-8') if item.filename == 'docProps/app.xml' else zin.read(item.filename)
+            zout.writestr(item, data)
+    shutil.move(tmp, path)
+
+
+fix_app_xml(OUT, [ws.title for ws in wb.worksheets])
 print(f'Saved {OUT.relative_to(ROOT)}')
