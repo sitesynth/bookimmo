@@ -97,8 +97,15 @@ function gateHtml(redirectTo, showError) {
   .word{font-family:'Bricolage Grotesque',Georgia,serif;font-size:22px;font-weight:700;margin-bottom:4px}
   .word .dot{color:var(--coral)}
   p{font-size:13.5px;color:var(--mid);margin:0 0 22px;line-height:1.5}
-  input{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:15px;font-family:inherit;background:#fff;color:var(--ink);margin-bottom:6px}
+  input{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px 40px 12px 14px;font-size:15px;font-family:inherit;background:#fff;color:var(--ink);margin-bottom:6px}
   input:focus{outline:2px solid var(--coral);outline-offset:1px}
+  .field{position:relative}
+  .eye{position:absolute;right:0;top:0;bottom:6px;width:40px;display:flex;align-items:center;justify-content:center;background:none;border:none;padding:0;cursor:pointer;color:var(--mid);margin:0}
+  .eye:hover{color:var(--ink)}
+  .eye svg{width:19px;height:19px}
+  .eye .eye-off{display:none}
+  .eye.is-visible .eye-on{display:none}
+  .eye.is-visible .eye-off{display:block}
   .err{color:#c0392b;font-size:12.5px;margin:2px 0 14px;${showError ? '' : 'display:none;'}}
   button{width:100%;border:none;border-radius:10px;padding:12px 14px;margin-top:12px;background:var(--ink);color:#f5f2ea;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
   button:hover{background:var(--coral)}
@@ -109,10 +116,26 @@ function gateHtml(redirectTo, showError) {
   <div class="word">book<span class="dot">.</span>immo</div>
   <p>Приватный раздел — введите пароль для доступа</p>
   <input type="hidden" name="redirect" value="${redirectTo}">
-  <input type="password" name="password" placeholder="Пароль" autofocus>
+  <div class="field">
+    <input type="password" name="password" placeholder="Пароль" autofocus id="pw">
+    <button type="button" class="eye" id="eyeBtn" aria-label="Показать пароль" tabindex="-1">
+      <svg class="eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+      <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a20.3 20.3 0 0 1 5.06-6.06M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a20.35 20.35 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+    </button>
+  </div>
   <div class="err">Неверный пароль, попробуйте ещё раз</div>
   <button type="submit">Войти</button>
 </form>
+<script>
+  var pw = document.getElementById('pw');
+  var btn = document.getElementById('eyeBtn');
+  btn.addEventListener('click', function () {
+    var show = pw.type === 'password';
+    pw.type = show ? 'text' : 'password';
+    btn.classList.toggle('is-visible', show);
+    btn.setAttribute('aria-label', show ? 'Скрыть пароль' : 'Показать пароль');
+  });
+</script>
 </body>
 </html>`
 }
