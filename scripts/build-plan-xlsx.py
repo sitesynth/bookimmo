@@ -40,13 +40,13 @@ ws.title = 'Business Model'
 ws.column_dimensions['A'].width = 34
 ws.column_dimensions['B'].width = 100
 rows = [
-    ('book.immo — Business Model v2', ''),
-    ('GEO', DATA['meta']['geo'] + ' — стартовый рынок, затем другие города Германии'),
+    ('book.immo - Business Model v2', ''),
+    ('GEO', DATA['meta']['geo'] + ' - стартовый рынок, затем другие города Германии'),
     ('', ''),
     ('=== ТЕЗИС ===', ''),
-    ('Эксклюзивы до агрегаторов', 'CRM агентства выгружает на IS24 то, что не ушло по своей базе. Хорошие объекты на витрину не доходят. book.immo получает их из CRM до публикации — бесплатно для агентства, за сплит комиссии при сделке.'),
+    ('Эксклюзивы до агрегаторов', 'CRM агентства выгружает на IS24 то, что не ушло по своей базе. Хорошие объекты на витрину не доходят. book.immo получает их из CRM до публикации - бесплатно для агентства, за сплит комиссии при сделке.'),
     ('Агентствам нужны хорошие лиды', 'Мы монетизируем не трафик, а квалификацию: агентство видит только проверенных кандидатов под конкретный эксклюзив.'),
-    ('Каталог IS24 / Immowelt', 'Парсинг — для полноты каталога и SEO-трафика, не для сделок: там остатки.'),
+    ('Каталог IS24 / Immowelt', 'Парсинг - для полноты каталога и SEO-трафика, не для сделок: там остатки.'),
     ('', ''),
     ('=== КАНАЛЫ ЛИДОВ ===', ''),
 ] + [(c['name'], f"[квалификация {int(c['qualifiedRate']*100)}%] {c['desc']}") for c in DATA['channels']] + [
@@ -55,8 +55,8 @@ rows = [
 ] + [(f"{i+1}. {f['step']}", f['desc']) for i, f in enumerate(DATA['funnel'])] + [
     ('', ''),
     ('=== LEGAL ===', ''),
-    ('Wohnungsvermittlungsgesetz', 'Нельзя брать с арендатора комиссию за посредничество. B2C fee — плата за софт (автозаявки, мониторинг, документы). Нужен письменный legal opinion до запуска.'),
-    ('Bestellerprinzip', 'Комиссию платит собственник маклеру. Сплит book.immo — из B2B-агентского договора. Легально.'),
+    ('Wohnungsvermittlungsgesetz', 'Нельзя брать с арендатора комиссию за посредничество. B2C fee - плата за софт (автозаявки, мониторинг, документы). Нужен письменный legal opinion до запуска.'),
+    ('Bestellerprinzip', 'Комиссию платит собственник маклеру. Сплит book.immo - из B2B-агентского договора. Легально.'),
     ('GDPR', 'DPA с каждым агентством; consent клиента на передачу заявки.'),
 ]
 for i, (a, b) in enumerate(rows, 1):
@@ -72,7 +72,7 @@ for i, (a, b) in enumerate(rows, 1):
 ws2 = wb.create_sheet('Budget Apr-Aug (USD)')
 ws2.column_dimensions['A'].width = 46
 bm = DATA['budget']['months']
-ws2['A1'] = f"book.immo — Pre-Launch Budget ({bm[0]}–{bm[-1]} 2026, USD)"
+ws2['A1'] = f"book.immo - Pre-Launch Budget ({bm[0]}–{bm[-1]} 2026, USD)"
 ws2['A1'].font = title_f
 m = DATA['meta']
 ws2['A2'] = f"Инвестиция ${m['investmentUSD']:,}: ${m['spentUSD']:,} на запуск, ${m['reserveUSD']:,} резерв."
@@ -109,14 +109,14 @@ def scenario_sheet(key):
     d = sc['drivers']
     ue = DATA['unitEconomics']
     ch = {c['key']: c for c in DATA['channels']}
-    ws = wb.create_sheet(f"{sc['label']} — {DATA['meta']['geo']}")
+    ws = wb.create_sheet(f"{sc['label']} - {DATA['meta']['geo']}")
     ws.column_dimensions['A'].width = 44
     for i in range(2, N + 3):
         ws.column_dimensions[L(i)].width = 10
 
-    ws['A1'] = f"book.immo — {sc['label']}, {DATA['meta']['geo']}, запуск {DATA['meta']['launchMonth']} (EUR)"
+    ws['A1'] = f"book.immo - {sc['label']}, {DATA['meta']['geo']}, запуск {DATA['meta']['launchMonth']} (EUR)"
     ws['A1'].font = title_f
-    ws['A2'] = 'Жёлтые ячейки — входные драйверы (можно менять). Остальное считается формулами.'
+    ws['A2'] = 'Жёлтые ячейки - входные драйверы (можно менять). Остальное считается формулами.'
     ws['A2'].font = sub_f
     ws.cell(row=4, column=1, value='')
     for i, mo in enumerate(MONTHS):
@@ -173,7 +173,7 @@ def scenario_sheet(key):
     def S(key):
         return f'$B${ref[key]}'
 
-    section('ДРАЙВЕРЫ — каналы (входные)')
+    section('ДРАЙВЕРЫ - каналы (входные)')
     put('Paid: бюджет, €/мес', 'paid', d['paidSpend'], is_input=True, total='sum')
     scalar('Paid: CPC, €', 'cpc', d['cpc'])
     scalar('Paid: визит → регистрация', 'paidSignup', d['paidSignupRate'])
