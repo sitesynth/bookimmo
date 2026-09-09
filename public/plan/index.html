@@ -156,6 +156,12 @@ body { margin:0; height:100vh; overflow:hidden; display:flex; align-items:center
 .gcard-b { font-size:0.86em; color:var(--mid); line-height:1.45; font-weight:400; }
 .gcard-tag.mid { color:#b45309; background:rgba(180,83,9,0.10); }
 .gcard-tag.hi { color:#2e7d4f; background:rgba(46,125,79,0.10); }
+.leads-h1 { font-size:2.6em !important; margin:0.1em 0 0.3em !important; }
+.leads-sub { font-size:0.72em !important; margin-bottom:0.7em !important; }
+.leads-grid { font-size:0.72em; gap:0.8em; }
+.leads-grid .gcard { padding:1em 1.1em 1.1em; }
+.leads-grid .gcard-b { font-size:0.92em; line-height:1.4; }
+.leads-grid .gq { font-size:0.8em; }
 .gcard .gq { font-size:0.74em; font-weight:700; color:var(--ink); margin-top:auto; padding-top:0.6em; font-variant-numeric:tabular-nums; }
 .gcard .gq span { color:var(--muted); font-weight:400; }
 
@@ -370,11 +376,10 @@ body { margin:0; height:100vh; overflow:hidden; display:flex; align-items:center
 <section class="slide">
   <div class="pagenum">04</div>
   <div class="inner">
-    <span class="tag fade-up">Откуда лиды</span>
-    <h1 class="fade-up" style="transition-delay:.05s">Шесть каналов, <em>одна квалификация</em></h1>
-    <div class="sub fade-up" id="channels-sub" style="transition-delay:.08s"></div>
-    <div class="grid3 fade-up" id="channels" style="transition-delay:.1s;flex:1;min-height:0;"></div>
-    <div class="bottom fade-up" style="transition-delay:.16s"><b>Почему это не мусор:</b> агентство платит только за подписанную сделку, значит мы продаём не трафик, а квалификацию — каждый канал в модели имеет свою долю прошедших скрининг.</div>
+    <span class="tag fade-up">Откуда лиды · не трафик, а квалификация</span>
+    <h1 class="fade-up leads-h1" style="transition-delay:.05s">Шесть каналов, <em>одна квалификация</em></h1>
+    <div class="sub fade-up leads-sub" id="channels-sub" style="transition-delay:.08s"></div>
+    <div class="grid3 leads-grid fade-up" id="channels" style="transition-delay:.1s;flex:1;min-height:0;"></div>
   </div>
 </section>
 
@@ -574,18 +579,18 @@ function renderAll(data) {
   const avgBd = bdRow ? Math.round(bdRow.vals.reduce((a, b) => a + b, 0) / bdRow.vals.length) : 0;
   const channelCost = {
     paid: `€${avgPaid.toLocaleString('ru-RU')}/мес медиа`,
-    community: 'орг. время, 0 медиа',
-    partners: `BD-время (€${avgBd.toLocaleString('ru-RU')}/мес база + % с агентств)`,
+    community: '0 медиа',
+    partners: `BD €${avgBd.toLocaleString('ru-RU')}/мес + %`,
     seo: `€${avgContent.toLocaleString('ru-RU')}/мес контент`,
-    referral: 'встроено в продукт, ~€0',
-    agencies: `BD-время (€${avgBd.toLocaleString('ru-RU')}/мес база + % с агентств)`,
+    referral: '~€0',
+    agencies: `BD €${avgBd.toLocaleString('ru-RU')}/мес + %`,
   };
   document.getElementById('channels').innerHTML = channels.map(c => {
     const share = totalQual ? Math.round(qualByCh[c.key] / totalQual * 100) : 0;
-    return `<div class="card gcard"><div class="gcard-tag ${c.quality === 'high' ? 'hi' : 'mid'}">квалификация ${Math.round(c.qualifiedRate * 100)}%</div><div class="gcard-t">${c.name}</div><div class="gcard-b">${c.desc}</div><div class="gq">${share}% лидов года · BASE <span>· ${channelCost[c.key] || ''}</span></div></div>`;
+    return `<div class="card gcard"><div class="gcard-tag ${c.quality === 'high' ? 'hi' : 'mid'}">квал. ${Math.round(c.qualifiedRate * 100)}%</div><div class="gcard-t">${c.name}</div><div class="gcard-b">${c.desc}</div><div class="gq">${share}% лидов <span>· ${channelCost[c.key] || ''}</span></div></div>`;
   }).join('');
   document.getElementById('channels-sub').textContent =
-    `${meta.geo}: ${base.year.qualified.toLocaleString('ru-RU')} квалифицированных лидов за год — €${avgPaid.toLocaleString('ru-RU')}/мес paid + €${avgContent.toLocaleString('ru-RU')}/мес контент + BD-бюджет продажника. CAC €${base.year.cacPerQualified} на квал. лида. Экспаты и paid — дешёвые, но с низкой квалификацией; партнёрства и агентства — дорогие в BD-времени, но почти без брака.`;
+    `${meta.geo}, BASE: ${base.year.qualified.toLocaleString('ru-RU')} квалифицированных лидов за год, CAC €${base.year.cacPerQualified}/лид. Платим за квалификацию, не за трафик — агентство берёт только проверенных.`;
 
   // funnel
   const y = base.year;
