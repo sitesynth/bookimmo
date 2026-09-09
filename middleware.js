@@ -16,6 +16,10 @@ const BOT_UA = /facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|Tele
 
 export default function middleware(req) {
   const url = new URL(req.url)
+  // the OG preview image must be fetchable by link-preview crawlers, which
+  // don't reliably send a recognizable bot User-Agent on the image request
+  // itself -- it's a static marketing screenshot, safe to leave unprotected
+  if (url.pathname === '/plan/og-image.jpg') return
   const ua = req.headers.get('user-agent') || ''
   const isPlanRoot = url.pathname === '/plan' || url.pathname === '/plan/'
   if (isPlanRoot && BOT_UA.test(ua)) {
