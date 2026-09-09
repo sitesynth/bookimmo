@@ -23,9 +23,14 @@ export default function middleware(req) {
   const ua = req.headers.get('user-agent') || ''
   const isPlanRoot = url.pathname === '/plan' || url.pathname === '/plan/'
   if (isPlanRoot && BOT_UA.test(ua)) {
+    // deliberately cacheable: link-preview systems (Telegram in particular)
+    // need to be able to store this response to serve the card to viewers
     return new Response(ogTeaserHtml(url.origin), {
       status: 200,
-      headers: { 'content-type': 'text/html; charset=utf-8' },
+      headers: {
+        'content-type': 'text/html; charset=utf-8',
+        'cache-control': 'public, max-age=300, s-maxage=3600',
+      },
     })
   }
 
@@ -36,7 +41,10 @@ export default function middleware(req) {
   const showError = url.searchParams.get('err') === '1'
   return new Response(gateHtml(url.pathname, showError), {
     status: 401,
-    headers: { 'content-type': 'text/html; charset=utf-8' },
+    headers: {
+      'content-type': 'text/html; charset=utf-8',
+      'cache-control': 'no-store, must-revalidate',
+    },
   })
 }
 
