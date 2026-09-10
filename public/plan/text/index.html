@@ -311,6 +311,8 @@ footer{margin-top:80px; padding-top:24px; border-top:1px solid var(--line); disp
 <script src="/plan/model.js"></script>
 <script>
 const RU_MONTH = { Sep:'Сен', Oct:'Окт', Nov:'Ноя', Dec:'Дек', Jan:'Янв', Feb:'Фев', Mar:'Мар', Apr:'Апр', May:'Май', Jun:'Июн', Jul:'Июл', Aug:'Авг' };
+const YEAR_FOR = { Sep: 2026, Oct: 2026, Nov: 2026, Dec: 2026, Jan: 2027, Feb: 2027, Mar: 2027, Apr: 2027, May: 2027, Jun: 2027, Jul: 2027, Aug: 2027 };
+const ruMY = m => m ? `${RU_MONTH[m] || m} ${YEAR_FOR[m] || ''}`.trim() : '-';
 const ruM = m => RU_MONTH[m] || m;
 const fmtK = n => '€' + Math.round(n / 1000) + 'K';
 
@@ -348,7 +350,7 @@ function renderAll(data) {
 
   // hero
   document.getElementById('hero-rev').textContent = fmtK(base.year.revenue);
-  document.getElementById('hero-be').innerHTML = base.breakeven ? `<em>${ruM(base.breakeven)}</em>` : '-';
+  document.getElementById('hero-be').innerHTML = base.breakeven ? `<em>${ruMY(base.breakeven)}</em>` : '-';
   document.getElementById('hero-be-l').textContent = `точка безубыточности, EBITDA год 1 ≈ ${fmtK(base.year.ebitda)}`;
 
   // pre-launch budget
@@ -437,7 +439,7 @@ function renderAll(data) {
       ${row('Выручка, год 1', y.revenue, pess.year.revenue, x => '€' + x.toLocaleString('ru-RU'))}
       ${row('EBITDA, год 1', y.ebitda, pess.year.ebitda, x => '€' + x.toLocaleString('ru-RU'))}
       ${row('Сделок всего', y.deals, pess.year.deals)}
-      ${row('Breakeven', base.breakeven ? ruM(base.breakeven) : '-', pess.breakeven ? ruM(pess.breakeven) : 'не наступает', x => x)}
+      ${row('Breakeven', ruMY(base.breakeven), pess.breakeven ? ruMY(pess.breakeven) : 'не наступает', x => x)}
       ${row('Минимум кэша', base.minCash, pess.minCash, x => '€' + x.toLocaleString('ru-RU'))}
       ${row('CAC на сделку', y.cacPerDeal, pess.year.cacPerDeal, x => '€' + x)}
     </tbody>`;

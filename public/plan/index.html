@@ -580,6 +580,8 @@ function showDataError() {
 loadPlanData();
 
 const RU_MONTH = { Sep: 'Сен', Oct: 'Окт', Nov: 'Ноя', Dec: 'Дек', Jan: 'Янв', Feb: 'Фев', Mar: 'Мар', Apr: 'Апр', May: 'Май', Jun: 'Июн', Jul: 'Июл', Aug: 'Авг' };
+const YEAR_FOR = { Sep: 2026, Oct: 2026, Nov: 2026, Dec: 2026, Jan: 2027, Feb: 2027, Mar: 2027, Apr: 2027, May: 2027, Jun: 2027, Jul: 2027, Aug: 2027 };
+const ruMY = m => m ? `${RU_MONTH[m] || m} ${YEAR_FOR[m] || ''}`.trim() : '-';
 
 function renderAll(data) {
   const { meta, budget, streams, channels, funnel } = data;
@@ -591,7 +593,7 @@ function renderAll(data) {
   // cover
   document.getElementById('cover-invest').textContent = `$${(meta.investmentUSD / 1000).toFixed(0)}K`;
   document.getElementById('cover-rev').textContent = fmtK(base.year.revenue);
-  document.getElementById('cover-breakeven').textContent = base.breakeven ? ruM(base.breakeven) : '-';
+  document.getElementById('cover-breakeven').textContent = ruMY(base.breakeven);
 
   // streams
   document.getElementById('streams').innerHTML = streams.map(s =>
@@ -679,12 +681,12 @@ function renderAll(data) {
   document.getElementById('kpi-rev').textContent = fmtK(y.revenue);
   document.getElementById('kpi-rev-l').textContent = `BASE: выручка год 1 · ${y.deals} сделок`;
   document.getElementById('kpi-ebitda').textContent = fmtK(y.ebitda);
-  document.getElementById('kpi-ebitda-l').textContent = `BASE: EBITDA · breakeven ${base.breakeven ? ruM(base.breakeven) : '-'} · мин. кэш ${fmtK(base.minCash)}`;
+  document.getElementById('kpi-ebitda-l').textContent = `BASE: EBITDA · breakeven ${ruMY(base.breakeven)} · мин. кэш ${fmtK(base.minCash)}`;
   document.getElementById('kpi-cac').textContent = `€${y.cacPerDeal}`;
   document.getElementById('kpi-cac-l').textContent = `CAC на сделку · €${y.blendedAgencyDeal} на агентскую сделку · LTV/CAC ${(y.blendedAgencyDeal / y.cacPerDeal).toFixed(1)}×`;
   const py = pess.year;
   document.getElementById('kpi-pess').textContent = fmtK(py.revenue);
-  document.getElementById('kpi-pess-l').textContent = `PESSIMISTIC: ${py.deals} сделок · breakeven ${pess.breakeven ? ruM(pess.breakeven) : 'нет'} · ${pess.minCash < 0 ? 'нужно +' + fmtK(-pess.minCash) : 'мин. кэш ' + fmtK(pess.minCash)}`;
+  document.getElementById('kpi-pess-l').textContent = `PESSIMISTIC: ${py.deals} сделок · breakeven ${pess.breakeven ? ruMY(pess.breakeven) : 'нет'} · ${pess.minCash < 0 ? 'нужно +' + fmtK(-pess.minCash) : 'мин. кэш ' + fmtK(pess.minCash)}`;
 }
 
 function drawChart(months, rev, ebitda, breakevenMonth) {
