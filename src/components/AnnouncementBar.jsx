@@ -98,7 +98,7 @@ export default function AnnouncementBar() {
           {/* Desktop */}
           <span className="bar-text-desktop">
             <RocketIcon /><strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Founding members wanted.</strong>
-            {' '}First month free for <strong style={{ color: '#fff', fontWeight: 600 }}>founding members</strong> —{' '}
+            {' '}<strong style={{ color: '#fff', fontWeight: 600 }}>First month free</strong>, no card needed —{' '}
             <button onClick={() => setModalOpen(true)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'rgb(255,102,37)', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: 3 }}>join now</button>.
           </span>
           {/* Mobile — one line */}
