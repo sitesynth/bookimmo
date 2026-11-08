@@ -1,5 +1,11 @@
 import express from 'express'
 
+import agentApplicationThreadHandler from '../api/agent/application-thread.js'
+import agentApplicationsHandler from '../api/agent/applications.js'
+import agentMeHandler from '../api/agent/me.js'
+import applicationsLinkThreadHandler from '../api/applications-link-thread.js'
+import applicationsSyncHandler from '../api/applications-sync.js'
+import applicationsThreadHandler from '../api/applications-thread.js'
 import applicationsHandler from '../api/applications.js'
 import favoritesHandler from '../api/favorites.js'
 import formsSubmitHandler from '../api/forms/submit.js'
@@ -57,6 +63,12 @@ app.all('/api/profile', wrap(profileHandler))
 app.all('/api/favorites', wrap(favoritesHandler))
 app.all('/api/saved-searches', wrap(savedSearchesHandler))
 app.all('/api/applications', wrap(applicationsHandler))
+app.all('/api/applications-thread', wrap(applicationsThreadHandler))
+app.all('/api/applications-link-thread', wrap(applicationsLinkThreadHandler))
+app.all('/api/applications-sync', wrap(applicationsSyncHandler))
+app.all('/api/agent/me', wrap(agentMeHandler))
+app.all('/api/agent/applications', wrap(agentApplicationsHandler))
+app.all('/api/agent/application-thread', wrap(agentApplicationThreadHandler))
 app.all('/api/forms/submit', wrap(formsSubmitHandler))
 app.all('/api/listings/latest', wrap(latestListingsHandler))
 app.all('/api/listings/by-ids', wrap(listingLookupHandler))
