@@ -71,6 +71,7 @@ console.log(`▶  preview server on http://localhost:${PORT}`)
 const ROUTES = [
   '/en', '/de', '/fr', '/nl', '/it',
   '/en/agent', '/de/agent', '/fr/agent', '/nl/agent', '/it/agent',
+  '/en/for-agencies', '/de/for-agencies',
   '/en/privacy-policy', '/de/privacy-policy',
   '/en/terms-of-service', '/de/terms-of-service',
 ]
