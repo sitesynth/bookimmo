@@ -2,6 +2,7 @@ import express from 'express'
 
 import applicationsHandler from '../api/applications.js'
 import favoritesHandler from '../api/favorites.js'
+import formsSubmitHandler from '../api/forms/submit.js'
 import listingLookupHandler from '../api/listings/by-ids.js'
 import latestListingsHandler from '../api/listings/latest.js'
 import profileHandler from '../api/profile.js'
@@ -56,6 +57,7 @@ app.all('/api/profile', wrap(profileHandler))
 app.all('/api/favorites', wrap(favoritesHandler))
 app.all('/api/saved-searches', wrap(savedSearchesHandler))
 app.all('/api/applications', wrap(applicationsHandler))
+app.all('/api/forms/submit', wrap(formsSubmitHandler))
 app.all('/api/listings/latest', wrap(latestListingsHandler))
 app.all('/api/listings/by-ids', wrap(listingLookupHandler))
 
