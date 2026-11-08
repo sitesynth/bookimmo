@@ -11,6 +11,8 @@ import favoritesHandler from '../api/favorites.js'
 import formsSubmitHandler from '../api/forms/submit.js'
 import listingLookupHandler from '../api/listings/by-ids.js'
 import latestListingsHandler from '../api/listings/latest.js'
+import mapListingsHandler from '../api/listings/map.js'
+import searchListingsHandler from '../api/listings/search.js'
 import profileHandler from '../api/profile.js'
 import savedSearchesHandler from '../api/saved-searches.js'
 import forgotPasswordHandler from '../api/auth/forgot-password.js'
@@ -71,6 +73,8 @@ app.all('/api/agent/applications', wrap(agentApplicationsHandler))
 app.all('/api/agent/application-thread', wrap(agentApplicationThreadHandler))
 app.all('/api/forms/submit', wrap(formsSubmitHandler))
 app.all('/api/listings/latest', wrap(latestListingsHandler))
+app.all('/api/listings/map', wrap(mapListingsHandler))
+app.all('/api/listings/search', wrap(searchListingsHandler))
 app.all('/api/listings/by-ids', wrap(listingLookupHandler))
 
 app.listen(port, '127.0.0.1', () => {

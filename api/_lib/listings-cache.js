@@ -111,6 +111,65 @@ export async function upsertListingsCache(listings = []) {
   return rows.length
 }
 
+const CRAWL_BATCH_SIZE = 100
+
+// Upsert a crawled page of provider listings. Marks them active and seen now.
+export async function upsertCrawledListings(listings = [], { city, rankOffset = 0 } = {}) {
+  const rows = listings.map(normalizeListingRow).filter(Boolean)
+  let total = 0
+
+  for (let start = 0; start < rows.length; start += CRAWL_BATCH_SIZE) {
+    const chunk = rows.slice(start, start + CRAWL_BATCH_SIZE)
+    const values = []
+    const placeholders = chunk.map((row, index) => {
+      const offset = index * 22
+      values.push(
+        row.source, row.externalId, row.slug, row.title, row.address, row.postcode, row.district,
+        row.price, row.priceLabel, row.areaSqm, row.areaLabel, row.rooms, row.roomsLabel,
+        row.imageUrl, row.sourceUrl, row.lat, row.lon, row.listingType, row.publishedLabel,
+        row.rawPayload, city || null, rankOffset + start + index,
+      )
+      const p = (n) => `$${offset + n}`
+      return `(${p(1)}, ${p(2)}, ${p(3)}, ${p(4)}, ${p(5)}, ${p(6)}, ${p(7)}, ${p(8)}, ${p(9)}, ${p(10)}, ${p(11)}, ${p(12)}, ${p(13)}, ${p(14)}, ${p(15)}, ${p(16)}, ${p(17)}, ${p(18)}, ${p(19)}, ${p(20)}::jsonb, ${p(21)}, NOW(), TRUE, NOW() - (${p(22)}::int * interval '1 second'))`
+    })
+
+    await query(
+      `INSERT INTO public.listings_cache (
+        source, external_id, slug, title, address, postcode, district,
+        price, price_label, area_sqm, area_label, rooms, rooms_label,
+        image_url, source_url, lat, lon, listing_type, published_label, raw_payload,
+        city, last_seen_at, is_active, first_seen_at
+      )
+      VALUES ${placeholders.join(', ')}
+      ON CONFLICT (source, external_id) DO UPDATE SET
+        slug = EXCLUDED.slug, title = EXCLUDED.title, address = EXCLUDED.address,
+        postcode = EXCLUDED.postcode, district = EXCLUDED.district, price = EXCLUDED.price,
+        price_label = EXCLUDED.price_label, area_sqm = EXCLUDED.area_sqm,
+        area_label = EXCLUDED.area_label, rooms = EXCLUDED.rooms, rooms_label = EXCLUDED.rooms_label,
+        image_url = EXCLUDED.image_url, source_url = EXCLUDED.source_url,
+        lat = EXCLUDED.lat, lon = EXCLUDED.lon, listing_type = EXCLUDED.listing_type,
+        published_label = EXCLUDED.published_label, raw_payload = EXCLUDED.raw_payload,
+        city = COALESCE(EXCLUDED.city, public.listings_cache.city),
+        imported_at = NOW(), last_seen_at = NOW(), is_active = TRUE`,
+      values,
+    )
+    total += chunk.length
+  }
+
+  return total
+}
+
+// After a complete crawl of a city, hide listings of this source that were not seen.
+export async function deactivateUnseenListings({ source, city, crawlStartedAt }) {
+  const result = await query(
+    `UPDATE public.listings_cache
+     SET is_active = FALSE
+     WHERE source = $1 AND city = $2 AND is_active AND NOT is_exclusive AND last_seen_at < $3`,
+    [source, city, crawlStartedAt],
+  )
+  return result.rowCount || 0
+}
+
 export async function getLatestCachedListings({ limit = 6, text = '' } = {}) {
   const normalizedLimit = Math.max(1, Math.min(Number(limit) || 6, 24))
   const terms = String(text || '')
@@ -126,7 +185,8 @@ export async function getLatestCachedListings({ limit = 6, text = '' } = {}) {
               image_url, source_url, lat, lon, listing_type, published_label,
               imported_at, raw_payload
        FROM public.listings_cache
-       ORDER BY imported_at DESC
+       WHERE is_active
+       ORDER BY first_seen_at DESC, imported_at DESC
        LIMIT $1`,
       [normalizedLimit],
     )
@@ -155,8 +215,8 @@ export async function getLatestCachedListings({ limit = 6, text = '' } = {}) {
             image_url, source_url, lat, lon, listing_type, published_label,
             imported_at, raw_payload
      FROM public.listings_cache
-     WHERE ${whereParts.join(' AND ')}
-     ORDER BY imported_at DESC
+     WHERE is_active AND ${whereParts.join(' AND ')}
+     ORDER BY first_seen_at DESC, imported_at DESC
      LIMIT $${params.length}`,
     params,
   )
@@ -205,4 +265,89 @@ export async function getCachedListingsByIds(ids = []) {
     const fallback = externalId ? byExternalId.get(externalId) : null
     return fallback ? { ...fallback, lookup_id: id } : null
   }).filter(Boolean)
+}
+
+function parseBbox(value) {
+  const parts = String(value || '').split(',').map(Number)
+  if (parts.length !== 4 || parts.some((part) => !Number.isFinite(part))) return null
+  const [west, south, east, north] = parts
+  if (south >= north || west >= east) return null
+  return { west, south, east, north }
+}
+
+function buildSearchWhere(filters = {}) {
+  const where = ['is_active']
+  const params = []
+  const add = (sql, value) => {
+    params.push(value)
+    where.push(sql.replace('?', `$${params.length}`))
+  }
+
+  const bbox = parseBbox(filters.bbox)
+  if (bbox) {
+    add('lon >= ?', bbox.west)
+    add('lon <= ?', bbox.east)
+    add('lat >= ?', bbox.south)
+    add('lat <= ?', bbox.north)
+  } else if (filters.requireCoords) {
+    where.push('lat IS NOT NULL AND lon IS NOT NULL')
+  }
+
+  const num = (value) => (value === undefined || value === null || value === '' ? null : Number(value))
+  const priceMin = num(filters.priceMin)
+  const priceMax = num(filters.priceMax)
+  const roomsMin = num(filters.roomsMin)
+  const roomsMax = num(filters.roomsMax)
+  const areaMin = num(filters.areaMin)
+  if (Number.isFinite(priceMin)) add('price >= ?', priceMin)
+  if (Number.isFinite(priceMax)) add('price <= ?', priceMax)
+  if (Number.isFinite(roomsMin)) add('rooms >= ?', roomsMin)
+  if (Number.isFinite(roomsMax)) add('rooms <= ?', roomsMax)
+  if (Number.isFinite(areaMin)) add('area_sqm >= ?', areaMin)
+  if (filters.city) add('city = ?', String(filters.city))
+
+  return { sql: where.join(' AND '), params }
+}
+
+// Light points for the map: regular listings (clustered client-side) and exclusives (own layer).
+export async function getMapPoints(filters = {}, { limit = 8000 } = {}) {
+  const cap = Math.max(1, Math.min(Number(limit) || 8000, 12000))
+  const { sql, params } = buildSearchWhere({ ...filters, requireCoords: true })
+
+  const result = await query(
+    `SELECT source, external_id, price, rooms, area_sqm, lat, lon, is_exclusive
+     FROM public.listings_cache
+     WHERE ${sql}
+     ORDER BY is_exclusive DESC, first_seen_at DESC
+     LIMIT ${cap + 1}`,
+    params,
+  )
+
+  const truncated = result.rows.length > cap
+  const rows = truncated ? result.rows.slice(0, cap) : result.rows
+  return { rows, truncated }
+}
+
+// Full cards for the list next to the map. Exclusives first, then newest.
+export async function searchListingCards(filters = {}, { limit = 24, offset = 0 } = {}) {
+  const pageSize = Math.max(1, Math.min(Number(limit) || 24, 60))
+  const skip = Math.max(0, Number(offset) || 0)
+  const { sql, params } = buildSearchWhere(filters)
+
+  const [rows, count] = await Promise.all([
+    query(
+      `SELECT source, external_id, slug, title, address, postcode, district, city,
+              price, price_label, area_sqm, area_label, rooms, rooms_label,
+              image_url, source_url, lat, lon, listing_type, published_label,
+              first_seen_at, is_exclusive
+       FROM public.listings_cache
+       WHERE ${sql}
+       ORDER BY is_exclusive DESC, first_seen_at DESC, id DESC
+       LIMIT ${pageSize} OFFSET ${skip}`,
+      params,
+    ),
+    query(`SELECT COUNT(*)::int AS total FROM public.listings_cache WHERE ${sql}`, params),
+  ])
+
+  return { rows: rows.rows, total: count.rows[0]?.total || 0 }
 }

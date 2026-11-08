@@ -415,6 +415,18 @@ async function createSchema() {
 
     CREATE INDEX IF NOT EXISTS listings_cache_location_idx
       ON public.listings_cache (district, postcode, imported_at DESC);
+
+    ALTER TABLE public.listings_cache ADD COLUMN IF NOT EXISTS city TEXT;
+    ALTER TABLE public.listings_cache ADD COLUMN IF NOT EXISTS last_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+    ALTER TABLE public.listings_cache ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT TRUE;
+    ALTER TABLE public.listings_cache ADD COLUMN IF NOT EXISTS first_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+    ALTER TABLE public.listings_cache ADD COLUMN IF NOT EXISTS is_exclusive BOOLEAN NOT NULL DEFAULT FALSE;
+
+    CREATE INDEX IF NOT EXISTS listings_cache_city_active_idx
+      ON public.listings_cache (city, is_active, last_seen_at DESC);
+
+    CREATE INDEX IF NOT EXISTS listings_cache_geo_idx
+      ON public.listings_cache (lat, lon) WHERE is_active AND lat IS NOT NULL AND lon IS NOT NULL;
   `
 
   await getPool().query(sql)
