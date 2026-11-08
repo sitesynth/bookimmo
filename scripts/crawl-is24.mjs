@@ -1,5 +1,6 @@
 // Full crawl of ImmoScout24 rentals for the launch cities into listings_cache.
-// Usage: node scripts/crawl-is24.mjs [city ...]   (default: all cities)
+// Usage: node scripts/crawl-is24.mjs [--fresh] [city ...]   (default: full crawl of all cities)
+// --fresh: only the newest FRESH_PAGES pages per city, no deactivation (run every ~10 min).
 import { fetchIs24Listings } from '../api/_lib/is24.js'
 import { deactivateUnseenListings, upsertCrawledListings } from '../api/_lib/listings-cache.js'
 
@@ -13,6 +14,9 @@ const CITIES = [
 
 const PAGE_DELAY_MS = Number(process.env.CRAWL_PAGE_DELAY_MS || 2500)
 const MAX_PAGES = 120
+const FRESH_PAGES = 3
+const SORT_NEWEST = '-firstactivation'
+const FRESH = process.argv.includes('--fresh')
 // Only hide unseen listings if the crawl covered most of what the provider reported.
 const MIN_COVERAGE = 0.85
 
@@ -22,7 +26,7 @@ async function fetchPageWithRetry(geocode, page) {
   const maxAttempts = 5
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     try {
-      return await fetchIs24Listings({ geocodes: [geocode], page })
+      return await fetchIs24Listings({ geocodes: [geocode], page, sorting: SORT_NEWEST })
     } catch (error) {
       if (attempt === maxAttempts) throw error
       // 429 = provider rate limit: wait it out (1, 2, 3, 4 min); other errors retry quickly.
@@ -42,7 +46,8 @@ async function crawlCity({ city, geocode }) {
   let seen = 0
   let complete = true
 
-  for (let page = 1; page <= Math.min(numberOfPages, MAX_PAGES); page += 1) {
+  const lastPage = () => Math.min(numberOfPages, FRESH ? FRESH_PAGES : MAX_PAGES)
+  for (let page = 1; page <= lastPage(); page += 1) {
     let result
     try {
       result = await fetchPageWithRetry(geocode, page)
@@ -65,15 +70,15 @@ async function crawlCity({ city, geocode }) {
 
   const coverage = totalResults ? seen / totalResults : 0
   let deactivated = 0
-  if (complete && coverage >= MIN_COVERAGE) {
+  if (!FRESH && complete && coverage >= MIN_COVERAGE) {
     deactivated = await deactivateUnseenListings({ source: 'is24', city, crawlStartedAt: startedAt })
   }
 
-  console.log(`[${city}] seen ${seen}/${totalResults} (${Math.round(coverage * 100)}%), deactivated ${deactivated}${complete ? '' : ', INCOMPLETE'}`)
+  console.log(`[${city}] ${FRESH ? 'fresh ' : ''}seen ${seen}/${totalResults} (${Math.round(coverage * 100)}%), deactivated ${deactivated}${complete ? '' : ', INCOMPLETE'}`)
   return { city, seen, totalResults, deactivated, complete }
 }
 
-const requested = process.argv.slice(2).map((value) => value.toLowerCase())
+const requested = process.argv.slice(2).filter((value) => !value.startsWith('--')).map((value) => value.toLowerCase())
 const targets = requested.length
   ? CITIES.filter((item) => requested.includes(item.city.toLowerCase()))
   : CITIES

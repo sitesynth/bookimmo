@@ -108,6 +108,7 @@ export async function fetchIs24Listings({
   priceMin,
   priceMax,
   text,
+  sorting,
 }) {
   const normalizedGeocodes = Array.isArray(geocodes) && geocodes.length
     ? geocodes.map(String)
@@ -131,6 +132,8 @@ export async function fetchIs24Listings({
     geocodes: normalizedGeocodes.join(','),
     pagenumber: String(page),
   })
+
+  if (sorting) params.set('sorting', String(sorting))
 
   if (roomsMin || roomsMax) {
     const min = roomsMin || '1.0'
