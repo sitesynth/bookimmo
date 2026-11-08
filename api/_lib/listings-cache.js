@@ -305,6 +305,15 @@ function buildSearchWhere(filters = {}) {
   if (Number.isFinite(roomsMax)) add('rooms <= ?', roomsMax)
   if (Number.isFinite(areaMin)) add('area_sqm >= ?', areaMin)
   if (filters.city) add('city = ?', String(filters.city))
+  const cities = Array.isArray(filters.cities) ? filters.cities.filter(Boolean).map(String) : []
+  if (cities.length) add('city = ANY(?::text[])', cities)
+
+  const textTerms = String(filters.text || '').split(/[,\s]+/).map((term) => term.trim()).filter(Boolean).slice(0, 6)
+  textTerms.forEach((term) => {
+    params.push(`%${term}%`)
+    const slot = `$${params.length}`
+    where.push(`(COALESCE(title, '') ILIKE ${slot} OR COALESCE(address, '') ILIKE ${slot} OR COALESCE(district, '') ILIKE ${slot} OR COALESCE(postcode, '') ILIKE ${slot})`)
+  })
 
   return { sql: where.join(' AND '), params }
 }
@@ -350,4 +359,52 @@ export async function searchListingCards(filters = {}, { limit = 24, offset = 0 
   ])
 
   return { rows: rows.rows, total: count.rows[0]?.total || 0 }
+}
+
+// Data for the search page: one page of full listing cards plus every map point of the same filter.
+export async function searchForUi(filters = {}, { page = 1, pageSize = 50, mapLimit = 8000 } = {}) {
+  const size = Math.max(1, Math.min(Number(pageSize) || 50, 60))
+  const current = Math.max(1, Number(page) || 1)
+  const cap = Math.max(1, Math.min(Number(mapLimit) || 8000, 12000))
+  const { sql, params } = buildSearchWhere(filters)
+
+  const [cards, count, points] = await Promise.all([
+    query(
+      `SELECT raw_payload, is_exclusive
+       FROM public.listings_cache
+       WHERE ${sql}
+       ORDER BY is_exclusive DESC, first_seen_at DESC, id DESC
+       LIMIT ${size} OFFSET ${(current - 1) * size}`,
+      params,
+    ),
+    query(`SELECT COUNT(*)::int AS total FROM public.listings_cache WHERE ${sql}`, params),
+    query(
+      `SELECT source, external_id, slug, title, address, price_label, image_url, source_url, lat, lon, is_exclusive
+       FROM public.listings_cache
+       WHERE ${sql} AND lat IS NOT NULL AND lon IS NOT NULL
+       ORDER BY is_exclusive DESC, first_seen_at DESC
+       LIMIT ${cap}`,
+      params,
+    ),
+  ])
+
+  return {
+    listings: cards.rows.map((row) => ({ ...(row.raw_payload || {}), exclusive: Boolean(row.is_exclusive) })),
+    total: count.rows[0]?.total || 0,
+    mapListings: points.rows.map((row) => ({
+      id: row.external_id,
+      slug: row.slug,
+      source: row.source,
+      title: row.title,
+      address: row.address || '',
+      priceLabel: row.price_label || '',
+      imageUrl: row.image_url || '',
+      url: row.source_url || '',
+      lat: Number(row.lat),
+      lon: Number(row.lon),
+      exclusive: Boolean(row.is_exclusive),
+    })),
+    page: current,
+    pageSize: size,
+  }
 }

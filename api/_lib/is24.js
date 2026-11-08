@@ -2,6 +2,11 @@ const MOBILE_API_BASE = 'https://api.mobile.immobilienscout24.de'
 const USER_AGENT = 'ImmoScout_27.12_26.2_._'
 
 const LOCATION_SEEDS = [
+  { id: '1276003001', label: 'Berlin', city: 'Berlin', district: '', kind: 'city' },
+  { id: '1276006001', label: 'Hamburg', city: 'Hamburg', district: '', kind: 'city' },
+  { id: '1276002059', label: 'München', city: 'München', district: '', kind: 'city' },
+  { id: '1276010028', label: 'Köln', city: 'Köln', district: '', kind: 'city' },
+  { id: '1276007004', label: 'Frankfurt am Main', city: 'Frankfurt am Main', district: '', kind: 'city' },
   { id: '0200000005056', label: 'Hamburg · Rothenbaum', city: 'Hamburg', district: 'Rothenbaum', kind: 'district' },
   { id: '0200000006057', label: 'Hamburg · Harvestehude', city: 'Hamburg', district: 'Harvestehude', kind: 'district' },
   {

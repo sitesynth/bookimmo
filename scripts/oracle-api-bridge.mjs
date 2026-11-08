@@ -10,6 +10,7 @@ import applicationsHandler from '../api/applications.js'
 import favoritesHandler from '../api/favorites.js'
 import formsSubmitHandler from '../api/forms/submit.js'
 import listingLookupHandler from '../api/listings/by-ids.js'
+import is24SearchHandler from '../api/is24/search.js'
 import latestListingsHandler from '../api/listings/latest.js'
 import mapListingsHandler from '../api/listings/map.js'
 import searchListingsHandler from '../api/listings/search.js'
@@ -73,6 +74,7 @@ app.all('/api/agent/applications', wrap(agentApplicationsHandler))
 app.all('/api/agent/application-thread', wrap(agentApplicationThreadHandler))
 app.all('/api/forms/submit', wrap(formsSubmitHandler))
 app.all('/api/listings/latest', wrap(latestListingsHandler))
+app.all('/api/is24/search', wrap(is24SearchHandler))
 app.all('/api/listings/map', wrap(mapListingsHandler))
 app.all('/api/listings/search', wrap(searchListingsHandler))
 app.all('/api/listings/by-ids', wrap(listingLookupHandler))

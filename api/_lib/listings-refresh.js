@@ -4,7 +4,7 @@ import { upsertListingsCache } from './listings-cache.js'
 
 export async function refreshListingsCache(limit = 24) {
   const normalizedLimit = Math.max(12, Math.min(Number(limit) || 24, 48))
-  const geocodes = getLocationSeeds().map((item) => item.id).slice(0, 6)
+  const geocodes = getLocationSeeds().filter((item) => item.kind !== 'city').map((item) => item.id).slice(0, 6)
   const results = await Promise.allSettled([
     fetchIs24Listings({ geocodes, page: 1 }),
     fetchImmoweltListings({ geocodes, page: 1 }),
