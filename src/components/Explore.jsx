@@ -21,48 +21,45 @@ const ICONS = {
 
 const STATS = [
   ['10k+', 'Listings watched'],
-  ['10 min', 'Between checks'],
-  ['€0', 'Success fee for members'],
+  ['24/7', 'Watching for you'],
+  ['€0', 'Success fee'],
 ]
 
 const FEATURES = [
-  ['chat', 'All communication, handled', "By AI, in the agency's language."],
-  ['file', 'Documents, ready', 'In the format each agency expects.'],
-  ['spark', 'Listings and exclusives', 'New portal listings and partner-only flats.'],
+  ['chat', 'All communication, handled'],
+  ['file', 'Documents, ready'],
+  ['spark', 'Exclusives, first'],
 ]
 
 function ClubCard() {
   return (
     <div className="framer-un23b5" data-border="true">
-      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', gap: 16 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', gap: 24 }}>
         <div>
-          <p style={{ margin: 0, fontFamily: FONT, fontSize: 20, fontWeight: 600, lineHeight: 1.28, letterSpacing: '-0.01em', color: INK }}>
-            Newcomers rarely lose a flat for lack of money. They lose it to paperwork, language and timing.
-          </p>
-          <p style={{ margin: '8px 0 0', fontFamily: FONT, fontSize: 15, fontWeight: 500, color: ORANGE }}>
+          {['Paperwork.', 'Language.', 'Timing.'].map((word) => (
+            <p key={word} style={{ margin: 0, fontFamily: FONT, fontSize: 32, fontWeight: 600, lineHeight: 1.12, letterSpacing: '-0.025em', color: INK }}>{word}</p>
+          ))}
+          <p style={{ margin: '10px 0 0', fontFamily: FONT, fontSize: 17, fontWeight: 500, color: ORANGE }}>
             The club takes all three off your plate.
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 12, padding: '12px 0', borderTop: LINE, borderBottom: LINE }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 12 }}>
           {STATS.map(([value, label]) => (
             <div key={label}>
-              <p style={{ margin: 0, fontFamily: FONT, fontSize: 32, fontWeight: 600, lineHeight: 1, letterSpacing: '-0.03em', color: INK, whiteSpace: 'nowrap' }}>{value}</p>
-              <p style={{ margin: '8px 0 0', fontFamily: FONT, fontSize: 12.5, lineHeight: 1.35, color: SOFT }}>{label}</p>
+              <p style={{ margin: 0, fontFamily: FONT, fontSize: 30, fontWeight: 600, lineHeight: 1, letterSpacing: '-0.03em', color: INK, whiteSpace: 'nowrap' }}>{value}</p>
+              <p style={{ margin: '8px 0 0', fontFamily: FONT, fontSize: 13, lineHeight: 1.3, color: SOFT }}>{label}</p>
             </div>
           ))}
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {FEATURES.map(([icon, title, text]) => (
-            <div key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {FEATURES.map(([icon, title]) => (
+            <div key={title} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
               <span style={{ width: 40, height: 40, borderRadius: 12, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,102,37,0.11)' }}>
                 {ICONS[icon]}
               </span>
-              <span style={{ display: 'block', minWidth: 0 }}>
-                <span style={{ display: 'block', fontFamily: FONT, fontSize: 15, fontWeight: 600, lineHeight: 1.3, color: INK }}>{title}</span>
-                <span style={{ display: 'block', marginTop: 3, fontFamily: FONT, fontSize: 13.5, lineHeight: 1.45, color: SOFT }}>{text}</span>
-              </span>
+              <span style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, lineHeight: 1.3, color: INK }}>{title}</span>
             </div>
           ))}
         </div>
