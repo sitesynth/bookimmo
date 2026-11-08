@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 function buildQuery(filters) {
   const params = new URLSearchParams()
@@ -26,15 +26,21 @@ export function useIs24Search(filters = {}) {
     pageNumber: 1,
   })
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [error, setError] = useState(null)
+  const loadedBaseKeyRef = useRef('')
 
   const filterKey = useMemo(() => JSON.stringify(filters), [filters])
+  // Same search without the page number: a higher page of the same search is appended.
+  const baseKey = useMemo(() => JSON.stringify({ ...filters, page: 1 }), [filters])
 
   useEffect(() => {
     let cancelled = false
     const controller = new AbortController()
     const query = buildQuery(filters)
-    setLoading(true)
+    const appending = Number(filters.page || 1) > 1 && loadedBaseKeyRef.current === baseKey
+    if (appending) setLoadingMore(true)
+    else setLoading(true)
     setError(null)
 
     fetch(`/api/is24/search${query ? `?${query}` : ''}`, { signal: controller.signal })
@@ -47,21 +53,27 @@ export function useIs24Search(filters = {}) {
       })
       .then((json) => {
         if (cancelled) return
-        setResult({
-          listings: Array.isArray(json.listings) ? json.listings : [],
+        const incoming = Array.isArray(json.listings) ? json.listings : []
+        loadedBaseKeyRef.current = baseKey
+        setResult((previous) => ({
+          listings: appending
+            ? [...previous.listings, ...incoming.filter((item) => !previous.listings.some((known) => String(known.id) === String(item.id)))]
+            : incoming,
           mapListings: Array.isArray(json.mapListings) ? json.mapListings : [],
           selectedLocations: Array.isArray(json.selectedLocations) ? json.selectedLocations : [],
           center: json.center || null,
           totalResults: Number(json.totalResults || 0),
           numberOfPages: Number(json.numberOfPages || 1),
           pageNumber: Number(json.pageNumber || 1),
-        })
+        }))
         setLoading(false)
+        setLoadingMore(false)
       })
       .catch((err) => {
         if (cancelled || err?.name === 'AbortError') return
         setError(err)
         setLoading(false)
+        setLoadingMore(false)
       })
 
     return () => {
@@ -70,5 +82,5 @@ export function useIs24Search(filters = {}) {
     }
   }, [filterKey])
 
-  return { ...result, loading, error }
+  return { ...result, loading, loadingMore, error }
 }

@@ -414,7 +414,7 @@ export default function SearchMain() {
   }))
 
   const { items: locationSuggestions, seeds: locationSeeds, loading: locationsLoading } = useIs24Locations(locationQuery)
-  const { listings, mapListings, selectedLocations, center, totalResults, loading, error } = useIs24Search(filters)
+  const { listings, mapListings, selectedLocations, center, totalResults, numberOfPages, pageNumber, loading, loadingMore, error } = useIs24Search(filters)
   const { isFavorite, toggleFavorite, isAuthenticated } = useFavorites()
   const { createDraftApplication, applicationCount, draftCount } = useApplications()
   const { profile, completionPercent, loading: profileLoading } = useProfile()
@@ -1127,6 +1127,27 @@ export default function SearchMain() {
                         />
                       ))
                     )}
+                    {!loading && !error && pageNumber < numberOfPages ? (
+                      <button
+                        type="button"
+                        disabled={loadingMore}
+                        onClick={() => setFilters((current) => ({ ...current, page: pageNumber + 1 }))}
+                        style={{
+                          alignSelf: 'center',
+                          border: 'none',
+                          borderRadius: 14,
+                          padding: '12px 22px',
+                          backgroundColor: 'rgb(248,246,241)',
+                          color: 'rgb(25,26,32)',
+                          fontFamily: '"Lexend", sans-serif',
+                          fontSize: 14,
+                          fontWeight: 600,
+                          cursor: loadingMore ? 'default' : 'pointer',
+                        }}
+                      >
+                        {loadingMore ? 'Loading…' : `Show more (${listings.length} of ${totalResults})`}
+                      </button>
+                    ) : null}
                   </div>
                 </div>
               </SearchWorkspaceCard>
