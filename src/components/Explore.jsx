@@ -64,17 +64,51 @@ function ClubCard() {
           ))}
         </div>
 
-        <a
-          href="./search"
-          style={{
-            marginTop: 'auto', alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 10,
-            padding: '13px 20px', borderRadius: 12, backgroundColor: INK, color: 'rgb(245,245,245)',
-            fontFamily: FONT, fontSize: 14, fontWeight: 500, textDecoration: 'none',
-          }}
-        >
-          Browse live listings
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-        </a>
+        <div style={{ marginTop: 'auto' }}>
+          <a
+            href="./search"
+            className="club-cta"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 10,
+              padding: '14px 22px', borderRadius: 12, backgroundColor: INK, color: 'rgb(245,245,245)',
+              fontFamily: FONT, fontSize: 14, fontWeight: 500, textDecoration: 'none',
+            }}
+          >
+            <span style={{ position: 'relative', zIndex: 1 }}>Browse live listings</span>
+            <svg style={{ position: 'relative', zIndex: 1 }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </a>
+        </div>
+        <style>{`
+          .club-cta { position: relative; overflow: hidden; isolation: isolate; }
+          .club-cta::before, .club-cta::after {
+            content: '';
+            position: absolute;
+            left: 0; top: 50%;
+            width: 34%; height: 260%;
+            margin-top: -130%;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%);
+            transform: translate(-130%, 70%) rotate(24deg);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 0;
+          }
+          .club-cta::before { animation: clubCtaPeriodic 10s linear 2s infinite; }
+          .club-cta:hover::after { animation: clubCtaSweep 0.85s ease-out 1; }
+          @keyframes clubCtaSweep {
+            0%   { transform: translate(-130%, 70%) rotate(24deg); opacity: 0; }
+            15%  { opacity: 1; }
+            85%  { opacity: 1; }
+            100% { transform: translate(420%, -70%) rotate(24deg); opacity: 0; }
+          }
+          @keyframes clubCtaPeriodic {
+            0%    { transform: translate(-130%, 70%) rotate(24deg); opacity: 0; }
+            1.5%  { opacity: 1; }
+            8.5%  { opacity: 1; }
+            10%   { transform: translate(420%, -70%) rotate(24deg); opacity: 0; }
+            100%  { transform: translate(420%, -70%) rotate(24deg); opacity: 0; }
+          }
+          @media (prefers-reduced-motion: reduce) { .club-cta::before, .club-cta:hover::after { animation: none; } }
+        `}</style>
       </div>
     </div>
   )
