@@ -12,6 +12,7 @@ import DashboardHomePage from './pages/DashboardHomePage.jsx'
 import SearchPage from './pages/SearchPage.jsx'
 import ApplicationsPage from './pages/ApplicationsPage.jsx'
 import AgentPage from './pages/AgentPage.jsx'
+import ForAgenciesPage from './pages/ForAgenciesPage.jsx'
 import AgentLogInPage from './pages/AgentLogInPage.jsx'
 import AgentSignUpPage from './pages/AgentSignUpPage.jsx'
 import AgentWorkspacePage from './pages/AgentWorkspacePage.jsx'
@@ -67,6 +68,7 @@ export default function App() {
       <Route path="/search" element={<GeoLanguageRedirect path="/search" />} />
       <Route path="/applications" element={<GeoLanguageRedirect path="/applications" />} />
       <Route path="/agent" element={<GeoLanguageRedirect path="/agent" />} />
+      <Route path="/for-agencies" element={<GeoLanguageRedirect path="/for-agencies" />} />
       <Route path="/agent-workspace" element={<GeoLanguageRedirect path="/agent-workspace" />} />
       <Route path="/agent-sign-up" element={<GeoLanguageRedirect path="/agent-sign-up" />} />
       <Route path="/sign-up" element={<GeoLanguageRedirect path="/sign-up" />} />
@@ -88,6 +90,7 @@ export default function App() {
         <Route path="search" element={<SearchPage />} />
         <Route path="applications" element={<ApplicationsPage />} />
         <Route path="agent" element={<AgentPage />} />
+        <Route path="for-agencies" element={<ForAgenciesPage />} />
         <Route path="agent-workspace" element={<AgentWorkspacePage />} />
         <Route path="agent-sign-up" element={<AgentSignUpPage />} />
         <Route path="sign-up" element={<SignUpPage />} />
@@ -111,6 +114,7 @@ export default function App() {
         <Route path="search" element={<SearchPage />} />
         <Route path="applications" element={<ApplicationsPage />} />
         <Route path="agent" element={<AgentPage />} />
+        <Route path="for-agencies" element={<ForAgenciesPage />} />
         <Route path="agent-workspace" element={<AgentWorkspacePage />} />
         <Route path="agent-sign-up" element={<AgentSignUpPage />} />
         <Route path="sign-up" element={<SignUpPage />} />
@@ -134,6 +138,7 @@ export default function App() {
         <Route path="search" element={<SearchPage />} />
         <Route path="applications" element={<ApplicationsPage />} />
         <Route path="agent" element={<AgentPage />} />
+        <Route path="for-agencies" element={<ForAgenciesPage />} />
         <Route path="agent-workspace" element={<AgentWorkspacePage />} />
         <Route path="agent-sign-up" element={<AgentSignUpPage />} />
         <Route path="sign-up" element={<SignUpPage />} />
@@ -157,6 +162,7 @@ export default function App() {
         <Route path="search" element={<SearchPage />} />
         <Route path="applications" element={<ApplicationsPage />} />
         <Route path="agent" element={<AgentPage />} />
+        <Route path="for-agencies" element={<ForAgenciesPage />} />
         <Route path="agent-workspace" element={<AgentWorkspacePage />} />
         <Route path="agent-sign-up" element={<AgentSignUpPage />} />
         <Route path="sign-up" element={<SignUpPage />} />
@@ -180,6 +186,7 @@ export default function App() {
         <Route path="search" element={<SearchPage />} />
         <Route path="applications" element={<ApplicationsPage />} />
         <Route path="agent" element={<AgentPage />} />
+        <Route path="for-agencies" element={<ForAgenciesPage />} />
         <Route path="agent-workspace" element={<AgentWorkspacePage />} />
         <Route path="agent-sign-up" element={<AgentSignUpPage />} />
         <Route path="sign-up" element={<SignUpPage />} />

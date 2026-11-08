@@ -134,6 +134,7 @@ function Agencies() {
           </p>
           <div style={{ marginTop: 28, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
             <Button href="./agent-sign-up" light>Become a partner agency</Button>
+            <Button href="./for-agencies">How partnership works</Button>
             <a href="mailto:hello@book.immo" className="framer-text framer-styles-preset-ia5eoh" style={{ ...light, alignSelf: 'center', textDecoration: 'underline', textUnderlineOffset: 4 }}>hello@book.immo</a>
           </div>
         </div>
