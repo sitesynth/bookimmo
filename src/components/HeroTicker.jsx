@@ -125,8 +125,8 @@ function Ring() {
         overflow: 'hidden',
         perspective: 1500,
         perspectiveOrigin: '50% 50%',
-        maskImage: 'linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent)',
-        WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent)',
+        maskImage: 'linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent)',
+        WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent)',
       }}
     >
       <div style={{ position: 'absolute', inset: 0, transformStyle: 'preserve-3d' }}>
@@ -201,7 +201,7 @@ export default function HeroTicker() {
           color: 'rgb(25,26,32)',
         }}
       >
-        The rental club for expats. <span style={{ color: 'rgba(25,26,32,0.6)' }}>Verified once, the AI does the rest.</span>
+        <span style={{ fontWeight: 600 }}>The housing club for expats, to rent or buy.</span> <span style={{ color: 'rgba(25,26,32,0.62)' }}>Verified once, the AI does the rest.</span>
       </p>
       <div style={{ marginTop: 18 }} aria-label={PHRASES.join('. ')}>
         {reduced ? <StaticList /> : narrow ? <LinearTicker /> : <Ring />}

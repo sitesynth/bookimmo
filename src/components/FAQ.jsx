@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 const FAQS = [
   {
     q: 'Who is the club for?',
-    a: 'People moving to a new country who rent through agencies and want someone to handle the local paperwork, letters and follow-ups. We start in Germany, in Berlin, Munich, Frankfurt, Hamburg and Cologne, with more European cities to follow.',
+    a: 'People moving to a new country who rent or buy through agencies and want someone to handle the local paperwork, letters and follow-ups. We start in Germany, in Berlin, Munich, Frankfurt, Hamburg and Cologne, with more European cities to follow.',
   },
   {
     q: 'What does verification involve?',
