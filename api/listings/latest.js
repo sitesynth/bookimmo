@@ -1,7 +1,6 @@
-import { fetchIs24Listings, getLocationSeeds } from '../_lib/is24.js'
 import { proxyToBridge } from '../_lib/bridge.js'
-import { fetchImmoweltListings } from '../_lib/immowelt.js'
-import { getLatestCachedListings, upsertListingsCache } from '../_lib/listings-cache.js'
+import { getLatestCachedListings } from '../_lib/listings-cache.js'
+import { refreshListingsCache } from '../_lib/listings-refresh.js'
 
 const CACHE_MAX_AGE_MS = 15 * 60 * 1000
 
@@ -32,20 +31,7 @@ function normalizeRows(rows = []) {
 }
 
 async function warmCache(limit) {
-  const geocodes = getLocationSeeds().map((item) => item.id).slice(0, 6)
-  const [is24, immowelt] = await Promise.allSettled([
-    fetchIs24Listings({ geocodes, page: 1 }),
-    fetchImmoweltListings({ geocodes, page: 1 }),
-  ])
-
-  const listings = [
-    ...(is24.status === 'fulfilled' ? is24.value.listings : []),
-    ...(immowelt.status === 'fulfilled' ? immowelt.value.listings : []),
-  ].slice(0, Math.max(limit * 2, 12))
-
-  if (listings.length) {
-    await upsertListingsCache(listings)
-  }
+  await refreshListingsCache(Math.max(limit * 2, 12))
 }
 
 export default async function handler(req, res) {
