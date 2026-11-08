@@ -190,12 +190,20 @@ export default function HeroTicker() {
   return (
     <div style={{ width: '100%', margin: '0 auto' }}>
       <p
-        className="framer-text framer-styles-preset-14npl34"
-        style={{ '--framer-text-alignment': 'center', margin: '0 auto', maxWidth: 820 }}
+        style={{
+          margin: '0 auto',
+          maxWidth: 940,
+          textAlign: 'center',
+          fontFamily: '"Lexend", sans-serif',
+          fontSize: 'clamp(18px, 2.1vw, 24px)',
+          fontWeight: 500,
+          lineHeight: 1.4,
+          color: 'rgb(25,26,32)',
+        }}
       >
-        The rental club for expats. Verified once, the AI does the rest.
+        The rental club for expats. <span style={{ color: 'rgba(25,26,32,0.6)' }}>Verified once, the AI does the rest.</span>
       </p>
-      <div style={{ marginTop: 14 }} aria-label={PHRASES.join('. ')}>
+      <div style={{ marginTop: 18 }} aria-label={PHRASES.join('. ')}>
         {reduced ? <StaticList /> : narrow ? <LinearTicker /> : <Ring />}
       </div>
     </div>
