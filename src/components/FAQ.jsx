@@ -3,15 +3,15 @@ import React, { useState } from 'react'
 const FAQS = [
   {
     q: 'Who is the club for?',
-    a: 'People moving to or within Germany who rent through agencies and want someone to handle the German paperwork, letters and follow-ups. Today we work in Berlin, Munich, Frankfurt, Hamburg and Cologne.',
+    a: 'People moving to a new country who rent through agencies and want someone to handle the local paperwork, letters and follow-ups. We start in Germany, in Berlin, Munich, Frankfurt, Hamburg and Cologne, with more European cities to follow.',
   },
   {
     q: 'What does verification involve?',
-    a: 'You upload the documents German landlords ask for: ID, proof of income, Schufa or an equivalent from your country, and a short self-disclosure. The AI assembles the pack, a person checks it, and from then on it is attached to every application.',
+    a: 'You upload the documents local landlords ask for: ID, proof of income, a credit report such as Schufa or an equivalent from your country, and a short self-disclosure. The AI assembles the pack, a person checks it, and from then on it is attached to every application.',
   },
   {
     q: 'Does the AI really send applications for me?',
-    a: 'Yes. It writes a letter for each flat in German, attaches your verified pack and sends it. You approve your criteria once and can pause at any time.',
+    a: 'Yes. It writes a letter for each flat in the agency\'s language, attaches your verified pack and sends it. You approve your criteria once and can pause at any time.',
   },
   {
     q: 'Is anything deducted when I sign a lease?',

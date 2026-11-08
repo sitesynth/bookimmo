@@ -33,7 +33,7 @@ function Button({ href, children, light = false }) {
 
 const COMPARISON = [
   ['Find agencies and listings', 'Several portals and agency sites, different in every city', 'Partner agencies and all major portals in one place'],
-  ['Write in German', 'You need the language or a translator', 'The AI writes each letter in the agency\'s language'],
+  ['Write in the local language', 'You need the language or a translator', 'The AI writes each letter in the agency\'s language'],
   ['Collect the right documents', 'Unclear what is needed, and it differs per agency', 'One pack, checked once, valid for every club agency'],
   ['Apply', 'About an hour per flat', 'Minutes, automatically, for every matching flat'],
   ['Follow the conversation', 'E-mail, portal messengers, phone', 'One inbox with statuses'],
