@@ -168,7 +168,7 @@ function Pack() {
             The pack you usually chase for a week, <span className="framer-text" style={{ '--framer-text-color': ORANGE_VAR }}>complete on day one.</span>
           </h2>
           <p className="framer-text framer-styles-preset-14npl34" style={{ marginTop: 20 }}>
-            Every member is checked once by the club before they can apply anywhere. You receive the full pack with the first message, with the candidate&apos;s consent to share it with you.
+            Every member is checked by the club before they can apply anywhere. You receive the full pack with the first message, with the candidate&apos;s consent to share it with you.
           </p>
         </div>
         <div style={card}>
