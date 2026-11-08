@@ -348,6 +348,13 @@ async function createSchema() {
     CREATE INDEX IF NOT EXISTS application_messages_thread_idx
       ON public.application_messages (provider_source, external_thread_id, external_message_id);
 
+    CREATE TABLE IF NOT EXISTS public.form_submissions (
+      id TEXT PRIMARY KEY,
+      collection TEXT NOT NULL,
+      payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
     CREATE TABLE IF NOT EXISTS public.application_provider_threads (
       id TEXT PRIMARY KEY,
       application_id TEXT NOT NULL REFERENCES public.applications(id) ON DELETE CASCADE,

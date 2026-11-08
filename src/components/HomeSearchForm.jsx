@@ -245,21 +245,11 @@ export default function HomeSearchForm() {
   const [bedroomsMax, setBedroomsMax] = useState('')
   const [sizeMin,     setSizeMin]     = useState('')
   const [sizeMax,     setSizeMax]     = useState('')
-  const [propCount,   setPropCount]   = useState(null)
   const [showFilters, setShowFilters] = useState(false)
 
   const handleTxType = (t) => { setTxType(t); setBudget('') }
   const budgets = txType === 'Buy' ? BUY_BUDGETS : RENT_BUDGETS
 
-  useEffect(() => {
-    fetch('/api/directus?path=/items/properties&query=' +
-      encodeURIComponent('filter[status][_eq]=published&limit=1&aggregate[count]=id'))
-      .then(r => r.json())
-      .then(json => {
-        const c = json?.data?.[0]?.count?.id
-        if (c) setPropCount(Number(c))
-      }).catch(() => {})
-  }, [])
 
   const handleSearch = (e) => {
     e.preventDefault()
@@ -291,11 +281,6 @@ export default function HomeSearchForm() {
                   Find your property
                 </span>
               </div>
-              {propCount != null && (
-                <span style={{fontFamily:'"Lexend",sans-serif', fontSize:11, fontWeight:600, color:'rgb(255,102,37)'}}>
-                  {propCount.toLocaleString()} listings
-                </span>
-              )}
             </div>
 
             <form onSubmit={handleSearch} style={{padding:'10px 12px 12px', display:'flex', flexDirection:'column', gap:8}}>
@@ -409,11 +394,6 @@ export default function HomeSearchForm() {
                   Find your property
                 </span>
               </div>
-              {propCount != null && (
-                <span style={{fontFamily:'"Lexend",sans-serif', fontSize:12, fontWeight:600, color:'rgb(255,102,37)'}}>
-                  {propCount.toLocaleString()} listings
-                </span>
-              )}
             </div>
 
             <form onSubmit={handleSearch}>

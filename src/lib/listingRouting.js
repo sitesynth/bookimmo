@@ -24,7 +24,7 @@ export function parseListingDetailSlug(rawSlug = '') {
       provider: null,
       externalId: null,
       slug,
-      mode: 'directus',
+      mode: 'unsupported',
     }
   }
 

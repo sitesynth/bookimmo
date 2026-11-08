@@ -6,7 +6,7 @@ import { apiRequest } from '../lib/api.js'
  * Collects all named inputs (skips honeypots), submits through our API.
  *
  * Props:
- *   tableName  — Directus collection to insert into (default: 'leads')
+ *   tableName  — form name stored with the submission (default: 'leads')
  *   children   — the Framer form fields / buttons
  *   ...rest    — forwarded to <form> (className, style, etc.)
  */

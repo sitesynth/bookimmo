@@ -11,7 +11,6 @@
     "build:ssg": "vite build && node scripts/prerender.mjs"
   },
   "dependencies": {
-    "@directus/sdk": "^17.0.0",
     "@hookform/resolvers": "^5.7.1",
     "express": "^4.21.2",
     "framer-motion": "^12.38.0",
