@@ -1,9 +1,92 @@
 import React from 'react'
 
+const FONT = '"Lexend", sans-serif'
+const INK = 'rgb(25,26,32)'
+const ORANGE = 'rgb(255,102,37)'
+const SOFT = 'rgba(25,26,32,0.6)'
+const LINE = '1px solid rgba(25,26,32,0.08)'
+
+const iconProps = { width: 22, height: 22, viewBox: '0 0 24 24', fill: 'none', stroke: ORANGE, strokeWidth: 1.7, strokeLinecap: 'round', strokeLinejoin: 'round' }
+const ICONS = {
+  chat: (
+    <svg {...iconProps}><path d="M20 12c0 4-3.6 7-8 7-1.2 0-2.3-.2-3.3-.6L4 19l1.2-3.4C4.4 14.5 4 13.3 4 12c0-4 3.6-7 8-7s8 3 8 7z" /><path d="M9 11.5h6M9 14.5h3.5" /></svg>
+  ),
+  file: (
+    <svg {...iconProps}><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5" /><path d="M9 14.5l2 2 4-4.5" /></svg>
+  ),
+  spark: (
+    <svg {...iconProps}><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z" /><path d="M18.5 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" /></svg>
+  ),
+}
+
+const STATS = [
+  ['10 min', 'Between checks'],
+  ['€0', 'Success fee for members'],
+  ['1', 'Inbox for every reply'],
+]
+
+const FEATURES = [
+  ['chat', 'All communication, handled', "By AI, in the agency's language."],
+  ['file', 'Documents, ready', 'In the format each agency expects.'],
+  ['spark', 'Listings and exclusives', 'New portal listings and partner-only flats.'],
+]
+
+function ClubCard() {
+  return (
+    <div className="framer-un23b5" data-border="true">
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', gap: 16 }}>
+        <div>
+          <p style={{ margin: 0, fontFamily: FONT, fontSize: 20, fontWeight: 600, lineHeight: 1.28, letterSpacing: '-0.01em', color: INK }}>
+            Newcomers rarely lose a flat for lack of money. They lose it to paperwork, language and timing.
+          </p>
+          <p style={{ margin: '8px 0 0', fontFamily: FONT, fontSize: 15, fontWeight: 500, color: ORANGE }}>
+            The club takes all three off your plate.
+          </p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 12, padding: '12px 0', borderTop: LINE, borderBottom: LINE }}>
+          {STATS.map(([value, label]) => (
+            <div key={label}>
+              <p style={{ margin: 0, fontFamily: FONT, fontSize: 32, fontWeight: 600, lineHeight: 1, letterSpacing: '-0.03em', color: INK, whiteSpace: 'nowrap' }}>{value}</p>
+              <p style={{ margin: '8px 0 0', fontFamily: FONT, fontSize: 12.5, lineHeight: 1.35, color: SOFT }}>{label}</p>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {FEATURES.map(([icon, title, text]) => (
+            <div key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+              <span style={{ width: 40, height: 40, borderRadius: 12, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,102,37,0.11)' }}>
+                {ICONS[icon]}
+              </span>
+              <span style={{ display: 'block', minWidth: 0 }}>
+                <span style={{ display: 'block', fontFamily: FONT, fontSize: 15, fontWeight: 600, lineHeight: 1.3, color: INK }}>{title}</span>
+                <span style={{ display: 'block', marginTop: 3, fontFamily: FONT, fontSize: 13.5, lineHeight: 1.45, color: SOFT }}>{text}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <a
+          href="./search"
+          style={{
+            marginTop: 'auto', alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 10,
+            padding: '13px 20px', borderRadius: 12, backgroundColor: INK, color: 'rgb(245,245,245)',
+            fontFamily: FONT, fontSize: 14, fontWeight: 500, textDecoration: 'none',
+          }}
+        >
+          Browse live listings
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </a>
+      </div>
+    </div>
+  )
+}
+
 export default function Explore() {
   return (
     <>
-      <section className="framer-ospjfn" id="explore" style={{}}><div className="framer-1il8hii"><div className="framer-uu7rbx"><div className="framer-ol5pqw"><div className="framer-1j57kmt"><div className="framer-1od91ro" style={{transform: "none"}}><h2 className="framer-text framer-styles-preset-utqn72" style={{"--framer-font-size": "40px", "--framer-line-height": "1.1em", whiteSpace: "nowrap"}}>We hunt.<br /><span style={{'--framer-text-color': "var(--token-5c28b080-63a4-416d-b638-2f3867ab529e, rgb(255, 102, 37))"}} className="framer-text">You choose.</span></h2></div><div className="ssr-variant hidden-1woyh6i"><div className="framer-15xsjwz"><div style={{position: "absolute", borderRadius: "inherit", top: "0", right: "0", bottom: "0", left: "0"}}><img decoding="async" width="1176" height="1356" sizes="(min-width: 1200px) 320.5px, (min-width: 810px) and (max-width: 1199.98px) 320.5px, (max-width: 809.98px) min(100vw - 32px, 1200px)" srcSet="/assets/images/5QUUPPX8KvTI2vwKGRCYLHc7w.png 888w,/assets/images/5QUUPPX8KvTI2vwKGRCYLHc7w.png 1176w" src="/assets/images/5QUUPPX8KvTI2vwKGRCYLHc7w.png" alt="House image" style={{display: "block", width: "100%", height: "100%", borderRadius: "inherit", objectPosition: "center", objectFit: "cover"}} /></div></div></div><div className="ssr-variant hidden-olbwcu hidden-72rtr7"><div className="framer-15xsjwz"><div style={{position: "absolute", borderRadius: "inherit", top: "0", right: "0", bottom: "0", left: "0"}}><img decoding="async" width="1176" height="1356" sizes="(min-width: 1200px) 320.5px, (min-width: 810px) and (max-width: 1199.98px) 320.5px, (max-width: 809.98px) min(100vw - 32px, 1200px)" srcSet="/assets/images/5QUUPPX8KvTI2vwKGRCYLHc7w.png 888w,/assets/images/5QUUPPX8KvTI2vwKGRCYLHc7w.png 1176w" src="/assets/images/5QUUPPX8KvTI2vwKGRCYLHc7w.png" alt="House image" style={{display: "block", width: "100%", height: "100%", borderRadius: "inherit", objectPosition: "center", objectFit: "cover"}} /></div></div></div></div><div className="framer-g63xhy"><div className="framer-qit9l1-container"><video src="/assets/videos/0BVczrPw7yH6qSj2ZOLQNujmUnk.mp4" loop preload="auto" muted playsInline style={{cursor: "auto", width: "100%", height: "100%", borderRadius: "0px", display: "block", objectFit: "cover", backgroundColor: "rgba(0, 0, 0, 0)", objectPosition: "50% 50%"}} autoPlay ref={el => { if (el) { el.muted = true; el.play?.().catch(() => {}) } }}></video></div></div></div><div className="framer-1t6xdsw" style={{top: "auto", bottom: 16, left: 16, right: "auto", borderRadius: 999, padding: "10px 18px", boxShadow: "0 8px 24px rgba(25,26,32,0.16)"}}><div className="framer-11lf28u" style={{transform: "none"}}><p className="framer-text framer-styles-preset-ia5eoh" style={{'--framer-text-alignment': "center"}}>Wherever you move next</p></div></div></div><div className="framer-un23b5" data-border="true"><div className="framer-1nw1ybn"><div className="framer-tqz0ke" style={{transform: "none"}}><p className="framer-text framer-styles-preset-14npl34">Newcomers rarely lose a flat for lack of money. They lose it to paperwork, language and timing. The club takes all three off your plate.</p></div><div className="framer-1dbeozr" data-framer-appear-id="appear-36"><div className="framer-1jfbg6g" data-framer-appear-id="appear-37"><div className="framer-iilxq7" data-border="true" data-framer-appear-id="appear-38"><div className="framer-mf69gm" data-framer-appear-id="appear-39"><div className="framer-orhjty" data-framer-appear-id="appear-40"><div className="framer-18o71v2" data-framer-appear-id="appear-41"><div className="framer-at0hin" style={{transform: "none"}}><h2 className="framer-text framer-styles-preset-utqn72">10 min</h2></div><div className="framer-qkn4a5" style={{transform: "none"}}><p className="framer-text framer-styles-preset-91ry8n">How often new listings are checked</p></div></div></div><div className="framer-19etjgq" data-framer-appear-id="appear-42"><div className="framer-12qvky" style={{transform: "none"}}><h2 className="framer-text framer-styles-preset-utqn72">€0</h2></div><div className="framer-1i86u0u" style={{transform: "none"}}><p className="framer-text framer-styles-preset-91ry8n">Success fee for members</p></div></div></div></div><div className="framer-j6ahz1" data-border="true"><div className="framer-10jko7d"><div className="framer-354haq"><div className="framer-c7vioj" style={{backgroundColor: "rgb(255,102,37)"}}></div><div className="framer-1ra228k" style={{justifyContent: "center", transform: "none"}}><p className="framer-text framer-styles-preset-ia5eoh">New listings from the portals, plus partner exclusives</p></div></div><div className="framer-xttxzq"><div className="framer-3gw4wo" style={{backgroundColor: "rgb(255,102,37)"}}></div><div className="framer-sen03e" style={{justifyContent: "center", transform: "none"}}><p className="framer-text framer-styles-preset-ia5eoh">Letters in the agency's language, written by AI</p></div></div><div className="framer-193j54c"><div className="framer-1iqaoth" style={{backgroundColor: "rgb(255,102,37)"}}></div><div className="framer-1awtp7n" style={{justifyContent: "center", transform: "none"}}><p className="framer-text framer-styles-preset-ia5eoh">Documents ready in each agency&apos;s format</p></div></div></div></div></div><div className="framer-9pjzob-container" id="9pjzob"><a href="./search" className="framer-VU4R2 framer-YPkpu framer-1xc55fg framer-v-l1bsy7 framer-1ln4cau" style={{'--border-bottom-width': "0px", '--border-color': "rgba(0, 0, 0, 0)", '--border-left-width': "0px", '--border-right-width': "0px", '--border-style': "solid", '--border-top-width': "0px", '--u1ygwx': "8px 12px 8px 12px", backgroundColor: "rgb(25, 26, 32)", borderBottomLeftRadius: "4px", borderBottomRightRadius: "4px", borderTopLeftRadius: "4px", borderTopRightRadius: "4px", opacity: "1"}} tabIndex={0}><div className="framer-2k1xbr" style={{'--extracted-r6o4lv': "var(--variable-reference-a_9fcsebB-GyMnc0m4V)", '--framer-paragraph-spacing': "0px", '--variable-reference-a_9fcsebB-GyMnc0m4V': "var(--token-8162f168-ed62-49f3-b338-425fedfa1e6f, rgb(245, 245, 245))", transform: "none"}}><p className="framer-text framer-styles-preset-ia5eoh" style={{'--framer-text-color': "var(--extracted-r6o4lv, var(--variable-reference-a_9fcsebB-GyMnc0m4V))"}}>Browse live listings</p></div></a></div></div></div></div></div></section>
+      <section className="framer-ospjfn" id="explore" style={{}}><div className="framer-1il8hii"><div className="framer-uu7rbx"><div className="framer-ol5pqw"><div className="framer-1j57kmt"><div className="framer-1od91ro" style={{transform: "none"}}><h2 className="framer-text framer-styles-preset-utqn72" style={{"--framer-font-size": "40px", "--framer-line-height": "1.1em", whiteSpace: "nowrap"}}>We hunt.<br /><span style={{'--framer-text-color': "var(--token-5c28b080-63a4-416d-b638-2f3867ab529e, rgb(255, 102, 37))"}} className="framer-text">You choose.</span></h2></div><div className="ssr-variant hidden-1woyh6i"><div className="framer-15xsjwz"><div style={{position: "absolute", borderRadius: "inherit", top: "0", right: "0", bottom: "0", left: "0"}}><img decoding="async" width="1176" height="1356" sizes="(min-width: 1200px) 320.5px, (min-width: 810px) and (max-width: 1199.98px) 320.5px, (max-width: 809.98px) min(100vw - 32px, 1200px)" srcSet="/assets/images/5QUUPPX8KvTI2vwKGRCYLHc7w.png 888w,/assets/images/5QUUPPX8KvTI2vwKGRCYLHc7w.png 1176w" src="/assets/images/5QUUPPX8KvTI2vwKGRCYLHc7w.png" alt="House image" style={{display: "block", width: "100%", height: "100%", borderRadius: "inherit", objectPosition: "center", objectFit: "cover"}} /></div></div></div><div className="ssr-variant hidden-olbwcu hidden-72rtr7"><div className="framer-15xsjwz"><div style={{position: "absolute", borderRadius: "inherit", top: "0", right: "0", bottom: "0", left: "0"}}><img decoding="async" width="1176" height="1356" sizes="(min-width: 1200px) 320.5px, (min-width: 810px) and (max-width: 1199.98px) 320.5px, (max-width: 809.98px) min(100vw - 32px, 1200px)" srcSet="/assets/images/5QUUPPX8KvTI2vwKGRCYLHc7w.png 888w,/assets/images/5QUUPPX8KvTI2vwKGRCYLHc7w.png 1176w" src="/assets/images/5QUUPPX8KvTI2vwKGRCYLHc7w.png" alt="House image" style={{display: "block", width: "100%", height: "100%", borderRadius: "inherit", objectPosition: "center", objectFit: "cover"}} /></div></div></div></div><div className="framer-g63xhy"><div className="framer-qit9l1-container"><video src="/assets/videos/0BVczrPw7yH6qSj2ZOLQNujmUnk.mp4" loop preload="auto" muted playsInline style={{cursor: "auto", width: "100%", height: "100%", borderRadius: "0px", display: "block", objectFit: "cover", backgroundColor: "rgba(0, 0, 0, 0)", objectPosition: "50% 50%"}} autoPlay ref={el => { if (el) { el.muted = true; el.play?.().catch(() => {}) } }}></video></div></div></div><div className="framer-1t6xdsw" style={{top: "auto", bottom: 16, left: 16, right: "auto", borderRadius: 999, padding: "10px 18px", boxShadow: "0 8px 24px rgba(25,26,32,0.16)"}}><div className="framer-11lf28u" style={{transform: "none"}}><p className="framer-text framer-styles-preset-ia5eoh" style={{'--framer-text-alignment': "center"}}>Wherever you move next</p></div></div></div><ClubCard /></div></section>
     </>
   )
 }
