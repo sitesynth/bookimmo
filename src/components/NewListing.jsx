@@ -7,7 +7,7 @@ export default function NewListing() {
       className="framer-1bxsx5l"
       id="new-listing"
       style={{
-        padding: '96px 24px 48px',
+        padding: 'clamp(48px, 6vw, 72px) 24px 48px',
         background: 'linear-gradient(180deg, rgba(255,253,248,0) 0%, rgba(245,241,234,0.72) 100%)',
       }}
     >
