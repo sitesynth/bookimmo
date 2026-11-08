@@ -8,7 +8,6 @@ const PHRASES = [
   'Applications sent within minutes',
   'Viewings lined up for you',
   'Partner exclusives before the portals',
-  'Agencies and exclusives in one place',
   'No success fee, ever',
   'First month free',
 ]
@@ -19,7 +18,7 @@ const STEP = (Math.PI * 2) / PHRASES.length
 function useNarrow() {
   const [narrow, setNarrow] = useState(false)
   useEffect(() => {
-    const media = window.matchMedia('(max-width: 760px)')
+    const media = window.matchMedia('(max-width: 1100px)')
     const update = () => setNarrow(media.matches)
     update()
     media.addEventListener('change', update)
@@ -80,7 +79,7 @@ function Ring() {
     let start = performance.now()
     let pausedAt = 0
 
-    const radiusFor = () => Math.min(430, Math.max(300, window.innerWidth * 0.36))
+    const radiusFor = () => 540
 
     const render = (now) => {
       // While paused, keep the clock frozen so nothing jumps on resume.

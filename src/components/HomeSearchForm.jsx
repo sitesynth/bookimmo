@@ -30,7 +30,7 @@ const SEP = () => (
   <div style={{width:1, alignSelf:'stretch', backgroundColor:'rgba(25,26,32,0.08)', margin:'8px 0', flexShrink:0}} />
 )
 
-function Select({ label, options, value, onChange, minWidth = 130, fullWidth = false }) {
+function Select({ label, options, value, onChange, minWidth = 130, fullWidth = false, fs = 13 }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
   useEffect(() => {
@@ -51,7 +51,7 @@ function Select({ label, options, value, onChange, minWidth = 130, fullWidth = f
           minWidth: fullWidth ? 0 : minWidth,
           width: fullWidth ? '100%' : undefined,
           background:'none', border:'none', cursor:'pointer',
-          fontFamily:'"Lexend",sans-serif', fontSize: fullWidth ? 15 : 13,
+          fontFamily:'"Lexend",sans-serif', fontSize: fullWidth ? 15 : fs,
           color: active ? 'rgb(255,102,37)' : 'rgb(25,26,32)',
           fontWeight: active ? 600 : 400,
           whiteSpace:'nowrap', height:'100%',
@@ -96,7 +96,7 @@ function Select({ label, options, value, onChange, minWidth = 130, fullWidth = f
   )
 }
 
-function MultiSelect({ label, options, values, onChange, minWidth = 155, fullWidth = false }) {
+function MultiSelect({ label, options, values, onChange, minWidth = 155, fullWidth = false, fs = 13 }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
   useEffect(() => {
@@ -124,7 +124,7 @@ function MultiSelect({ label, options, values, onChange, minWidth = 155, fullWid
           minWidth: fullWidth ? 0 : minWidth,
           width: fullWidth ? '100%' : undefined,
           background:'none', border:'none', cursor:'pointer',
-          fontFamily:'"Lexend",sans-serif', fontSize: fullWidth ? 15 : 13,
+          fontFamily:'"Lexend",sans-serif', fontSize: fullWidth ? 15 : fs,
           color: active ? 'rgb(255,102,37)' : 'rgb(25,26,32)',
           fontWeight: active ? 600 : 400,
           whiteSpace:'nowrap', height:'100%',
@@ -383,13 +383,13 @@ export default function HomeSearchForm() {
 
   /* ── DESKTOP LAYOUT ── */
   return (
-    <div style={{ position:'relative', marginTop:0, marginBottom:0, width:1088 }}>
+    <div style={{ position:'relative', marginTop:0, marginBottom:0, width:'min(1120px, calc(100vw - 48px))' }}>
       <div>
         <style>{ANIM_STYLE}</style>
-        <div style={BORDER_WRAP}>
-          <div style={{ backgroundColor:'white', borderRadius:16, overflow:'visible' }}>
+        <div style={{ ...BORDER_WRAP, borderRadius:23, boxShadow:'0 24px 60px rgba(25,26,32,0.10)' }}>
+          <div style={{ backgroundColor:'white', borderRadius:22, overflow:'visible' }}>
 
-            <div style={{ padding:'12px 20px 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ padding:'18px 28px 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <div style={{display:'flex', alignItems:'center', gap:8}}>
                 <BookImmoLogo />
                 <span style={{fontFamily:'"Lexend",sans-serif', fontSize:12, fontWeight:500, color:'rgba(25,26,32,0.4)', letterSpacing:'0.06em', textTransform:'uppercase'}}>
@@ -399,36 +399,37 @@ export default function HomeSearchForm() {
             </div>
 
             <form onSubmit={handleSearch}>
-              <div style={{display:'flex', alignItems:'stretch', borderBottom:'1px solid rgba(25,26,32,0.07)', minHeight:56, margin:'0 8px'}}>
-                <Select label="Buy" options={TX_TYPES} value={txType} onChange={handleTxType} minWidth={80} />
+              <div style={{display:'flex', alignItems:'stretch', borderBottom:'1px solid rgba(25,26,32,0.07)', minHeight:76, margin:'0 14px'}}>
+                <Select label="Buy" options={TX_TYPES} value={txType} onChange={handleTxType} minWidth={96} fs={15} />
                 <SEP />
-                <div style={{flex:'1 1 0', display:'flex', alignItems:'center', gap:10, padding:'0 14px', minWidth:0}}>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" style={{flexShrink:0, opacity:0.3}}>
+                <div style={{flex:'1 1 0', display:'flex', alignItems:'center', gap:10, padding:'0 18px', minWidth:0}}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{flexShrink:0, opacity:0.3}}>
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="rgb(25,26,32)" strokeWidth="1.5"/>
                     <circle cx="12" cy="10" r="3" stroke="rgb(25,26,32)" strokeWidth="1.5"/>
                   </svg>
                   <input value={text} onChange={e => setText(e.target.value)}
                     placeholder="Region, municipality, locality, ref…"
-                    style={{flex:1, border:'none', outline:'none', fontFamily:'"Lexend",sans-serif', fontSize:13, color:'rgb(25,26,32)', background:'transparent', minWidth:0}} />
+                    style={{flex:1, border:'none', outline:'none', fontFamily:'"Lexend",sans-serif', fontSize:16, color:'rgb(25,26,32)', background:'transparent', minWidth:0}} />
                 </div>
                 <SEP />
-                <MultiSelect label="All property types" options={PROPERTY_TYPES} values={propTypes} onChange={setPropTypes} minWidth={155} />
+                <MultiSelect label="All property types" options={PROPERTY_TYPES} values={propTypes} onChange={setPropTypes} minWidth={180} fs={15} />
                 <SEP />
-                <Select label="Budget" options={budgets.map(b => b.label)} value={budget} onChange={v => setBudget(v === 'Any' ? '' : v)} minWidth={150} />
+                <Select label="Budget" options={budgets.map(b => b.label)} value={budget} onChange={v => setBudget(v === 'Any' ? '' : v)} minWidth={160} fs={15} />
                 <SEP />
                 <button type="submit" style={{
-                  margin:'10px 8px', padding:'0 32px',
+                  margin:'12px 0 12px 14px', padding:'0 44px',
                   backgroundColor:'rgb(255,102,37)', border:'none', cursor:'pointer',
-                  fontFamily:'"Lexend",sans-serif', fontSize:14, fontWeight:500, color:'white',
-                  flexShrink:0, borderRadius:10, transition:'background-color 0.2s',
+                  fontFamily:'"Lexend",sans-serif', fontSize:16, fontWeight:600, color:'white',
+                  flexShrink:0, borderRadius:16, transition:'background-color 0.2s, box-shadow 0.2s',
+                  boxShadow:'0 10px 24px rgba(255,102,37,0.28)',
                 }}
-                  onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(25,26,32,0.82)'}
-                  onMouseLeave={e => e.currentTarget.style.backgroundColor = 'rgb(25,26,32)'}>
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgb(232,84,22)'}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = 'rgb(255,102,37)'}>
                   Search
                 </button>
               </div>
 
-              <div style={{display:'flex', alignItems:'stretch', minHeight:44, margin:'0 8px'}}>
+              <div style={{display:'flex', alignItems:'stretch', minHeight:60, margin:'0 14px 6px'}}>
                 <Select label="Min Bedrooms" options={BED_OPTS} value={bedroomsMin} onChange={v => setBedroomsMin(v === 'Any' ? '' : v)} minWidth={130} />
                 <SEP />
                 <Select label="Max Bedrooms" options={BED_OPTS} value={bedroomsMax} onChange={v => setBedroomsMax(v === 'Any' ? '' : v)} minWidth={130} />
@@ -441,10 +442,10 @@ export default function HomeSearchForm() {
                   onClick={() => navigate(`/${lang || 'de'}/search?map=1`)}
                   style={{
                     display:'flex', alignItems:'center', gap:8,
-                    padding:'0 20px', background:'none',
+                    padding:'0 22px', background:'none',
                     border:'none', borderLeft:'1px solid rgba(25,26,32,0.07)',
                     cursor:'pointer', fontFamily:'"Lexend",sans-serif',
-                    fontSize:13, fontWeight:500, color:'rgba(25,26,32,0.6)', flexShrink:0,
+                    fontSize:14, fontWeight:500, color:'rgba(25,26,32,0.6)', flexShrink:0,
                   }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                     <path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
