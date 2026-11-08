@@ -59,9 +59,6 @@ function Hero() {
           <Button href="./agent-sign-up" orange>Become a partner</Button>
           <Button href="mailto:hello@book.immo" light>hello@book.immo</Button>
         </div>
-        <p className="framer-text framer-styles-preset-ia5eoh" style={{ '--framer-text-alignment': 'center', marginTop: 18, color: SOFT }}>
-          Starting in Berlin, Munich, Frankfurt, Hamburg and Cologne
-        </p>
       </div>
       <style>{`@media (max-width: 809px) { .ag-hero { padding: 130px 24px 56px !important; } }`}</style>
     </section>

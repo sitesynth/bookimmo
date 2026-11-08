@@ -97,7 +97,7 @@ function Membership() {
         <div style={{ borderRadius: 16, border: BORDER, backgroundColor: '#fff', padding: 28 }}>
           <p className="framer-text framer-styles-preset-91ry8n" style={{ margin: 0, color: 'rgb(255,102,37)' }}>Founding members</p>
           <p className="framer-text framer-styles-preset-14npl34" style={{ marginTop: 12, fontWeight: 500 }}>
-            The first 25 verified members in each city lock in the founding price for as long as they stay.
+            The first 25 verified members lock in the founding price for as long as they stay.
           </p>
           {MEMBERSHIP_ROWS.map(([label, value]) => (
             <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 16, borderTop: BORDER, marginTop: 16, paddingTop: 16 }}>

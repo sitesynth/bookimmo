@@ -8,7 +8,7 @@ const PHRASES = [
   'Applications sent within minutes',
   'Viewings lined up for you',
   'Partner exclusives before the portals',
-  'Berlin · Munich · Frankfurt · Hamburg · Cologne',
+  'Agencies and exclusives in one place',
   'No success fee, ever',
   'First month free',
 ]
