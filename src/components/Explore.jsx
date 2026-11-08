@@ -20,9 +20,9 @@ const ICONS = {
 }
 
 const STATS = [
+  ['10k+', 'Listings watched'],
   ['10 min', 'Between checks'],
   ['€0', 'Success fee for members'],
-  ['1', 'Inbox for every reply'],
 ]
 
 const FEATURES = [
