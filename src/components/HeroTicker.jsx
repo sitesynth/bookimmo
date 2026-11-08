@@ -203,7 +203,7 @@ export default function HeroTicker() {
           color: 'rgb(25,26,32)',
         }}
       >
-        <span style={{ fontWeight: 600 }}>The housing club for expats, to rent or buy.</span> <span style={{ color: 'rgba(25,26,32,0.62)' }}>You pick the home, the AI gets you in first.</span>
+        <span style={{ fontWeight: 600 }}>The housing club for expats, to rent or buy.</span> <span style={{ color: 'rgba(25,26,32,0.62)' }}>You pick the home, the AI applies first.</span>
       </p>
       <div style={{ marginTop: 18 }} aria-label={PHRASES.join('. ')}>
         {reduced ? <StaticList /> : narrow ? <LinearTicker /> : <Ring />}
