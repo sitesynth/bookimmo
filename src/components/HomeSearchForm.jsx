@@ -43,7 +43,7 @@ function Select({ label, options, value, onChange, minWidth = 130, fullWidth = f
   const displayLabel = active ? value : label
 
   return (
-    <div ref={ref} style={{position:'relative', display:'flex', alignItems:'stretch', width: fullWidth ? '100%' : undefined}}>
+    <div ref={ref} style={{position:'relative', display:'flex', alignItems:'stretch', width: fullWidth ? '100%' : undefined, height: fullWidth ? '100%' : undefined}}>
       <button type="button" onClick={() => setOpen(o => !o)}
         style={{
           display:'flex', alignItems:'center', gap:6,
@@ -51,7 +51,7 @@ function Select({ label, options, value, onChange, minWidth = 130, fullWidth = f
           minWidth: fullWidth ? 0 : minWidth,
           width: fullWidth ? '100%' : undefined,
           background:'none', border:'none', cursor:'pointer',
-          fontFamily:'"Lexend",sans-serif', fontSize:13,
+          fontFamily:'"Lexend",sans-serif', fontSize: fullWidth ? 15 : 13,
           color: active ? 'rgb(255,102,37)' : 'rgb(25,26,32)',
           fontWeight: active ? 600 : 400,
           whiteSpace:'nowrap', height:'100%',
@@ -116,7 +116,7 @@ function MultiSelect({ label, options, values, onChange, minWidth = 155, fullWid
     : label
 
   return (
-    <div ref={ref} style={{position:'relative', display:'flex', alignItems:'stretch', width: fullWidth ? '100%' : undefined}}>
+    <div ref={ref} style={{position:'relative', display:'flex', alignItems:'stretch', width: fullWidth ? '100%' : undefined, height: fullWidth ? '100%' : undefined}}>
       <button type="button" onClick={() => setOpen(o => !o)}
         style={{
           display:'flex', alignItems:'center', gap:6,
@@ -124,7 +124,7 @@ function MultiSelect({ label, options, values, onChange, minWidth = 155, fullWid
           minWidth: fullWidth ? 0 : minWidth,
           width: fullWidth ? '100%' : undefined,
           background:'none', border:'none', cursor:'pointer',
-          fontFamily:'"Lexend",sans-serif', fontSize:13,
+          fontFamily:'"Lexend",sans-serif', fontSize: fullWidth ? 15 : 13,
           color: active ? 'rgb(255,102,37)' : 'rgb(25,26,32)',
           fontWeight: active ? 600 : 400,
           whiteSpace:'nowrap', height:'100%',
@@ -283,18 +283,19 @@ export default function HomeSearchForm() {
               </div>
             </div>
 
-            <form onSubmit={handleSearch} style={{padding:'10px 12px 12px', display:'flex', flexDirection:'column', gap:8}}>
+            <form onSubmit={handleSearch} style={{padding:'12px 14px 14px', display:'flex', flexDirection:'column', gap:10}}>
 
               {/* Buy / Rent toggle */}
-              <div style={{display:'flex', gap:6}}>
+              <div style={{display:'flex', gap:4, padding:4, borderRadius:14, backgroundColor:'rgba(25,26,32,0.06)'}}>
                 {TX_TYPES.map(t => (
                   <button key={t} type="button" onClick={() => handleTxType(t)}
                     style={{
-                      flex:1, padding:'8px 0', borderRadius:8, border:'none', cursor:'pointer',
-                      fontFamily:'"Lexend",sans-serif', fontSize:13, fontWeight:600,
-                      backgroundColor: txType === t ? 'rgb(25,26,32)' : 'rgba(25,26,32,0.06)',
-                      color: txType === t ? 'white' : 'rgb(25,26,32)',
-                      transition:'background-color 0.15s',
+                      flex:1, height:40, borderRadius:10, border:'none', cursor:'pointer',
+                      fontFamily:'"Lexend",sans-serif', fontSize:14, fontWeight:600,
+                      backgroundColor: txType === t ? 'rgb(25,26,32)' : 'transparent',
+                      color: txType === t ? 'white' : 'rgba(25,26,32,0.7)',
+                      boxShadow: txType === t ? '0 4px 12px rgba(25,26,32,0.18)' : 'none',
+                      transition:'background-color 0.18s, color 0.18s, box-shadow 0.18s',
                     }}>
                     {t}
                   </button>
@@ -304,9 +305,9 @@ export default function HomeSearchForm() {
               {/* Location input */}
               <div style={{
                 display:'flex', alignItems:'center', gap:10,
-                padding:'0 14px', height:48,
-                border:'1px solid rgba(25,26,32,0.1)', borderRadius:10,
-                backgroundColor:'rgba(25,26,32,0.03)',
+                padding:'0 16px', height:52,
+                border:'none', borderRadius:14,
+                backgroundColor:'rgba(25,26,32,0.05)',
               }}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style={{flexShrink:0, opacity:0.3}}>
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="rgb(25,26,32)" strokeWidth="1.5"/>
@@ -314,16 +315,16 @@ export default function HomeSearchForm() {
                 </svg>
                 <input value={text} onChange={e => setText(e.target.value)}
                   placeholder="Region, municipality, locality…"
-                  style={{flex:1, border:'none', outline:'none', fontFamily:'"Lexend",sans-serif', fontSize:13, color:'rgb(25,26,32)', background:'transparent'}} />
+                  style={{flex:1, border:'none', outline:'none', fontFamily:'"Lexend",sans-serif', fontSize:15, color:'rgb(25,26,32)', background:'transparent'}} />
               </div>
 
               {/* Filters toggle */}
               <button type="button" onClick={() => setShowFilters(s => !s)}
                 style={{
                   display:'flex', alignItems:'center', justifyContent:'center', gap:6,
-                  padding:'9px 0', borderRadius:10, border:'1px solid rgba(25,26,32,0.1)',
+                  padding:'6px 0', border:'none',
                   background:'none', cursor:'pointer',
-                  fontFamily:'"Lexend",sans-serif', fontSize:13, fontWeight:500, color:'rgba(25,26,32,0.7)',
+                  fontFamily:'"Lexend",sans-serif', fontSize:13, fontWeight:500, color:'rgba(25,26,32,0.6)',
                 }}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                   <path d="M3 6h18M7 12h10M11 18h2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -337,27 +338,27 @@ export default function HomeSearchForm() {
 
               {showFilters && (
                 <>
-                  <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:8}}>
-                    <div style={{border:'1px solid rgba(25,26,32,0.1)', borderRadius:10, backgroundColor:'rgba(25,26,32,0.03)', height:48}}>
+                  <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:10}}>
+                    <div style={{display:'flex', alignItems:'stretch', borderRadius:14, backgroundColor:'rgba(25,26,32,0.05)', height:52}}>
                       <MultiSelect label="Property type" options={PROPERTY_TYPES} values={propTypes} onChange={setPropTypes} fullWidth />
                     </div>
-                    <div style={{border:'1px solid rgba(25,26,32,0.1)', borderRadius:10, backgroundColor:'rgba(25,26,32,0.03)', height:48}}>
+                    <div style={{display:'flex', alignItems:'stretch', borderRadius:14, backgroundColor:'rgba(25,26,32,0.05)', height:52}}>
                       <Select label="Budget" options={budgets.map(b => b.label)} value={budget} onChange={v => setBudget(v === 'Any' ? '' : v)} fullWidth />
                     </div>
                   </div>
-                  <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:8}}>
-                    <div style={{border:'1px solid rgba(25,26,32,0.1)', borderRadius:10, backgroundColor:'rgba(25,26,32,0.03)', height:48}}>
+                  <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:10}}>
+                    <div style={{display:'flex', alignItems:'stretch', borderRadius:14, backgroundColor:'rgba(25,26,32,0.05)', height:52}}>
                       <Select label="Min Beds" options={BED_OPTS} value={bedroomsMin} onChange={v => setBedroomsMin(v === 'Any' ? '' : v)} fullWidth />
                     </div>
-                    <div style={{border:'1px solid rgba(25,26,32,0.1)', borderRadius:10, backgroundColor:'rgba(25,26,32,0.03)', height:48}}>
+                    <div style={{display:'flex', alignItems:'stretch', borderRadius:14, backgroundColor:'rgba(25,26,32,0.05)', height:52}}>
                       <Select label="Max Beds" options={BED_OPTS} value={bedroomsMax} onChange={v => setBedroomsMax(v === 'Any' ? '' : v)} fullWidth />
                     </div>
                   </div>
-                  <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:8}}>
-                    <div style={{border:'1px solid rgba(25,26,32,0.1)', borderRadius:10, backgroundColor:'rgba(25,26,32,0.03)', height:48}}>
+                  <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:10}}>
+                    <div style={{display:'flex', alignItems:'stretch', borderRadius:14, backgroundColor:'rgba(25,26,32,0.05)', height:52}}>
                       <Select label="Min Size" options={SIZE_OPTS} value={sizeMin} onChange={v => setSizeMin(v === 'Any' ? '' : v)} fullWidth />
                     </div>
-                    <div style={{border:'1px solid rgba(25,26,32,0.1)', borderRadius:10, backgroundColor:'rgba(25,26,32,0.03)', height:48}}>
+                    <div style={{display:'flex', alignItems:'stretch', borderRadius:14, backgroundColor:'rgba(25,26,32,0.05)', height:52}}>
                       <Select label="Max Size" options={SIZE_OPTS} value={sizeMax} onChange={v => setSizeMax(v === 'Any' ? '' : v)} fullWidth />
                     </div>
                   </div>
@@ -365,9 +366,10 @@ export default function HomeSearchForm() {
               )}
 
               <button type="submit" style={{
-                width:'100%', padding:'14px 0', borderRadius:10, border:'none', cursor:'pointer',
-                backgroundColor:'rgb(25,26,32)', color:'white',
-                fontFamily:'"Lexend",sans-serif', fontSize:14, fontWeight:600,
+                width:'100%', height:54, borderRadius:14, border:'none', cursor:'pointer',
+                backgroundColor:'rgb(255,102,37)', color:'white',
+                boxShadow:'0 10px 24px rgba(255,102,37,0.28)',
+                fontFamily:'"Lexend",sans-serif', fontSize:15, fontWeight:600,
               }}>
                 Search
               </button>
@@ -416,7 +418,7 @@ export default function HomeSearchForm() {
                 <SEP />
                 <button type="submit" style={{
                   margin:'10px 8px', padding:'0 32px',
-                  backgroundColor:'rgb(25,26,32)', border:'none', cursor:'pointer',
+                  backgroundColor:'rgb(255,102,37)', border:'none', cursor:'pointer',
                   fontFamily:'"Lexend",sans-serif', fontSize:14, fontWeight:500, color:'white',
                   flexShrink:0, borderRadius:10, transition:'background-color 0.2s',
                 }}

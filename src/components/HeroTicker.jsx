@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 // One short line under the headline plus club facts on a slowly turning 3D ring:
 // the phrase in front is sharp and dark, phrases on the sides shrink, blur and fade.
 const PHRASES = [
-  'Verify your documents once',
+  'One document pack for every agency',
   'AI writes to agencies in their language',
   'Applications sent within minutes',
   'Viewings lined up for you',
@@ -83,14 +83,16 @@ function Ring() {
     const radiusFor = () => Math.min(430, Math.max(300, window.innerWidth * 0.36))
 
     const render = (now) => {
+      // While paused, keep the clock frozen so nothing jumps on resume.
       if (pausedRef.current) {
         if (!pausedAt) pausedAt = now
       } else if (pausedAt) {
         start += now - pausedAt
         pausedAt = 0
       }
+      const clock = pausedAt ? pausedAt : now
       const radius = radiusFor()
-      const base = ((now - start) / 1000 / TURN_SECONDS) * Math.PI * 2
+      const base = ((clock - start) / 1000 / TURN_SECONDS) * Math.PI * 2
       itemsRef.current.forEach((el, index) => {
         if (!el) return
         const angle = index * STEP - base
@@ -201,7 +203,7 @@ export default function HeroTicker() {
           color: 'rgb(25,26,32)',
         }}
       >
-        <span style={{ fontWeight: 600 }}>The housing club for expats, to rent or buy.</span> <span style={{ color: 'rgba(25,26,32,0.62)' }}>Verified once, the AI does the rest.</span>
+        <span style={{ fontWeight: 600 }}>The housing club for expats, to rent or buy.</span> <span style={{ color: 'rgba(25,26,32,0.62)' }}>You pick the home, the AI gets you in first.</span>
       </p>
       <div style={{ marginTop: 18 }} aria-label={PHRASES.join('. ')}>
         {reduced ? <StaticList /> : narrow ? <LinearTicker /> : <Ring />}
