@@ -97,14 +97,14 @@ export default function AnnouncementBar() {
         }}>
           {/* Desktop */}
           <span className="bar-text-desktop">
-            <RocketIcon /><strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Launching in August!</strong>
-            {' '}The first <strong style={{ color: '#fff', fontWeight: 600 }}>200 users</strong> get free apartment matching —{' '}
+            <RocketIcon /><strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Founding members wanted.</strong>
+            {' '}First month free for verified members in <strong style={{ color: '#fff', fontWeight: 600 }}>five German cities</strong> —{' '}
             <button onClick={() => setModalOpen(true)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'rgb(255,102,37)', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: 3 }}>join now</button>.
           </span>
           {/* Mobile — one line */}
           <span className="bar-text-mobile">
-            <RocketIcon /><strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Launching in August!</strong>
-            {' '}<strong style={{ color: '#fff', fontWeight: 600 }}>200</strong> free spots —{' '}
+            <RocketIcon /><strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Founding members:</strong>
+            {' '}<strong style={{ color: '#fff', fontWeight: 600 }}>first month free</strong> —{' '}
             <button onClick={() => setModalOpen(true)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'rgb(255,102,37)', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: 3 }}>join now</button>.
           </span>
         </p>

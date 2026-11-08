@@ -2,24 +2,28 @@ import React, { useState } from 'react'
 
 const FAQS = [
   {
-    q: 'How does automatic viewing booking work?',
-    a: 'Once you set your criteria, BookImmo monitors every listing source in real time. The moment a matching property appears, we secure a viewing slot on your behalf — before most buyers even see the listing.',
+    q: 'Who is the club for?',
+    a: 'People moving to or within Germany who rent through agencies and want someone to handle the German paperwork, letters and follow-ups. Today we work in Berlin, Munich, Frankfurt, Hamburg and Cologne.',
   },
   {
-    q: 'Does BookImmo work for both buying and renting?',
-    a: 'Yes. You can search and book viewings for properties for sale or for rent. Set your budget, type, and location once — we handle the rest.',
+    q: 'What does verification involve?',
+    a: 'You upload the documents German landlords ask for: ID, proof of income, Schufa or an equivalent from your country, and a short self-disclosure. The AI assembles the pack, a person checks it, and from then on it is attached to every application.',
   },
   {
-    q: 'What happens if I miss a viewing that was booked for me?',
-    a: 'No problem. You can reschedule directly through the platform. We also notify the agent immediately so the slot can be offered to someone else.',
+    q: 'Does the AI really send applications for me?',
+    a: 'Yes. It writes a letter for each flat in German, attaches your verified pack and sends it. You approve your criteria once and can pause at any time.',
   },
   {
-    q: 'Are there any fees to use BookImmo?',
-    a: 'Browsing and booking viewings is completely free for buyers and renters. We work with agencies and landlords who pay for premium placement.',
+    q: 'Is anything deducted when I sign a lease?',
+    a: 'No. There is no success fee and no share of your rent. Your membership simply ends when you sign.',
   },
   {
-    q: 'How quickly can I get a viewing after a new listing goes live?',
-    a: 'Typically within minutes. Our system processes new listings as they are published and submits viewing requests automatically — giving you a head start over everyone searching manually.',
+    q: 'What do agencies pay?',
+    a: 'Nothing for listing. When a lease is signed with a candidate we introduced, the agency shares part of the commission it receives from the owner. Tenants are never charged for this.',
+  },
+  {
+    q: 'Can I use the search without joining?',
+    a: 'Yes. The live search and map are open to everyone. Membership adds verification, automatic applications and partner exclusives.',
   },
 ]
 
@@ -54,7 +58,7 @@ export default function FAQ() {
             color: 'rgb(25,26,32)',
             margin: 0,
           }}>
-            Everything you need to know about BookImmo.
+            Everything you need to know about the club.
           </p>
         </div>
 

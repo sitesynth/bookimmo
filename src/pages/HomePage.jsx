@@ -7,11 +7,9 @@ import Hero from '../components/Hero.jsx'
 import PROPERTIESINTHEAREA from '../components/PROPERTIESINTHEAREA.jsx'
 import Explore from '../components/Explore.jsx'
 import NewListing from '../components/NewListing.jsx'
-import FeaturedProperties from '../components/FeaturedProperties.jsx'
-import Pricing from '../components/Pricing.jsx'
+import ClubSections from '../components/ClubSections.jsx'
 import FAQ from '../components/FAQ.jsx'
 import GETMORE from '../components/GETMORE.jsx'
-import REALESTATEAGENT from '../components/REALESTATEAGENT.jsx'
 import NEWSLETTER from '../components/NEWSLETTER.jsx'
 import Footer from '../components/Footer.jsx'
 import Variant1 from '../components/Variant1.jsx'
@@ -47,11 +45,9 @@ export default function HomePage() {
       <PROPERTIESINTHEAREA />
       <Explore />
       <NewListing />
-      <FeaturedProperties />
-      <Pricing />
+      <ClubSections />
       <FAQ />
       <GETMORE />
-      <REALESTATEAGENT />
       <NEWSLETTER />
       <Footer />
       <Variant1 />
