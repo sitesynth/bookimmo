@@ -4,7 +4,8 @@ export default function PROPERTIESINTHEAREA() {
   return (
     <>
       <style>{`
-        .framer-y50s6j { background-color: #fff !important; border-top: 1px solid rgba(25,26,32,0.08); box-shadow: 0 -18px 40px rgba(25,26,32,0.04); padding-top: clamp(48px, 7vw, 72px) !important; padding-left: max(24px, 4vw) !important; padding-right: max(24px, 4vw) !important; }
+        .framer-y50s6j { background-color: #fff !important; border-top: 1px solid rgba(25,26,32,0.08); padding-top: clamp(48px, 7vw, 72px) !important; padding-left: max(24px, 4vw) !important; padding-right: max(24px, 4vw) !important; }
+        @media (max-width: 809px) { .framer-1oqa2t2 { padding-bottom: 36px !important; } .framer-y50s6j { padding-top: 40px !important; } }
       `}</style>
       <section className="framer-y50s6j" id="how-it-works" style={{ minHeight: 0, height: 'auto', gap: 'clamp(36px, 5vw, 56px)', paddingTop: 'clamp(48px, 6vw, 72px)', paddingBottom: 'clamp(48px, 6vw, 72px)' }}><div className="framer-cio142"><div className="framer-14gdvu" data-framer-appear-id="appear-28" style={{}}><h2 className="framer-text framer-styles-preset-utqn72" style={{'--framer-text-alignment': "center"}}>The club. <span style={{'--framer-text-color': "var(--token-5c28b080-63a4-416d-b638-2f3867ab529e, rgb(255, 102, 37))"}} className="framer-text">Not another portal.</span></h2></div><div className="framer-29tyvk" style={{transform: "none"}}><p className="framer-text framer-styles-preset-14npl34" style={{'--framer-text-alignment': "center", '--framer-text-color': "var(--token-3991cae2-fa00-4648-803b-711c24c1718d, rgb(25, 26, 32))"}}>Portals collect ads and leave the work to you. The club does the work: it applies, follows up and lines up viewings, and partner agencies see you first.</p></div>
           <div style={{display:'flex', justifyContent:'center', marginTop: 28}}>
