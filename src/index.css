@@ -23,41 +23,22 @@ body,
   min-height: 100%;
 }
 
-/* Light sweep across buttons on hover. Add .btn-shine to a button or link;
-   .on-light uses an orange tint for pale buttons; a parent with .shine-host
-   triggers the sweep of a .btn-shine inside it (e.g. a whole card link). */
+/* Calm hover for every button: a small lift, a touch of brightness and a
+   deeper shadow. .btn-shine is the shared class; .on-light and .shine-host
+   are kept so existing markup keeps working. */
 .btn-shine {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
+  transition: transform 0.18s ease, filter 0.18s ease, box-shadow 0.18s ease;
 }
-.btn-shine::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: -80%;
-  width: 34%;
-  height: 260%;
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%);
-  transform: translate(-130%, 70%) rotate(24deg);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 0;
+.btn-shine:hover,
+.shine-host:hover .btn-shine,
+.btn-shine:focus-visible {
+  transform: translateY(-1px);
+  filter: brightness(1.07);
+  box-shadow: 0 8px 20px rgba(25, 26, 32, 0.16);
 }
-.btn-shine.on-light::after {
-  background: linear-gradient(90deg, rgba(255,102,37,0) 0%, rgba(255,102,37,0.26) 50%, rgba(255,102,37,0) 100%);
-}
-.btn-shine:hover::after,
-.shine-host:hover .btn-shine::after,
-.btn-shine:focus-visible::after {
-  animation: btnShineSweep 0.85s ease-out 1;
-}
-@keyframes btnShineSweep {
-  0%   { transform: translate(-130%, 70%) rotate(24deg); opacity: 0; }
-  15%  { opacity: 1; }
-  85%  { opacity: 1; }
-  100% { transform: translate(420%, -70%) rotate(24deg); opacity: 0; }
-}
+.btn-shine:active { transform: translateY(0); filter: brightness(0.97); }
+.btn-shine.on-light:hover,
+.shine-host:hover .btn-shine.on-light { filter: brightness(0.97); }
 @media (prefers-reduced-motion: reduce) {
-  .btn-shine:hover::after, .shine-host:hover .btn-shine::after, .btn-shine:focus-visible::after { animation: none; }
+  .btn-shine, .btn-shine:hover { transition: none; transform: none; }
 }
