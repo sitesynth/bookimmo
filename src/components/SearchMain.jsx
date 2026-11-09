@@ -156,6 +156,13 @@ function buildWorkspaceHeading(filters, selectedLocations = [], t) {
   return t.heading
 }
 
+function formatPublished(value, lang) {
+  const match = /^Updated (\d{4})-(\d{2})-(\d{2})$/.exec(value || '')
+  if (!match) return value
+  const [, y, m, d] = match
+  return lang === 'de' ? `Aktualisiert ${d}.${m}.${y}` : `Updated ${d}/${m}/${y}`
+}
+
 function buildListingPreviewBadges(property) {
   return [
     property.roomsLabel,
@@ -312,10 +319,9 @@ function ListingCard({
         borderRadius: 16,
         overflow: 'hidden',
         backgroundColor: 'white',
-        border: active ? '1px solid rgb(25,26,32)' : '1px solid rgba(25,26,32,0.08)',
-        boxShadow: active ? '0 24px 64px rgba(25,26,32,0.12)' : (compact ? 'none' : '0 18px 48px rgba(25,26,32,0.06)'),
-        transition: 'transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease',
-        transform: active ? 'translateY(-2px)' : 'none',
+        border: active ? '1px solid rgba(255,102,37,0.55)' : '1px solid rgba(25,26,32,0.08)',
+        boxShadow: active ? '0 0 0 3px rgba(255,102,37,0.10)' : 'none',
+        transition: 'box-shadow 160ms ease, border-color 160ms ease',
       }}
     >
       <div
@@ -396,7 +402,7 @@ function ListingCard({
               {property.priceLabel || t.priceOnRequest}
             </p>
             <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.52)', marginTop: 4 }}>
-              {property.published || t.recently}
+              {formatPublished(property.published, lang) || t.recently}
             </p>
           </div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
