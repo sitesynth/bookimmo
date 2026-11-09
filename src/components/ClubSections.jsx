@@ -7,7 +7,7 @@ const ORANGE_VAR = "var(--token-5c28b080-63a4-416d-b638-2f3867ab529e, rgb(255, 1
 const INK = 'rgb(25,26,32)'
 const BORDER = '1px solid rgba(25,26,32,0.08)'
 
-const section = { width: '100%', padding: '80px 40px', boxSizing: 'border-box' }
+const section = { width: '100%', padding: 'clamp(48px, 6vw, 72px) clamp(20px, 4vw, 40px)', boxSizing: 'border-box' }
 const inner = { maxWidth: 1200, margin: '0 auto' }
 
 function Button({ href, children, light = false }) {
@@ -32,7 +32,7 @@ function Button({ href, children, light = false }) {
 }
 
 const COMPARISON = [
-  ['Find agencies and listings', 'Several portals and agency sites, different in every city', 'Partner agencies and all major portals in one place'],
+  ['Find agencies and listings', 'Several portals and agency sites, different in every city', 'Partner agencies and portal listings in one place'],
   ['Write in the local language', 'You need the language or a translator', 'The AI writes each letter in the agency\'s language'],
   ['Collect the right documents', 'Unclear what is needed, and it differs per agency', 'A complete pack, checked by us, ready for every agency'],
   ['Apply', 'About an hour per flat', 'Minutes, automatically, for every matching flat'],
@@ -52,22 +52,41 @@ function Comparison() {
             Portals collect ads. The club does the work.
           </p>
         </div>
-        <div style={{ borderRadius: 16, border: BORDER, overflow: 'hidden', backgroundColor: '#fff' }}>
-          <div className="club-row" style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr 1fr', backgroundColor: INK }}>
+        <div className="club-table" style={{ borderRadius: 16, border: BORDER, overflow: 'hidden', backgroundColor: '#fff' }}>
+          <div className="club-row club-head" style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr 1fr', backgroundColor: INK }}>
             {['Task', 'On your own', 'In the club'].map((label) => (
               <p key={label} className="framer-text framer-styles-preset-91ry8n" style={{ margin: 0, padding: '14px 20px', color: 'rgb(245,245,245)' }}>{label}</p>
             ))}
           </div>
           {COMPARISON.map(([task, alone, club], index) => (
             <div key={task} className="club-row" style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr 1fr', borderTop: index ? BORDER : 'none' }}>
-              <p className="framer-text framer-styles-preset-ia5eoh" style={{ margin: 0, padding: '18px 20px', fontWeight: 600 }}>{task}</p>
-              <p className="framer-text framer-styles-preset-ia5eoh" style={{ margin: 0, padding: '18px 20px', color: 'rgba(25,26,32,0.62)' }}>{alone}</p>
-              <p className="framer-text framer-styles-preset-ia5eoh" style={{ margin: 0, padding: '18px 20px', backgroundColor: 'rgb(255,248,244)' }}>{club}</p>
+              <p className="framer-text framer-styles-preset-ia5eoh club-task" style={{ margin: 0, padding: '18px 20px', fontWeight: 600 }}>{task}</p>
+              <p className="framer-text framer-styles-preset-ia5eoh club-cell" data-label="On your own" style={{ margin: 0, padding: '18px 20px', color: 'rgba(25,26,32,0.62)' }}>{alone}</p>
+              <p className="framer-text framer-styles-preset-ia5eoh club-cell club-cell-win" data-label="In the club" style={{ margin: 0, padding: '18px 20px', backgroundColor: 'rgb(255,248,244)' }}>{club}</p>
             </div>
           ))}
         </div>
       </div>
-      <style>{`@media (max-width: 809px) { .club-row { grid-template-columns: minmax(0, 1fr) !important; } }`}</style>
+      <style>{`
+        @media (max-width: 809px) {
+          .club-head { display: none !important; }
+          .club-row { grid-template-columns: minmax(0, 1fr) !important; padding: 18px 18px 16px; gap: 10px; }
+          .club-task { padding: 0 !important; font-size: 17px !important; }
+          .club-cell { padding: 0 !important; background: transparent !important; }
+          .club-cell::before {
+            content: attr(data-label);
+            display: block;
+            margin-bottom: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(25,26,32,0.45);
+          }
+          .club-cell-win { padding: 12px 14px !important; background: rgb(255,248,244) !important; border-radius: 12px; }
+          .club-cell-win::before { color: rgb(255,102,37); }
+        }
+      `}</style>
     </section>
   )
 }
