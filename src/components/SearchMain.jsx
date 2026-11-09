@@ -10,20 +10,99 @@ import { buildListingDetailHref } from '../lib/listingRouting.js'
 import AuthGateModal from './AuthGateModal.jsx'
 import Is24MapView from './maps/Is24MapView.jsx'
 
-const BEDROOM_OPTIONS = [
-  { label: 'Any', min: '', max: '' },
-  { label: '2+', min: '2', max: '' },
-  { label: '3+', min: '3', max: '' },
-  { label: '4+', min: '4', max: '' },
-]
+const COPY = {
+  en: {
+    eyebrow: 'Find a home', heading: 'Where are you moving?',
+    sub: 'Search by city, district or street, see every home on the map and apply in a click.',
+    placeholder: 'City, district or street', searchNow: 'Search', saveSearch: 'Save search',
+    members: 'Members', promoTitle: 'Apply to any home in one click.',
+    promoText: 'The club writes to the agency for you. First month free, no card needed.', join: 'Join the club',
+    yourProfile: 'Your profile', profileDone: 'Complete. The club can apply for you.',
+    profileTodo: 'Complete it so the club can apply for you.', completeProfile: 'Complete profile',
+    refine: 'Refine', filters: 'Filters', searchText: 'Keyword', keywordPlaceholder: 'Street, district, keyword',
+    rooms: 'Rooms', any: 'Any', budget: 'Budget', anyBudget: 'Any budget', reset: 'Reset filters',
+    upTo: (n) => `Up to €${n.toLocaleString('en-US')}`, over: 'Over €4,000',
+    savedEyebrow: 'Saved searches', savedTitle: 'My searches',
+    savedEmpty: 'Save the current filters to reuse this search later.',
+    loadSearch: 'Load search', currentSearch: 'Current search', deleteSaved: 'Delete saved search',
+    homes: 'Homes', found: (n, m) => `${n} found · ${m} on the map`,
+    loading: 'Loading homes…', error: 'Could not load homes right now. Please try again in a moment.',
+    empty: 'No homes match this search yet. Try a nearby area or a wider budget. Moving somewhere we do not cover? Tell us at hello@book.immo and we will add it.',
+    showMore: (n, m) => `Show more (${n} of ${m})`, loadingShort: 'Loading…',
+    map: 'Map', mapEmpty: 'Homes appear here as pins. Some listings have no exact address and show in the list only.',
+    openOriginal: 'Open original listing',
+    locationOnRequest: 'Location on request', priceOnRequest: 'Price on request', recently: 'Recently published',
+    details: 'Details', apply: 'Apply', favAdd: 'Save to favorites', favRemove: 'Remove from favorites',
+    mySearch: 'My search', selectedAreas: 'Selected areas', roomsLabel: (n) => `${n}+ rooms`,
+    anyRooms: 'Any rooms', anyRoomCount: 'Any room count', flexible: 'Flexible budget',
+    nSearchUpdated: (l) => `Search updated for ${l}.`, searchUpdated: 'Search query updated.',
+    errSave: 'Could not save this search.', guestSearch: 'Search saved on this device. Sign in to keep it everywhere.',
+    serverSaveFailed: 'Server save failed, so this search was stored locally.', savedOk: 'Search saved.',
+    loaded: (n) => `Loaded saved search: ${n}`, errRemove: 'Could not remove saved search.',
+    serverDeleteFailed: 'Server delete failed, local copy was removed.', removedOk: 'Saved search removed.',
+    errFav: 'Could not update favorites.', guestFav: 'Saved on this device. Sign in to keep your favorites everywhere.',
+    favRemoved: 'Removed from favorites.', favSaved: 'Saved to favorites.',
+    errDraft: 'Could not create application draft.', signInApply: 'Sign in to continue your application.',
+    draftOk: 'Application draft created. Opening the application wizard.',
+  },
+  de: {
+    eyebrow: 'Wohnung finden', heading: 'Wohin ziehen Sie?',
+    sub: 'Suchen Sie nach Stadt, Stadtteil oder Straße, sehen Sie alle Wohnungen auf der Karte und bewerben Sie sich mit einem Klick.',
+    placeholder: 'Stadt, Stadtteil oder Straße', searchNow: 'Suchen', saveSearch: 'Suche speichern',
+    members: 'Mitglieder', promoTitle: 'Bewerben Sie sich mit einem Klick.',
+    promoText: 'Der Club schreibt die Agentur für Sie an. Erster Monat gratis, ohne Karte.', join: 'Club beitreten',
+    yourProfile: 'Ihr Profil', profileDone: 'Vollständig. Der Club kann sich für Sie bewerben.',
+    profileTodo: 'Vervollständigen Sie es, damit sich der Club für Sie bewerben kann.', completeProfile: 'Profil vervollständigen',
+    refine: 'Verfeinern', filters: 'Filter', searchText: 'Stichwort', keywordPlaceholder: 'Straße, Stadtteil, Stichwort',
+    rooms: 'Zimmer', any: 'Alle', budget: 'Budget', anyBudget: 'Beliebig', reset: 'Filter zurücksetzen',
+    upTo: (n) => `Bis €${n.toLocaleString('de-DE')}`, over: 'Über €4.000',
+    savedEyebrow: 'Gespeicherte Suchen', savedTitle: 'Meine Suchen',
+    savedEmpty: 'Speichern Sie die aktuellen Filter, um diese Suche später wiederzuverwenden.',
+    loadSearch: 'Suche laden', currentSearch: 'Aktuelle Suche', deleteSaved: 'Gespeicherte Suche löschen',
+    homes: 'Wohnungen', found: (n, m) => `${n} gefunden · ${m} auf der Karte`,
+    loading: 'Wohnungen werden geladen…', error: 'Die Angebote konnten nicht geladen werden. Bitte versuchen Sie es gleich noch einmal.',
+    empty: 'Für diese Suche gibt es noch keine Treffer. Probieren Sie ein Nachbargebiet oder ein höheres Budget. Ihre Stadt fehlt? Schreiben Sie uns an hello@book.immo.',
+    showMore: (n, m) => `Mehr anzeigen (${n} von ${m})`, loadingShort: 'Lädt…',
+    map: 'Karte', mapEmpty: 'Wohnungen erscheinen hier als Pins. Manche Angebote haben keine genaue Adresse und stehen nur in der Liste.',
+    openOriginal: 'Originalanzeige öffnen',
+    locationOnRequest: 'Lage auf Anfrage', priceOnRequest: 'Preis auf Anfrage', recently: 'Kürzlich veröffentlicht',
+    details: 'Details', apply: 'Bewerben', favAdd: 'Zu Favoriten hinzufügen', favRemove: 'Aus Favoriten entfernen',
+    mySearch: 'Meine Suche', selectedAreas: 'Gewählte Gebiete', roomsLabel: (n) => `${n}+ Zimmer`,
+    anyRooms: 'Alle Zimmer', anyRoomCount: 'Beliebige Zimmerzahl', flexible: 'Flexibles Budget',
+    nSearchUpdated: (l) => `Suche aktualisiert für ${l}.`, searchUpdated: 'Suchanfrage aktualisiert.',
+    errSave: 'Die Suche konnte nicht gespeichert werden.', guestSearch: 'Suche auf diesem Gerät gespeichert. Melden Sie sich an, um sie überall zu behalten.',
+    serverSaveFailed: 'Speichern auf dem Server fehlgeschlagen, die Suche wurde lokal gespeichert.', savedOk: 'Suche gespeichert.',
+    loaded: (n) => `Gespeicherte Suche geladen: ${n}`, errRemove: 'Die gespeicherte Suche konnte nicht entfernt werden.',
+    serverDeleteFailed: 'Löschen auf dem Server fehlgeschlagen, die lokale Kopie wurde entfernt.', removedOk: 'Gespeicherte Suche entfernt.',
+    errFav: 'Favoriten konnten nicht aktualisiert werden.', guestFav: 'Auf diesem Gerät gespeichert. Melden Sie sich an, um Ihre Favoriten überall zu behalten.',
+    favRemoved: 'Aus Favoriten entfernt.', favSaved: 'Zu Favoriten hinzugefügt.',
+    errDraft: 'Der Bewerbungsentwurf konnte nicht erstellt werden.', signInApply: 'Melden Sie sich an, um Ihre Bewerbung fortzusetzen.',
+    draftOk: 'Bewerbungsentwurf erstellt. Der Assistent wird geöffnet.',
+  },
+}
 
-const PRICE_OPTIONS = [
-  { label: 'Any budget', min: null, max: null },
-  { label: 'Up to €1,500', min: null, max: 1500 },
-  { label: '€1,500 - €2,500', min: 1500, max: 2500 },
-  { label: '€2,500 - €4,000', min: 2500, max: 4000 },
-  { label: 'Over €4,000', min: 4000, max: null },
-]
+function getCopy(lang) {
+  return COPY[lang] || COPY.en
+}
+
+function getBedroomOptions(t) {
+  return [
+    { label: t.any, min: '', max: '' },
+    { label: '2+', min: '2', max: '' },
+    { label: '3+', min: '3', max: '' },
+    { label: '4+', min: '4', max: '' },
+  ]
+}
+
+function getPriceOptions(t) {
+  return [
+    { label: t.anyBudget, min: null, max: null },
+    { label: t.upTo(1500), min: null, max: 1500 },
+    { label: `€${(1500).toLocaleString('en-US')} - €${(2500).toLocaleString('en-US')}`, min: 1500, max: 2500 },
+    { label: `€${(2500).toLocaleString('en-US')} - €${(4000).toLocaleString('en-US')}`, min: 2500, max: 4000 },
+    { label: t.over, min: 4000, max: null },
+  ]
+}
 
 const DEFAULT_GEOCODES = []
 const MAPBOX_ACCESS_TOKEN = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || ''
@@ -45,27 +124,27 @@ function sanitizeSavedSearchFilters(filters) {
   }
 }
 
-function buildSearchLabel(filters, selectedLocations = []) {
+function buildSearchLabel(filters, selectedLocations = [], t) {
   const locationLabel = selectedLocations[0]?.label
     || (filters.text ? filters.text.trim() : '')
-    || 'My search'
-  const roomsLabel = filters.roomsMin ? `${filters.roomsMin}+ rooms` : 'Any rooms'
-  const budgetLabel = filters.priceLabel || 'Flexible budget'
+    || t.mySearch
+  const roomsLabel = filters.roomsMin ? t.roomsLabel(filters.roomsMin) : t.anyRooms
+  const budgetLabel = filters.priceLabel || t.flexible
   return `${locationLabel} · ${roomsLabel}`
     .replace(/\s+/g, ' ')
     .trim() || budgetLabel
 }
 
-function buildSearchSummary(filters, selectedLocations = []) {
+function buildSearchSummary(filters, selectedLocations = [], t) {
   const locationLabel = selectedLocations.length
     ? selectedLocations.map((item) => item.label).slice(0, 2).join(', ')
-    : (filters.text || 'Selected areas')
-  const roomsLabel = filters.roomsMin ? `${filters.roomsMin}+ rooms` : 'Any room count'
-  const budgetLabel = filters.priceLabel || 'Any budget'
+    : (filters.text || t.selectedAreas)
+  const roomsLabel = filters.roomsMin ? t.roomsLabel(filters.roomsMin) : t.anyRoomCount
+  const budgetLabel = filters.priceLabel || t.anyBudget
   return `${locationLabel} · ${roomsLabel} · ${budgetLabel}`
 }
 
-function buildWorkspaceHeading(filters, selectedLocations = []) {
+function buildWorkspaceHeading(filters, selectedLocations = [], t) {
   if (selectedLocations.length) {
     return selectedLocations.map((item) => item.label).slice(0, 2).join(' + ')
   }
@@ -74,7 +153,7 @@ function buildWorkspaceHeading(filters, selectedLocations = []) {
     return filters.text.trim()
   }
 
-  return 'Where are you moving?'
+  return t.heading
 }
 
 function buildListingPreviewBadges(property) {
@@ -82,7 +161,6 @@ function buildListingPreviewBadges(property) {
     property.roomsLabel,
     property.areaLabel,
     property.district || property.postcode,
-    property.source ? property.source.toUpperCase() : null,
   ].filter(Boolean)
 }
 
@@ -147,12 +225,12 @@ function normalizePropertyForApplication(property) {
   }
 }
 
-function SavedSearchCard({ item, active, onApply, onDelete }) {
+function SavedSearchCard({ item, active, onApply, onDelete, t }) {
   return (
     <article
       style={{
         padding: 16,
-        borderRadius: 22,
+        borderRadius: 12,
         border: active ? '1px solid rgb(25,26,32)' : '1px solid rgba(25,26,32,0.08)',
         backgroundColor: active ? 'rgba(25,26,32,0.04)' : 'rgb(248,246,241)',
         display: 'flex',
@@ -181,7 +259,7 @@ function SavedSearchCard({ item, active, onApply, onDelete }) {
             fontSize: 18,
             lineHeight: 1,
           }}
-          aria-label="Delete saved search"
+          aria-label={t.deleteSaved}
         >
           ×
         </button>
@@ -192,7 +270,7 @@ function SavedSearchCard({ item, active, onApply, onDelete }) {
         onClick={() => onApply(item)}
         style={{
           border: 'none',
-          borderRadius: 14,
+          borderRadius: 4,
           padding: '11px 14px',
           backgroundColor: active ? 'rgb(25,26,32)' : 'white',
           color: active ? 'rgb(245,245,245)' : 'rgb(25,26,32)',
@@ -202,7 +280,7 @@ function SavedSearchCard({ item, active, onApply, onDelete }) {
           cursor: 'pointer',
         }}
       >
-        {active ? 'Current search' : 'Load search'}
+        {active ? t.currentSearch : t.loadSearch}
       </button>
     </article>
   )
@@ -217,6 +295,7 @@ function ListingCard({
   onPreview,
   compact = false,
   lang,
+  t,
   active = false,
 }) {
   const badges = buildListingPreviewBadges(property)
@@ -230,7 +309,7 @@ function ListingCard({
         gap: compact ? 16 : 0,
         flexShrink: 0,
         minHeight: compact ? 150 : 0,
-        borderRadius: 24,
+        borderRadius: 16,
         overflow: 'hidden',
         backgroundColor: 'white',
         border: active ? '1px solid rgb(25,26,32)' : '1px solid rgba(25,26,32,0.08)',
@@ -269,7 +348,7 @@ function ListingCard({
               {property.title}
             </h3>
             <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.54)', marginTop: 8 }}>
-              {property.address || 'Location on request'}
+              {property.address || t.locationOnRequest}
             </p>
           </div>
           <button
@@ -279,7 +358,7 @@ function ListingCard({
             style={{
               width: 40,
               height: 40,
-              borderRadius: 14,
+              borderRadius: 8,
               border: 'none',
               backgroundColor: 'rgba(248,246,241,1)',
               color: isFavorite ? 'rgb(255,102,37)' : 'rgb(25,26,32)',
@@ -287,7 +366,7 @@ function ListingCard({
               cursor: favoriteBusy ? 'default' : 'pointer',
               flexShrink: 0,
             }}
-            aria-label={isFavorite ? 'Remove from favorites' : 'Save to favorites'}
+            aria-label={isFavorite ? t.favRemove : t.favAdd}
           >
             {isFavorite ? '★' : '☆'}
           </button>
@@ -314,30 +393,13 @@ function ListingCard({
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginTop: 'auto', flexWrap: 'wrap' }}>
           <div>
             <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: compact ? 18 : 24, fontWeight: 700, color: 'rgb(25,26,32)' }}>
-              {property.priceLabel || 'Price on request'}
+              {property.priceLabel || t.priceOnRequest}
             </p>
             <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.52)', marginTop: 4 }}>
-              {property.published || 'Recently published'}
+              {property.published || t.recently}
             </p>
           </div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <button className="btn-shine on-light"
-              type="button"
-              onClick={() => onPreview(property)}
-              style={{
-                border: '1px solid rgba(25,26,32,0.12)',
-                borderRadius: 4,
-                padding: '11px 14px',
-                backgroundColor: 'white',
-                color: 'rgb(25,26,32)',
-                fontFamily: '"Lexend", sans-serif',
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
-            >
-              Preview
-            </button>
             <a className="btn-shine on-light"
               href={buildListingDetailHref(lang, property)}
               style={{
@@ -352,7 +414,7 @@ function ListingCard({
                 fontWeight: 600,
               }}
             >
-              Details
+              {t.details}
             </a>
             <button className="btn-shine"
               type="button"
@@ -360,16 +422,16 @@ function ListingCard({
               style={{
                 border: 'none',
                 borderRadius: 4,
-                padding: '11px 14px',
-                backgroundColor: 'rgb(25,26,32)',
-                color: 'rgb(245,245,245)',
+                padding: '11px 18px',
+                backgroundColor: 'rgb(255,102,37)',
+                color: '#fff',
                 fontFamily: '"Lexend", sans-serif',
                 fontSize: 13,
                 fontWeight: 600,
                 cursor: 'pointer',
               }}
             >
-              Apply
+              {t.apply}
             </button>
           </div>
         </div>
@@ -382,6 +444,9 @@ export default function SearchMain() {
   const location = useLocation()
   const navigate = useNavigate()
   const lang = readLang(location.pathname)
+  const t = getCopy(lang)
+  const BEDROOM_OPTIONS = getBedroomOptions(t)
+  const PRICE_OPTIONS = getPriceOptions(t)
   const query = new URLSearchParams(location.search)
 
   const [gateOpen, setGateOpen] = useState(false)
@@ -429,7 +494,7 @@ export default function SearchMain() {
       ...current,
       text: nextText || current.text,
       priceMax: profile.maxBudget ? Number(profile.maxBudget) : current.priceMax,
-      priceLabel: profile.maxBudget ? `Up to €${Number(profile.maxBudget).toLocaleString('en-US')}` : current.priceLabel,
+      priceLabel: profile.maxBudget ? t.upTo(Number(profile.maxBudget)) : current.priceLabel,
       page: 1,
     }))
     setLocationQuery(nextText || '')
@@ -550,8 +615,8 @@ export default function SearchMain() {
 
 
   const workspaceHeading = useMemo(
-    () => buildWorkspaceHeading(filters, selectedLocations),
-    [filters, selectedLocations],
+    () => buildWorkspaceHeading(filters, selectedLocations, t),
+    [filters, selectedLocations, t],
   )
 
   const shouldShowLocationSuggestions = locationQuery.trim().length > 0
@@ -606,9 +671,7 @@ export default function SearchMain() {
     }))
 
     if (nextQuery || matchedLocation) {
-      setUiNotice(matchedLocation
-        ? `Search updated for ${matchedLocation.label}.`
-        : 'Search query updated.')
+      setUiNotice(matchedLocation ? t.nSearchUpdated(matchedLocation.label) : t.searchUpdated)
     }
   }
 
@@ -630,8 +693,8 @@ export default function SearchMain() {
 
   async function saveCurrentSearch() {
     const item = {
-      name: buildSearchLabel(filters, selectedLocations),
-      summary: buildSearchSummary(filters, selectedLocations),
+      name: buildSearchLabel(filters, selectedLocations, t),
+      summary: buildSearchSummary(filters, selectedLocations, t),
       filters: sanitizeSavedSearchFilters(filters),
     }
 
@@ -643,7 +706,7 @@ export default function SearchMain() {
     })
 
     if (!result.ok) {
-      setUiNotice(result.error || 'Could not save this search.')
+      setUiNotice(result.error || t.errSave)
       return
     }
 
@@ -654,18 +717,18 @@ export default function SearchMain() {
     if (result.requiresAuth) {
       setGuestHref(`/${lang}/search`)
       setGateOpen(true)
-      setUiNotice('Search saved on this device. Sign in to keep it everywhere.')
+      setUiNotice(t.guestSearch)
       return
     }
 
-    setUiNotice(result.fallbackLocal ? 'Server save failed, so this search was stored locally.' : 'Search workspace saved.')
+    setUiNotice(result.fallbackLocal ? t.serverSaveFailed : t.savedOk)
   }
 
   function applySavedSearch(item) {
     setFilters(sanitizeSavedSearchFilters(item.filters || {}))
     setSelectedListing(null)
     setActiveSavedSearchId(item.id)
-    setUiNotice(`Loaded saved search: ${item.name}`)
+    setUiNotice(t.loaded(item.name))
   }
 
   async function deleteSavedSearch(searchId) {
@@ -676,11 +739,11 @@ export default function SearchMain() {
     }
 
     if (!result.ok) {
-      setUiNotice(result.error || 'Could not remove saved search.')
+      setUiNotice(result.error || t.errRemove)
       return
     }
 
-    setUiNotice(result.fallbackLocal ? 'Server delete failed, local copy was removed.' : 'Saved search removed.')
+    setUiNotice(result.fallbackLocal ? t.serverDeleteFailed : t.removedOk)
   }
 
   async function handleFavorite(property) {
@@ -689,36 +752,36 @@ export default function SearchMain() {
     setFavoriteBusyId('')
 
     if (!result.ok) {
-      setUiNotice(result.error || 'Could not update favorites.')
+      setUiNotice(result.error || t.errFav)
       return
     }
 
     if (result.requiresAuth) {
       setGuestHref(`/${lang}/search`)
       setGateOpen(true)
-      setUiNotice(result.isFavorite ? 'Saved on this device. Sign in to keep your favorites everywhere.' : 'Removed from favorites.')
+      setUiNotice(result.isFavorite ? t.guestFav : t.favRemoved)
       return
     }
 
-    setUiNotice(result.isFavorite ? 'Saved to favorites.' : 'Removed from favorites.')
+    setUiNotice(result.isFavorite ? t.favSaved : t.favRemoved)
   }
 
   async function handleApply(property) {
     const result = await createDraftApplication({ property: normalizePropertyForApplication(property) })
 
     if (!result.ok) {
-      setUiNotice(result.error || 'Could not create application draft.')
+      setUiNotice(result.error || t.errDraft)
       return
     }
 
     if (result.requiresAuth) {
       setGuestHref(`/${lang}/search`)
       setGateOpen(true)
-      setUiNotice('Sign in to continue your application.')
+      setUiNotice(t.signInApply)
       return
     }
 
-    setUiNotice('Application draft created. Opening the application wizard.')
+    setUiNotice(t.draftOk)
     setTimeout(() => navigate(`/${lang}/applications?application=${encodeURIComponent(result.id || '')}`), 500)
   }
 
@@ -740,20 +803,20 @@ export default function SearchMain() {
           <div className="sm-top" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) minmax(320px, 0.9fr)', gap: 20, alignItems: 'stretch' }}>
             <div>
               <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                Find a home
+                {t.eyebrow}
               </p>
               <h2 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 30, lineHeight: 1.04, color: 'rgb(25,26,32)', marginTop: 8, maxWidth: 740 }}>
                 {workspaceHeading}
               </h2>
               <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 15, lineHeight: 1.7, color: 'rgba(25,26,32,0.68)', marginTop: 14, maxWidth: 760 }}>
-                Search by city, district or street, see every home on the map and apply in a click.
+                {t.sub}
               </p>
 
               <div
                 style={{
                   marginTop: 18,
                   padding: 14,
-                  borderRadius: 22,
+                  borderRadius: 12,
                   backgroundColor: 'white',
                   border: '1px solid rgba(25,26,32,0.08)',
                   boxShadow: '0 12px 28px rgba(25,26,32,0.05)',
@@ -772,12 +835,12 @@ export default function SearchMain() {
                       gap: 12,
                       padding: '0 14px',
                       height: 56,
-                      borderRadius: 18,
-                      border: '1px solid rgba(25,26,32,0.1)',
-                      backgroundColor: 'rgb(248,246,241)',
+                      borderRadius: 8,
+                      border: '2px solid rgb(25,26,32)',
+                      backgroundColor: '#fff',
                     }}
                   >
-                    <span style={{ fontSize: 17, color: 'rgba(25,26,32,0.56)' }}>⌕</span>
+                    <span style={{ fontSize: 18, color: 'rgb(255,102,37)' }}>⌕</span>
                     <input
                       value={locationQuery}
                       onChange={(event) => setLocationQuery(event.target.value)}
@@ -787,13 +850,14 @@ export default function SearchMain() {
                           applyPrimarySearch()
                         }
                       }}
-                      placeholder="City, district or street"
+                      placeholder={t.placeholder}
                       style={{
                         flex: 1,
                         border: 'none',
                         background: 'transparent',
                         fontFamily: '"Lexend", sans-serif',
-                        fontSize: 15,
+                        fontSize: 16,
+                        fontWeight: 500,
                         color: 'rgb(25,26,32)',
                         outline: 'none',
                       }}
@@ -807,16 +871,16 @@ export default function SearchMain() {
                       height: 56,
                       border: 'none',
                       borderRadius: 4,
-                      padding: '0 18px',
-                      backgroundColor: 'rgb(25,26,32)',
-                      color: 'rgb(245,245,245)',
+                      padding: '0 26px',
+                      backgroundColor: 'rgb(255,102,37)',
+                      color: '#fff',
                       fontFamily: '"Lexend", sans-serif',
                       fontSize: 14,
                       fontWeight: 600,
                       cursor: 'pointer',
                     }}
                   >
-                    Search now
+                    {t.searchNow}
                   </button>
 
                   <button className="btn-shine on-light"
@@ -835,7 +899,7 @@ export default function SearchMain() {
                       cursor: 'pointer',
                     }}
                   >
-                    Save search
+                    {t.saveSearch}
                   </button>
                 </div>
 
@@ -853,37 +917,37 @@ export default function SearchMain() {
             </div>
 
             <div style={{ display: 'flex' }}>
-              <div style={{ flex: 1, padding: 24, borderRadius: 22, backgroundColor: 'rgb(25,26,32)', color: 'rgb(245,245,245)', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 12 }}>
+              <div style={{ flex: 1, padding: 24, borderRadius: 12, backgroundColor: 'rgb(25,26,32)', color: 'rgb(245,245,245)', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 12 }}>
                 {isAuthenticated ? (
                   <>
                     <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 12, opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                      Your profile
+                      {t.yourProfile}
                     </p>
                     <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 44, fontWeight: 700, lineHeight: 1, letterSpacing: '-0.03em' }}>
                       {completionPercent}%
                     </p>
                     <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 14, lineHeight: 1.55, opacity: 0.78 }}>
-                      {completionPercent >= 100 ? 'Complete. The club can apply for you.' : 'Complete it so the club can apply for you.'}
+                      {completionPercent >= 100 ? t.profileDone : t.profileTodo}
                     </p>
                     {completionPercent < 100 ? (
                       <Link to={`/${lang}/account`} className="btn-shine" style={{ alignSelf: 'flex-start', marginTop: 4, display: 'inline-flex', alignItems: 'center', padding: '12px 18px', borderRadius: 4, backgroundColor: 'rgb(255,102,37)', color: '#fff', textDecoration: 'none', fontFamily: '"Lexend", sans-serif', fontSize: 14, fontWeight: 600 }}>
-                        Complete profile
+                        {t.completeProfile}
                       </Link>
                     ) : null}
                   </>
                 ) : (
                   <>
                     <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 12, opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                      Members
+                      {t.members}
                     </p>
                     <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 26, fontWeight: 600, lineHeight: 1.15, letterSpacing: '-0.02em' }}>
-                      Apply to any home in one click.
+                      {t.promoTitle}
                     </p>
                     <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 14, lineHeight: 1.55, opacity: 0.78 }}>
-                      The club writes to the agency for you. First month free, no card needed.
+                      {t.promoText}
                     </p>
                     <Link to={`/${lang}/sign-up`} className="btn-shine" style={{ alignSelf: 'flex-start', marginTop: 4, display: 'inline-flex', alignItems: 'center', padding: '12px 18px', borderRadius: 4, backgroundColor: 'rgb(255,102,37)', color: '#fff', textDecoration: 'none', fontFamily: '"Lexend", sans-serif', fontSize: 14, fontWeight: 600 }}>
-                      Join the club
+                      {t.join}
                     </Link>
                   </>
                 )}
@@ -898,42 +962,25 @@ export default function SearchMain() {
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center' }}>
                 <div>
                   <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.5)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                    Search controls
+                    {t.refine}
                   </p>
                   <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 22, color: 'rgb(25,26,32)', marginTop: 8 }}>
-                    Advanced filters
+                    {t.filters}
                   </h3>
                 </div>
-                <button className="btn-shine"
-                  type="button"
-                  onClick={saveCurrentSearch}
-                  style={{
-                    border: 'none',
-                    borderRadius: 4,
-                    padding: '11px 14px',
-                    backgroundColor: 'rgb(25,26,32)',
-                    color: 'rgb(245,245,245)',
-                    fontFamily: '"Lexend", sans-serif',
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                  }}
-                >
-                  Save search
-                </button>
               </div>
 
               <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 18 }}>
                 <div>
-                  <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.62)', marginBottom: 8 }}>Search text</p>
+                  <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.62)', marginBottom: 8 }}>{t.searchText}</p>
                   <input
                     value={filters.text}
                     onChange={(event) => setFilters((current) => ({ ...current, text: event.target.value, page: 1 }))}
-                    placeholder="Street, district, keyword"
+                    placeholder={t.keywordPlaceholder}
                     style={{
                       width: '100%',
                       padding: '12px 14px',
-                      borderRadius: 14,
+                      borderRadius: 8,
                       border: '1px solid rgba(25,26,32,0.12)',
                       fontFamily: '"Lexend", sans-serif',
                       fontSize: 14,
@@ -943,7 +990,7 @@ export default function SearchMain() {
                 </div>
 
                 <div>
-                  <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.62)', marginBottom: 8 }}>Rooms</p>
+                  <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.62)', marginBottom: 8 }}>{t.rooms}</p>
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                     {BEDROOM_OPTIONS.map((option) => (
                       <FilterChip
@@ -958,12 +1005,12 @@ export default function SearchMain() {
                 </div>
 
                 <div>
-                  <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.62)', marginBottom: 8 }}>Budget</p>
+                  <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.62)', marginBottom: 8 }}>{t.budget}</p>
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                     {PRICE_OPTIONS.map((option) => (
                       <FilterChip
                         key={option.label}
-                        active={filters.priceLabel === option.label || (!filters.priceLabel && option.label === 'Any budget')}
+                        active={filters.priceLabel === option.label || (!filters.priceLabel && option.label === t.anyBudget)}
                         onClick={() => setPrice(option)}
                       >
                         {option.label}
@@ -987,7 +1034,7 @@ export default function SearchMain() {
                     cursor: 'pointer',
                   }}
                 >
-                  Reset filters
+                  {t.reset}
                 </button>
               </div>
             </SearchWorkspaceCard>
@@ -996,10 +1043,10 @@ export default function SearchMain() {
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'flex-start' }}>
                 <div>
                   <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.5)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                    Saved searches
+                    {t.savedEyebrow}
                   </p>
                   <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 22, color: 'rgb(25,26,32)', marginTop: 8 }}>
-                    Saved presets
+                    {t.savedTitle}
                   </h3>
                 </div>
               </div>
@@ -1012,10 +1059,11 @@ export default function SearchMain() {
                     active={item.id === activeSavedSearchId}
                     onApply={applySavedSearch}
                     onDelete={deleteSavedSearch}
+                    t={t}
                   />
                 )) : (
-                  <div style={{ borderRadius: 22, padding: 18, backgroundColor: 'rgb(248,246,241)', fontFamily: '"Lexend", sans-serif', fontSize: 13, lineHeight: 1.7, color: 'rgba(25,26,32,0.62)' }}>
-                    Save the current filters to reuse this search across sessions.
+                  <div style={{ borderRadius: 12, padding: 18, backgroundColor: 'rgb(248,246,241)', fontFamily: '"Lexend", sans-serif', fontSize: 13, lineHeight: 1.7, color: 'rgba(25,26,32,0.62)' }}>
+                    {t.savedEmpty}
                   </div>
                 )}
               </div>
@@ -1023,32 +1071,24 @@ export default function SearchMain() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            <SearchWorkspaceCard>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 16, flexWrap: 'wrap' }}>
-                <h3 style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 26, color: 'rgb(25,26,32)' }}>
-                  Homes
-                </h3>
-                <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 14, color: 'rgba(25,26,32,0.6)' }}>
-                  {summary.results} found · {summary.mapped} on the map
-                </p>
-              </div>
-            </SearchWorkspaceCard>
-
             <div className="sm-split" style={{ display: 'grid', gridTemplateColumns: 'minmax(420px, 1.12fr) minmax(360px, 0.88fr)', gap: 20, alignItems: 'start' }}>
               <SearchWorkspaceCard style={{ padding: 24, minHeight: 0 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', minHeight: 0, alignSelf: 'start' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 18 }}>
                     <div>
                       <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 22, color: 'rgb(25,26,32)', margin: 0 }}>
-                        Latest homes
+                        {t.homes}
                       </h3>
+                      <p style={{ margin: '6px 0 0', fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.6)' }}>
+                        {t.found(summary.results, summary.mapped)}
+                      </p>
                     </div>
                     {uiNotice ? (
                       <div
                         style={{
                           maxWidth: 420,
                           padding: '12px 14px',
-                          borderRadius: 14,
+                          borderRadius: 8,
                           backgroundColor: 'rgb(248,246,241)',
                           color: 'rgb(25,26,32)',
                           fontFamily: '"Lexend", sans-serif',
@@ -1071,15 +1111,15 @@ export default function SearchMain() {
                   }}>
                     {loading ? (
                       <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 14, color: 'rgba(25,26,32,0.54)', padding: '20px 0' }}>
-                        Loading homes…
+                        {t.loading}
                       </p>
                     ) : error ? (
                       <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 14, color: 'rgba(25,26,32,0.54)', padding: '20px 0' }}>
-                        Could not load homes right now. Please try again in a moment.
+                        {t.error}
                       </p>
                     ) : listings.length === 0 ? (
-                      <div style={{ borderRadius: 24, padding: 20, backgroundColor: 'rgb(248,246,241)', fontFamily: '"Lexend", sans-serif', color: 'rgba(25,26,32,0.62)', lineHeight: 1.65 }}>
-                        No homes match this search yet. Try a nearby area or a wider budget. Moving somewhere we do not cover? Tell us at hello@book.immo and we will add it.
+                      <div style={{ borderRadius: 12, padding: 20, backgroundColor: 'rgb(248,246,241)', fontFamily: '"Lexend", sans-serif', color: 'rgba(25,26,32,0.62)', lineHeight: 1.65 }}>
+                        {t.empty}
                       </div>
                     ) : (
                       enrichedListings.map((property) => (
@@ -1092,6 +1132,7 @@ export default function SearchMain() {
                           favoriteBusy={favoriteBusyId === String(property.id)}
                           onPreview={setSelectedListing}
                           lang={lang}
+                          t={t}
                           active={String(property.id) === String(activeListing?.id)}
                         />
                       ))
@@ -1114,7 +1155,7 @@ export default function SearchMain() {
                           cursor: loadingMore ? 'default' : 'pointer',
                         }}
                       >
-                        {loadingMore ? 'Loading…' : `Show more (${listings.length} of ${totalResults})`}
+                        {loadingMore ? t.loadingShort : t.showMore(listings.length, totalResults)}
                       </button>
                     ) : null}
                   </div>
@@ -1125,14 +1166,9 @@ export default function SearchMain() {
                 <div style={{ display: 'flex', flexDirection: 'column', minHeight: 0, position: 'sticky', top: 24, alignSelf: 'start' }}>
                   <div style={{ padding: 24, borderBottom: '1px solid rgba(25,26,32,0.08)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-                      <div>
-                        <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.52)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                          Map selection
-                        </p>
-                        <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 22, color: 'rgb(25,26,32)', marginTop: 8 }}>
-                          {activeListing ? activeListing.title : 'Choose a pin or result'}
-                        </h3>
-                      </div>
+                      <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 22, color: 'rgb(25,26,32)', margin: 0 }}>
+                        {t.map}
+                      </h3>
                       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                         {selectedLocations.map((locationOption) => (
                           <span key={locationOption.id} style={{ borderRadius: 999, padding: '9px 12px', backgroundColor: 'rgb(248,246,241)', fontFamily: '"Lexend", sans-serif', fontSize: 12 }}>
@@ -1142,9 +1178,6 @@ export default function SearchMain() {
                       </div>
                     </div>
 
-                    <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 14, lineHeight: 1.65, color: 'rgba(25,26,32,0.62)', marginTop: 12 }}>
-                      {activeListing ? activeListing.address : 'Select a pin or a listing card to preview the active property here.'}
-                    </p>
                   </div>
 
                   <div style={{ padding: 20, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 18 }}>
@@ -1166,11 +1199,12 @@ export default function SearchMain() {
                         onPreview={setSelectedListing}
                         compact
                         lang={lang}
+                        t={t}
                         active
                       />
                     ) : (
-                      <div style={{ borderRadius: 24, padding: 20, backgroundColor: 'rgb(248,246,241)', fontFamily: '"Lexend", sans-serif', color: 'rgba(25,26,32,0.62)', lineHeight: 1.65 }}>
-                        Homes appear here as pins. Some listings have no exact address and show in the list only.
+                      <div style={{ borderRadius: 12, padding: 20, backgroundColor: 'rgb(248,246,241)', fontFamily: '"Lexend", sans-serif', color: 'rgba(25,26,32,0.62)', lineHeight: 1.65 }}>
+                        {t.mapEmpty}
                       </div>
                     )}
 
@@ -1191,7 +1225,7 @@ export default function SearchMain() {
                           fontWeight: 600,
                         }}
                       >
-                        Open original listing
+                        {t.openOriginal}
                       </a>
                     ) : null}
                   </div>
