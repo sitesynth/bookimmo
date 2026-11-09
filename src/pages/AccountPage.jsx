@@ -9,7 +9,7 @@ export default function AccountPage() {
       <SvgSprites />
       <CabinetLayout
         title="Profile"
-        subtitle="Build the renter profile that will power applications, saved searches and property matching."
+        subtitle="The profile the club uses to apply for you."
       >
         <ProfileShell />
       </CabinetLayout>

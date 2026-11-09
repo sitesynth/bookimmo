@@ -162,7 +162,6 @@ export default function PropertyDetailPage() {
       <SvgSprites />
       <CabinetLayout
         title={property.title}
-        subtitle={`Unified listing detail view for ${property.source || 'bookimmo'} sources. This route is provider-aware, so we can plug in the other monitored feeds without replacing the page.`}
       >
         <Card>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 18 }}>
@@ -193,9 +192,6 @@ export default function PropertyDetailPage() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                <span style={{ borderRadius: 999, padding: '8px 12px', backgroundColor: 'rgb(248,246,241)', fontFamily: '"Lexend", sans-serif', fontSize: 12 }}>
-                  Source: {property.source}
-                </span>
                 {property.publicationState ? (
                   <span style={{ borderRadius: 999, padding: '8px 12px', backgroundColor: 'rgba(39,174,96,0.10)', fontFamily: '"Lexend", sans-serif', fontSize: 12 }}>
                     {property.publicationState}

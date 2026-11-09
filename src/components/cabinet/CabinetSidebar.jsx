@@ -29,17 +29,9 @@ const BRAND = {
 }
 
 const BRAND_TAG = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  padding: '4px 10px',
-  borderRadius: 4,
-  backgroundColor: 'rgba(255,102,37,0.1)',
-  color: 'rgb(214,78,16)',
   fontFamily: '"Lexend", sans-serif',
-  fontSize: 11,
-  fontWeight: 600,
-  letterSpacing: '0.1em',
-  textTransform: 'uppercase',
+  fontSize: 12,
+  color: 'rgba(25,26,32,0.5)',
 }
 
 const NAV = {

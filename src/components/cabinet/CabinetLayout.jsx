@@ -65,10 +65,10 @@ export default function CabinetLayout({ title, subtitle, children, aside = null 
               flexWrap: 'wrap',
             }}>
               <div>
-                <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase', opacity: 0.72 }}>
-                  Bookimmo workspace
+                <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.5 }}>
+                  Bookimmo
                 </p>
-                <h1 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 32, lineHeight: 1.05, marginTop: 10 }}>
+                <h1 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 'clamp(24px, 3vw, 32px)', lineHeight: 1.12, marginTop: 8, fontWeight: 600 }}>
                   {title}
                 </h1>
                 {subtitle ? (
@@ -78,20 +78,11 @@ export default function CabinetLayout({ title, subtitle, children, aside = null 
                 ) : null}
               </div>
 
-              <div style={{
-                minWidth: 220,
-                padding: '16px 18px',
-                borderRadius: 20,
-                backgroundColor: 'rgba(255,255,255,0.08)',
-                border: '1px solid rgba(255,255,255,0.08)',
-              }}>
-                <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, opacity: 0.68 }}>
-                  Session
+              {isAuthenticated && !loading ? (
+                <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 13, opacity: 0.6 }}>
+                  {user?.email || 'Signed in'}
                 </p>
-                <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 15, fontWeight: 600, marginTop: 4 }}>
-                  {loading ? 'Checking account…' : isAuthenticated ? (user?.email || 'Signed in') : 'Guest mode'}
-                </p>
-              </div>
+              ) : null}
             </div>
           </section>
 

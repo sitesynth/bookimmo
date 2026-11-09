@@ -87,8 +87,8 @@ export default function DashboardHomeMain() {
 
   return (
     <CabinetLayout
-      title={isAuthenticated ? `Welcome back, ${firstName}` : 'Your Bookimmo workspace'}
-      subtitle="Dashboard-home now shows live listing inventory and real cabinet state instead of demo property cards with dead routes."
+      title={isAuthenticated ? `Welcome back, ${firstName}` : 'Your home search'}
+      subtitle="New homes, your favorites and your applications in one place."
     >
       <section style={{
         padding: 28,
