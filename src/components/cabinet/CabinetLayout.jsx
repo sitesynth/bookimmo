@@ -42,7 +42,7 @@ export default function CabinetLayout({ title, subtitle, children, aside = null 
         />
 
         <main style={{
-          flex: '1 1 840px',
+          flex: '1 1 560px',
           minWidth: 0,
           display: 'flex',
           flexDirection: 'column',

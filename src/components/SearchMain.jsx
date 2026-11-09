@@ -348,7 +348,7 @@ function ListingCard({
       <div style={{ padding: compact ? '16px 16px 16px 0' : 20, display: 'flex', flexDirection: 'column', gap: compact ? 10 : 12, flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'flex-start' }}>
           <div>
-            <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: compact ? 17 : 22, fontWeight: 600, lineHeight: 1.2, color: 'rgb(25,26,32)' }}>
+            <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: compact ? 17 : 18, fontWeight: 600, lineHeight: 1.2, color: 'rgb(25,26,32)' }}>
               {property.title}
             </h3>
             <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.54)', marginTop: 8 }}>
@@ -396,7 +396,7 @@ function ListingCard({
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginTop: 'auto', flexWrap: 'wrap' }}>
           <div>
-            <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: compact ? 20 : 24, fontWeight: 700, color: 'rgb(25,26,32)' }}>
+            <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: compact ? 20 : 22, fontWeight: 700, color: 'rgb(25,26,32)' }}>
               {property.priceLabel || t.priceOnRequest}
             </p>
             <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.52)', marginTop: 4 }}>
@@ -794,7 +794,7 @@ export default function SearchMain() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         <div>
         <style>{`
-          @media (max-width: 1100px) {
+          @media (max-width: 1280px) {
             .sm-top, .sm-main, .sm-split { grid-template-columns: minmax(0, 1fr) !important; }
           }
         `}</style>
@@ -954,22 +954,11 @@ export default function SearchMain() {
           </div>
         </div>
 
-        <div className="sm-main" style={{ display: 'grid', gridTemplateColumns: '320px minmax(0, 1fr)', gap: 20, alignItems: 'start' }}>
+        <div className="sm-main" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: 20, alignItems: 'start' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            <SearchWorkspaceCard style={{ position: 'sticky', top: 24 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center' }}>
-                <div>
-                  <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.5)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                    {t.refine}
-                  </p>
-                  <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 22, color: 'rgb(25,26,32)', marginTop: 8 }}>
-                    {t.filters}
-                  </h3>
-                </div>
-              </div>
-
-              <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 18 }}>
-                <div>
+            <SearchWorkspaceCard style={{ padding: 20 }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px 28px', alignItems: 'flex-end' }}>
+                <div style={{ flex: '1 1 220px', minWidth: 0 }}>
                   <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.62)', marginBottom: 8 }}>{t.searchText}</p>
                   <input
                     value={filters.text}
@@ -977,7 +966,7 @@ export default function SearchMain() {
                     placeholder={t.keywordPlaceholder}
                     style={{
                       width: '100%',
-                      padding: '12px 14px',
+                      padding: '10px 14px',
                       borderRadius: 8,
                       border: '1px solid rgba(25,26,32,0.12)',
                       fontFamily: '"Lexend", sans-serif',
@@ -1023,7 +1012,7 @@ export default function SearchMain() {
                   style={{
                     border: '1px solid rgba(25,26,32,0.12)',
                     borderRadius: 4,
-                    padding: '14px 16px',
+                    padding: '11px 16px',
                     backgroundColor: 'rgb(248,246,241)',
                     color: 'rgb(25,26,32)',
                     fontFamily: '"Lexend", sans-serif',
@@ -1037,39 +1026,29 @@ export default function SearchMain() {
               </div>
             </SearchWorkspaceCard>
 
-            <SearchWorkspaceCard>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'flex-start' }}>
-                <div>
-                  <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.5)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                    {t.savedEyebrow}
-                  </p>
-                  <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 22, color: 'rgb(25,26,32)', marginTop: 8 }}>
-                    {t.savedTitle}
-                  </h3>
+            {savedSearches.length ? (
+              <SearchWorkspaceCard style={{ padding: 20 }}>
+                <p style={{ margin: '0 0 12px', fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.62)' }}>
+                  {t.savedTitle}
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12 }}>
+                  {savedSearches.map((item) => (
+                    <SavedSearchCard
+                      key={item.id}
+                      item={item}
+                      active={item.id === activeSavedSearchId}
+                      onApply={applySavedSearch}
+                      onDelete={deleteSavedSearch}
+                      t={t}
+                    />
+                  ))}
                 </div>
-              </div>
-
-              <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {savedSearches.length ? savedSearches.map((item) => (
-                  <SavedSearchCard
-                    key={item.id}
-                    item={item}
-                    active={item.id === activeSavedSearchId}
-                    onApply={applySavedSearch}
-                    onDelete={deleteSavedSearch}
-                    t={t}
-                  />
-                )) : (
-                  <div style={{ borderRadius: 12, padding: 18, backgroundColor: 'rgb(248,246,241)', fontFamily: '"Lexend", sans-serif', fontSize: 13, lineHeight: 1.7, color: 'rgba(25,26,32,0.62)' }}>
-                    {t.savedEmpty}
-                  </div>
-                )}
-              </div>
-            </SearchWorkspaceCard>
+              </SearchWorkspaceCard>
+            ) : null}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            <div className="sm-split" style={{ display: 'grid', gridTemplateColumns: 'minmax(420px, 1.3fr) minmax(320px, 0.8fr)', gap: 20, alignItems: 'start' }}>
+            <div className="sm-split" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.6fr) minmax(0, 1fr)', gap: 20, alignItems: 'start' }}>
               <SearchWorkspaceCard style={{ padding: 24, minHeight: 0 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', minHeight: 0, alignSelf: 'start' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 18 }}>
@@ -1099,9 +1078,10 @@ export default function SearchMain() {
                   </div>
 
                   <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 18,
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+                    gap: 20,
+                    alignItems: 'stretch',
                   }}>
                     {loading ? (
                       <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 14, color: 'rgba(25,26,32,0.54)', padding: '20px 0' }}>
@@ -1127,7 +1107,6 @@ export default function SearchMain() {
                           onPreview={setSelectedListing}
                           lang={lang}
                           t={t}
-                          compact
                           active={String(property.id) === String(activeListing?.id)}
                         />
                       ))

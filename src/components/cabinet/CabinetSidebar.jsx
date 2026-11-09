@@ -96,7 +96,7 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
       `}</style>
       <div className="cab-brand" style={BRAND}>
         <Link to={`/${lang}`} aria-label="BookImmo" style={{ display: 'inline-block', lineHeight: 0 }}>
-          <BookImmoLogo height={28} />
+          <BookImmoLogo height={32} />
         </Link>
       </div>
 
