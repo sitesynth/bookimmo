@@ -269,7 +269,7 @@ export default function HomeSearchForm() {
   if (isMobile) {
     return (
       <div style={{ position:'relative', width:'100%', boxSizing:'border-box' }}>
-        <style>{ANIM_STYLE}</style>
+        <style>{ANIM_STYLE + `.home-search-input::placeholder{color:rgba(25,26,32,0.55);opacity:1}`}</style>
         <div style={BORDER_WRAP}>
           <div style={{ backgroundColor:'white', borderRadius:16 }}>
 
@@ -305,17 +305,18 @@ export default function HomeSearchForm() {
               {/* Location input */}
               <div style={{
                 display:'flex', alignItems:'center', gap:10,
-                padding:'0 16px', height:52,
-                border:'none', borderRadius:14,
-                backgroundColor:'rgba(25,26,32,0.05)',
+                padding:'0 18px', height:64,
+                border:'2px solid rgb(25,26,32)', borderRadius:8,
+                backgroundColor:'#fff', boxShadow:'0 6px 18px rgba(25,26,32,0.08)',
               }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style={{flexShrink:0, opacity:0.3}}>
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="rgb(25,26,32)" strokeWidth="1.5"/>
-                  <circle cx="12" cy="10" r="3" stroke="rgb(25,26,32)" strokeWidth="1.5"/>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style={{flexShrink:0}}>
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="rgb(255,102,37)" strokeWidth="1.8"/>
+                  <circle cx="12" cy="10" r="3" stroke="rgb(255,102,37)" strokeWidth="1.8"/>
                 </svg>
                 <input value={text} onChange={e => setText(e.target.value)}
-                  placeholder="Region, municipality, locality…"
-                  style={{flex:1, border:'none', outline:'none', fontFamily:'"Lexend",sans-serif', fontSize:15, color:'rgb(25,26,32)', background:'transparent'}} />
+                  className="home-search-input"
+                  placeholder="Where do you want to live?"
+                  style={{flex:1, minWidth:0, border:'none', outline:'none', fontFamily:'"Lexend",sans-serif', fontSize:17, fontWeight:500, color:'rgb(25,26,32)', background:'transparent'}} />
               </div>
 
               {/* Filters toggle */}
@@ -366,10 +367,9 @@ export default function HomeSearchForm() {
               )}
 
               <button type="submit" className="btn-shine" style={{
-                width:'100%', height:54, borderRadius:4, border:'none', cursor:'pointer',
+                width:'100%', height:46, borderRadius:4, border:'none', cursor:'pointer',
                 backgroundColor:'rgb(255,102,37)', color:'white',
-                boxShadow:'0 10px 24px rgba(255,102,37,0.28)',
-                fontFamily:'"Lexend",sans-serif', fontSize:15, fontWeight:600,
+                fontFamily:'"Lexend",sans-serif', fontSize:14, fontWeight:600,
               }}>
                 Search
               </button>
