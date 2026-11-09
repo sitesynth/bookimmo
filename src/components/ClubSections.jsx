@@ -14,6 +14,7 @@ function Button({ href, children, light = false }) {
   return (
     <a
       href={href}
+      className={light ? 'btn-shine on-light' : 'btn-shine'}
       style={{
         display: 'inline-block',
         padding: '12px 16px',

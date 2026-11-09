@@ -7,6 +7,7 @@ export default function PROPERTIESINTHEAREA() {
           <div style={{display:'flex', justifyContent:'center', marginTop: 28}}>
             <a
               href="./sign-up"
+              className="btn-shine"
               style={{
                 textDecoration: 'none',
                 display: 'inline-block',

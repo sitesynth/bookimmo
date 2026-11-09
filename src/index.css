@@ -22,3 +22,43 @@ body,
 #root {
   min-height: 100%;
 }
+
+/* Light sweep across buttons on hover. Add .btn-shine to a button or link;
+   .on-light uses an orange tint for pale buttons; a parent with .shine-host
+   triggers the sweep of a .btn-shine inside it (e.g. a whole card link). */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 34%;
+  height: 260%;
+  margin-top: -130%;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%);
+  transform: translate(-130%, 70%) rotate(24deg);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.btn-shine.on-light::after {
+  background: linear-gradient(90deg, rgba(255,102,37,0) 0%, rgba(255,102,37,0.26) 50%, rgba(255,102,37,0) 100%);
+}
+.btn-shine:hover::after,
+.shine-host:hover .btn-shine::after,
+.btn-shine:focus-visible::after {
+  animation: btnShineSweep 0.85s ease-out 1;
+}
+@keyframes btnShineSweep {
+  0%   { transform: translate(-130%, 70%) rotate(24deg); opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translate(420%, -70%) rotate(24deg); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-shine:hover::after, .shine-host:hover .btn-shine::after, .btn-shine:focus-visible::after { animation: none; }
+}

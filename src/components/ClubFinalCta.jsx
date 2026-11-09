@@ -36,12 +36,14 @@ export default function ClubFinalCta() {
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginTop: 30 }}>
           <Link
             to={`/${lang}/sign-up`}
+            className="btn-shine on-light"
             style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minHeight: 54, padding: '0 30px', borderRadius: 14, backgroundColor: '#fff', color: INK, fontFamily: FONT, fontSize: 16, fontWeight: 600, textDecoration: 'none', boxShadow: '0 10px 24px rgba(25,26,32,0.18)' }}
           >
             Join the club
           </Link>
           <Link
             to={`/${lang}/search`}
+            className="btn-shine"
             style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minHeight: 54, padding: '0 28px', borderRadius: 14, border: '1.5px solid rgba(255,255,255,0.7)', color: '#fff', fontFamily: FONT, fontSize: 16, fontWeight: 600, textDecoration: 'none' }}
           >
             Browse live listings

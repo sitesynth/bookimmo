@@ -143,6 +143,7 @@ function RailCard({ listing, lang, compact = false }) {
     >
       <Link
         to={buildListingDetailHref(lang, listing)}
+        className="shine-host"
         style={{
           color: 'inherit',
           textDecoration: 'none',
@@ -307,7 +308,7 @@ function RailCard({ listing, lang, compact = false }) {
             }}>
               {listing?.priceLabel || 'View details'}
             </div>
-            <span style={{
+            <span className="btn-shine" style={{
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -458,6 +459,7 @@ export default function LiveListingFeed({
 
         <Link
           to={resolvedHref}
+          className="btn-shine"
           style={{
             display: 'inline-flex',
             alignItems: 'center',

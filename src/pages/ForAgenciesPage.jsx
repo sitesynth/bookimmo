@@ -29,6 +29,7 @@ function Button({ href, children, tone = 'dark' }) {
   return (
     <a
       href={href}
+      className={tone === 'light' ? 'btn-shine on-light' : 'btn-shine'}
       style={{
         display: 'inline-flex',
         alignItems: 'center',
