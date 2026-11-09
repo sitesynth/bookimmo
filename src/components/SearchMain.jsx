@@ -1101,10 +1101,6 @@ export default function SearchMain() {
                   </div>
 
                   <div style={{
-                    overflowY: enrichedListings.length > 2 ? 'auto' : 'visible',
-                    overflowX: 'visible',
-                    maxHeight: enrichedListings.length > 2 ? 'calc(100vh - 280px)' : 'none',
-                    paddingRight: 8,
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 18,
