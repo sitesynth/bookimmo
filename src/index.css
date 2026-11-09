@@ -42,3 +42,6 @@ body,
 @media (prefers-reduced-motion: reduce) {
   .btn-shine, .btn-shine:hover { transition: none; transform: none; }
 }
+
+/* Anchored sections stop below the fixed header instead of under it. */
+#how-it-works, #membership, #agencies { scroll-margin-top: 110px; }
