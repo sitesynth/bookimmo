@@ -1,62 +1,63 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useAuthUser } from '../../hooks/useAuthUser.js'
 import { useFavorites } from '../../hooks/useFavorites.js'
 import { usePropertiesByIds } from '../../hooks/usePropertiesByIds.js'
 import { buildListingDetailHref } from '../../lib/listingRouting.js'
 
-const STOCK_IMGS = [
-  '/assets/images/YB8HvCRaMzDFv3gr1oraLARMV10.jpg',
-  '/assets/images/uJIxALexex0qutxW0BGT1e8RZU.jpg',
-  '/assets/images/6tsHyqe0lsOpKgANd4B3r8lEwak.jpg',
-  '/assets/images/gRIsS7b7H7QhFCmWRl88B6uVZMQ.jpg',
-  '/assets/images/bmKq0zjCmV9aMdk4qbciIhZPU.jpg',
-]
+const COPY = {
+  en: {
+    count: (n) => `${n} saved ${n === 1 ? 'home' : 'homes'}`,
+    emptyTitle: 'No favorites yet', emptyText: 'Tap the star on a home in search and it will wait for you here.',
+    openSearch: 'Open search', loading: 'Loading favorites…',
+    location: 'Location on request', rooms: (n) => `${n} rooms`, roomsOnRequest: 'Rooms on request',
+    areaOnRequest: 'Area on request', property: 'Home', priceOnRequest: 'Price on request',
+    details: 'Details', remove: 'Remove',
+  },
+  de: {
+    count: (n) => `${n} ${n === 1 ? 'gespeicherte Wohnung' : 'gespeicherte Wohnungen'}`,
+    emptyTitle: 'Noch keine Favoriten', emptyText: 'Tippen Sie in der Suche auf den Stern bei einer Wohnung, dann wartet sie hier auf Sie.',
+    openSearch: 'Zur Suche', loading: 'Favoriten werden geladen…',
+    location: 'Lage auf Anfrage', rooms: (n) => `${n} Zimmer`, roomsOnRequest: 'Zimmer auf Anfrage',
+    areaOnRequest: 'Fläche auf Anfrage', property: 'Wohnung', priceOnRequest: 'Preis auf Anfrage',
+    details: 'Details', remove: 'Entfernen',
+  },
+}
 
 function readLang(pathname) {
   return /^\/(de|en|fr|it|nl)(\/|$)/.exec(pathname)?.[1] || 'de'
 }
 
-function propertyImage(property, index) {
-  return property.imageUrl
-    ? property.imageUrl
-    : STOCK_IMGS[index % STOCK_IMGS.length]
-}
-
-function EmptyCard({ lang, isAuthenticated }) {
+function EmptyCard({ lang, t }) {
   return (
     <section style={{
-      padding: 28,
-      borderRadius: 28,
+      padding: 32,
+      borderRadius: 16,
       backgroundColor: 'white',
       border: '1px solid rgba(25,26,32,0.08)',
-      boxShadow: '0 18px 48px rgba(25,26,32,0.06)',
     }}>
-      <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.52)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-        Favorites
-      </p>
-      <h2 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 30, color: 'rgb(25,26,32)', marginTop: 8 }}>
-        {isAuthenticated ? 'No saved properties yet' : 'Guest favorites are still empty'}
+      <h2 style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 24, fontWeight: 600, color: 'rgb(25,26,32)' }}>
+        {t.emptyTitle}
       </h2>
-      <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 15, lineHeight: 1.65, color: 'rgba(25,26,32,0.68)', marginTop: 12, maxWidth: 760 }}>
-        Save interesting homes from search and they will appear here for comparison. Guests can test the flow locally, and signed-in users can keep favorites synced across sessions.
+      <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 15, lineHeight: 1.65, color: 'rgba(25,26,32,0.68)', marginTop: 10, maxWidth: 520 }}>
+        {t.emptyText}
       </p>
       <Link
         to={`/${lang}/search`}
+        className="btn-shine"
         style={{
           display: 'inline-flex',
           marginTop: 18,
           textDecoration: 'none',
-          borderRadius: 14,
-          padding: '11px 14px',
-          backgroundColor: 'rgb(25,26,32)',
-          color: 'rgb(245,245,245)',
+          borderRadius: 4,
+          padding: '12px 20px',
+          backgroundColor: 'rgb(255,102,37)',
+          color: '#fff',
           fontFamily: '"Lexend", sans-serif',
-          fontSize: 13,
+          fontSize: 14,
           fontWeight: 600,
         }}
       >
-        Open search
+        {t.openSearch}
       </Link>
     </section>
   )
@@ -65,43 +66,29 @@ function EmptyCard({ lang, isAuthenticated }) {
 export default function FavoritesShell() {
   const location = useLocation()
   const lang = readLang(location.pathname)
-  const { isAuthenticated } = useAuthUser()
+  const t = COPY[lang] || COPY.en
   const { favoriteIds, favoriteCount, toggleFavorite, loading: favoritesLoading } = useFavorites()
   const { properties, loading: propertiesLoading } = usePropertiesByIds(favoriteIds)
 
   if (!favoriteIds.length && !favoritesLoading) {
-    return <EmptyCard lang={lang} isAuthenticated={isAuthenticated} />
+    return <EmptyCard lang={lang} t={t} />
   }
 
   return (
     <>
-      <section style={{
-        padding: 26,
-        borderRadius: 28,
-        backgroundColor: 'white',
-        border: '1px solid rgba(25,26,32,0.08)',
-        boxShadow: '0 18px 48px rgba(25,26,32,0.06)',
-      }}>
-        <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.52)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-          Saved shortlist
-        </p>
-        <h2 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 28, color: 'rgb(25,26,32)', marginTop: 8 }}>
-          {favoriteCount} saved {favoriteCount === 1 ? 'property' : 'properties'}
-        </h2>
-        <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 15, lineHeight: 1.65, color: 'rgba(25,26,32,0.68)', marginTop: 12, maxWidth: 760 }}>
-          Keep this shortlist tight: compare price, district and apartment type here, then move the strongest options into application drafts.
-        </p>
-      </section>
+      <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 15, color: 'rgba(25,26,32,0.64)' }}>
+        {t.count(favoriteCount)}
+      </p>
 
       {favoritesLoading || propertiesLoading ? (
         <section style={{
           padding: 24,
-          borderRadius: 24,
+          borderRadius: 16,
           backgroundColor: 'white',
           border: '1px solid rgba(25,26,32,0.08)',
         }}>
           <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 14, color: 'rgba(25,26,32,0.64)' }}>
-            Loading saved properties…
+            {t.loading}
           </p>
         </section>
       ) : (
@@ -110,7 +97,7 @@ export default function FavoritesShell() {
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
           gap: 16,
         }}>
-          {properties.map((property, index) => {
+          {properties.map((property) => {
             const detailHref = buildListingDetailHref(lang, property)
 
             return (
@@ -119,19 +106,22 @@ export default function FavoritesShell() {
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  borderRadius: 24,
+                  borderRadius: 16,
                   overflow: 'hidden',
                   backgroundColor: 'white',
                   border: '1px solid rgba(25,26,32,0.08)',
-                  boxShadow: '0 18px 48px rgba(25,26,32,0.06)',
                 }}
               >
                 <div style={{ position: 'relative', paddingTop: '66%' }}>
-                  <img
-                    src={propertyImage(property, index)}
-                    alt={property.title}
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
+                  {property.imageUrl ? (
+                    <img
+                      src={property.imageUrl}
+                      alt={property.title}
+                      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, #f7f2e8 0%, #efe7d8 100%)' }} />
+                  )}
                 </div>
 
                 <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
@@ -143,26 +133,27 @@ export default function FavoritesShell() {
                       {property.title}
                     </Link>
                     <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.54)', marginTop: 8 }}>
-                      {property.address || property.district || property.postcode || 'Location on request'}
+                      {property.address || property.district || property.postcode || t.location}
                     </p>
                   </div>
 
                   <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.72)' }}>
-                    <span>{property.roomsLabel || (property.rooms ? `${property.rooms} rooms` : 'Rooms on request')}</span>
-                    <span>{property.areaLabel || (property.areaSqm ? `${property.areaSqm} m²` : 'Area on request')}</span>
-                    <span>{property.listingType || property.source?.toUpperCase() || 'Property'}</span>
+                    <span>{property.roomsLabel || (property.rooms ? t.rooms(property.rooms) : t.roomsOnRequest)}</span>
+                    <span>{property.areaLabel || (property.areaSqm ? `${property.areaSqm} m²` : t.areaOnRequest)}</span>
+                    <span>{property.listingType || t.property}</span>
                   </div>
 
                   <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 24, fontWeight: 700, color: 'rgb(25,26,32)', marginTop: 'auto' }}>
-                    {property.priceLabel || (property.price ? `€ ${Number(property.price).toLocaleString()}` : 'Price on request')}
+                    {property.priceLabel || (property.price ? `€ ${Number(property.price).toLocaleString()}` : t.priceOnRequest)}
                   </p>
 
                   <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                     <Link
                       to={detailHref}
+                      className="btn-shine on-light"
                       style={{
                         textDecoration: 'none',
-                        borderRadius: 14,
+                        borderRadius: 4,
                         padding: '11px 14px',
                         border: '1px solid rgba(25,26,32,0.12)',
                         color: 'rgb(25,26,32)',
@@ -171,24 +162,25 @@ export default function FavoritesShell() {
                         fontWeight: 600,
                       }}
                     >
-                      View details
+                      {t.details}
                     </Link>
                     <button
                       type="button"
+                      className="btn-shine on-light"
                       onClick={() => toggleFavorite(property.id)}
                       style={{
-                        border: 'none',
-                        borderRadius: 14,
+                        border: '1px solid rgba(25,26,32,0.12)',
+                        borderRadius: 4,
                         padding: '11px 14px',
-                        backgroundColor: 'rgb(25,26,32)',
-                        color: 'rgb(245,245,245)',
+                        backgroundColor: 'white',
+                        color: 'rgb(25,26,32)',
                         fontFamily: '"Lexend", sans-serif',
                         fontSize: 13,
                         fontWeight: 600,
                         cursor: 'pointer',
                       }}
                     >
-                      Remove
+                      {t.remove}
                     </button>
                   </div>
                 </div>
