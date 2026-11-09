@@ -6,6 +6,21 @@ function readLang(pathname) {
   return /^\/(de|en|fr|it|nl)(\/|$)/.exec(pathname)?.[1] || 'de'
 }
 
+const ICONS = {
+  dashboard: <><rect x="3.5" y="3.5" width="7" height="7" rx="1.5" /><rect x="13.5" y="3.5" width="7" height="7" rx="1.5" /><rect x="3.5" y="13.5" width="7" height="7" rx="1.5" /><rect x="13.5" y="13.5" width="7" height="7" rx="1.5" /></>,
+  search: <><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4.5 4.5" /></>,
+  applications: <><path d="M6 3.5h8l4 4V20a.5.5 0 01-.5.5h-11A.5.5 0 016 20V3.5z" /><path d="M14 3.5V8h4M9 12.5h6M9 16h6" /></>,
+  favorites: <path d="M12 20s-7.5-4.6-7.5-10A4.2 4.2 0 0112 7.6 4.2 4.2 0 0119.5 10c0 5.4-7.5 10-7.5 10z" />,
+  profile: <><circle cx="12" cy="8.5" r="3.8" /><path d="M4.5 20c.6-3.7 3.7-5.8 7.5-5.8s6.9 2.1 7.5 5.8" /></>,
+}
+
+const COPY = {
+  en: { tag: 'Client cabinet', dashboard: 'Dashboard', search: 'Search', applications: 'Applications', favorites: 'Favorites', profile: 'Profile',
+    signedAs: 'Signed in as', signOut: 'Sign out', hint: 'Sign in to save favorites, complete your profile and track applications.', logIn: 'Log in', signUp: 'Sign up' },
+  de: { tag: 'Kundenbereich', dashboard: 'Übersicht', search: 'Suche', applications: 'Bewerbungen', favorites: 'Favoriten', profile: 'Profil',
+    signedAs: 'Angemeldet als', signOut: 'Abmelden', hint: 'Melden Sie sich an, um Favoriten zu speichern, Ihr Profil zu vervollständigen und Bewerbungen zu verfolgen.', logIn: 'Anmelden', signUp: 'Registrieren' },
+}
+
 const WRAP = {
   display: 'flex',
   flexDirection: 'column',
@@ -52,12 +67,13 @@ const FOOT = {
 export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }) {
   const location = useLocation()
   const lang = readLang(location.pathname)
+  const t = COPY[lang] || COPY.en
   const navItems = [
-    { to: `/${lang}/dashboard-home`, label: 'Dashboard', shortLabel: 'DB' },
-    { to: `/${lang}/search`, label: 'Search', shortLabel: 'SE' },
-    { to: `/${lang}/applications`, label: 'Applications', shortLabel: 'AP' },
-    { to: `/${lang}/Bookmark`, label: 'Favorites', shortLabel: 'FV' },
-    { to: `/${lang}/account`, label: 'Profile', shortLabel: 'PR' },
+    { to: `/${lang}/dashboard-home`, label: t.dashboard, icon: 'dashboard' },
+    { to: `/${lang}/search`, label: t.search, icon: 'search' },
+    { to: `/${lang}/applications`, label: t.applications, icon: 'applications' },
+    { to: `/${lang}/Bookmark`, label: t.favorites, icon: 'favorites' },
+    { to: `/${lang}/account`, label: t.profile, icon: 'profile' },
   ]
 
   return (
@@ -66,7 +82,7 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
         <Link to={`/${lang}`} aria-label="BookImmo" style={{ display: 'inline-block', lineHeight: 0 }}>
           <BookImmoLogo height={28} />
         </Link>
-        <span style={BRAND_TAG}>Client cabinet</span>
+        <span style={BRAND_TAG}>{t.tag}</span>
       </div>
 
       <nav style={NAV}>
@@ -78,8 +94,8 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
               display: 'flex',
               alignItems: 'center',
               gap: 12,
-              padding: '12px 14px',
-              borderRadius: 16,
+              padding: '11px 14px',
+              borderRadius: 8,
               textDecoration: 'none',
               background: isActive ? 'rgb(25,26,32)' : 'transparent',
               color: isActive ? 'rgb(245,245,245)' : 'rgb(25,26,32)',
@@ -88,19 +104,9 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
           >
             {({ isActive }) => (
               <>
-                <div style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 10,
-                  display: 'grid',
-                  placeItems: 'center',
-                  backgroundColor: isActive ? 'rgba(255,255,255,0.14)' : 'rgba(25,26,32,0.06)',
-                  fontFamily: '"Lexend", sans-serif',
-                  fontSize: 11,
-                  fontWeight: 700,
-                }}>
-                  {item.shortLabel}
-                </div>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, color: isActive ? 'rgb(255,102,37)' : 'rgba(25,26,32,0.55)' }}>
+                  {ICONS[item.icon]}
+                </svg>
                 <span style={{ fontFamily: '"Lexend", sans-serif', fontSize: 14, fontWeight: 500 }}>
                   {item.label}
                 </span>
@@ -115,7 +121,7 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
           <>
             <div>
               <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.48)' }}>
-                Signed in as
+                {t.signedAs}
               </p>
               <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, fontWeight: 600, color: 'rgb(25,26,32)' }}>
                 {userEmail || 'User'}
@@ -126,7 +132,7 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
               onClick={onSignOut}
               style={{
                 border: '1px solid rgba(25,26,32,0.12)',
-                borderRadius: 14,
+                borderRadius: 4,
                 padding: '10px 12px',
                 backgroundColor: 'white',
                 color: 'rgb(25,26,32)',
@@ -136,13 +142,13 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
                 cursor: 'pointer',
               }}
             >
-              Sign out
+              {t.signOut}
             </button>
           </>
         ) : (
           <>
             <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.68)' }}>
-              Sign in to save favorites, complete your profile and track applications.
+              {t.hint}
             </p>
             <div style={{ display: 'flex', gap: 8 }}>
               <NavLink
@@ -151,7 +157,7 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
                   flex: 1,
                   textAlign: 'center',
                   textDecoration: 'none',
-                  borderRadius: 14,
+                  borderRadius: 4,
                   padding: '10px 12px',
                   backgroundColor: 'rgb(25,26,32)',
                   color: 'rgb(245,245,245)',
@@ -160,7 +166,7 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
                   fontWeight: 600,
                 }}
               >
-                Log in
+                {t.logIn}
               </NavLink>
               <NavLink
                 to={`/${lang}/sign-up`}
@@ -168,7 +174,7 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
                   flex: 1,
                   textAlign: 'center',
                   textDecoration: 'none',
-                  borderRadius: 14,
+                  borderRadius: 4,
                   padding: '10px 12px',
                   border: '1px solid rgba(25,26,32,0.12)',
                   backgroundColor: 'white',
@@ -178,7 +184,7 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
                   fontWeight: 600,
                 }}
               >
-                Sign up
+                {t.signUp}
               </NavLink>
             </div>
           </>
