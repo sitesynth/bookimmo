@@ -29,8 +29,7 @@ const COPY = {
     loading: 'Loading homes…', error: 'Could not load homes right now. Please try again in a moment.',
     empty: 'No homes match this search yet. Try a nearby area or a wider budget. Moving somewhere we do not cover? Tell us at hello@book.immo and we will add it.',
     showMore: (n, m) => `Show more (${n} of ${m})`, loadingShort: 'Loading…',
-    map: 'Map', mapEmpty: 'Homes appear here as pins. Some listings have no exact address and show in the list only.',
-    openOriginal: 'Open original listing',
+    map: 'Map',
     locationOnRequest: 'Location on request', priceOnRequest: 'Price on request', recently: 'Recently published',
     details: 'Details', apply: 'Apply', favAdd: 'Save to favorites', favRemove: 'Remove from favorites',
     mySearch: 'My search', selectedAreas: 'Selected areas', roomsLabel: (n) => `${n}+ rooms`,
@@ -63,8 +62,7 @@ const COPY = {
     loading: 'Wohnungen werden geladen…', error: 'Die Angebote konnten nicht geladen werden. Bitte versuchen Sie es gleich noch einmal.',
     empty: 'Für diese Suche gibt es noch keine Treffer. Probieren Sie ein Nachbargebiet oder ein höheres Budget. Ihre Stadt fehlt? Schreiben Sie uns an hello@book.immo.',
     showMore: (n, m) => `Mehr anzeigen (${n} von ${m})`, loadingShort: 'Lädt…',
-    map: 'Karte', mapEmpty: 'Wohnungen erscheinen hier als Pins. Manche Angebote haben keine genaue Adresse und stehen nur in der Liste.',
-    openOriginal: 'Originalanzeige öffnen',
+    map: 'Karte',
     locationOnRequest: 'Lage auf Anfrage', priceOnRequest: 'Preis auf Anfrage', recently: 'Kürzlich veröffentlicht',
     details: 'Details', apply: 'Bewerben', favAdd: 'Zu Favoriten hinzufügen', favRemove: 'Aus Favoriten entfernen',
     mySearch: 'Meine Suche', selectedAreas: 'Gewählte Gebiete', roomsLabel: (n) => `${n}+ Zimmer`,
@@ -327,11 +325,11 @@ function ListingCard({
       <div
         style={{
           position: 'relative',
-          minWidth: compact ? 150 : 'auto',
-          width: compact ? 150 : '100%',
+          minWidth: compact ? 200 : 'auto',
+          width: compact ? 200 : '100%',
           flexShrink: 0,
-          aspectRatio: compact ? '1 / 1' : '1.6 / 1',
-          minHeight: compact ? 150 : 220,
+          aspectRatio: compact ? 'auto' : '1.6 / 1',
+          minHeight: compact ? 170 : 220,
           overflow: 'hidden',
           background: 'linear-gradient(180deg, #f7f2e8 0%, #efe7d8 100%)',
         }}
@@ -347,7 +345,7 @@ function ListingCard({
         )}
       </div>
 
-      <div style={{ padding: compact ? '14px 14px 14px 0' : 20, display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
+      <div style={{ padding: compact ? '16px 16px 16px 0' : 20, display: 'flex', flexDirection: 'column', gap: compact ? 10 : 12, flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'flex-start' }}>
           <div>
             <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: compact ? 17 : 22, fontWeight: 600, lineHeight: 1.2, color: 'rgb(25,26,32)' }}>
@@ -398,7 +396,7 @@ function ListingCard({
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginTop: 'auto', flexWrap: 'wrap' }}>
           <div>
-            <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: compact ? 18 : 24, fontWeight: 700, color: 'rgb(25,26,32)' }}>
+            <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: compact ? 20 : 24, fontWeight: 700, color: 'rgb(25,26,32)' }}>
               {property.priceLabel || t.priceOnRequest}
             </p>
             <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.52)', marginTop: 4 }}>
@@ -1071,7 +1069,7 @@ export default function SearchMain() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            <div className="sm-split" style={{ display: 'grid', gridTemplateColumns: 'minmax(420px, 1.12fr) minmax(360px, 0.88fr)', gap: 20, alignItems: 'start' }}>
+            <div className="sm-split" style={{ display: 'grid', gridTemplateColumns: 'minmax(420px, 1.3fr) minmax(320px, 0.8fr)', gap: 20, alignItems: 'start' }}>
               <SearchWorkspaceCard style={{ padding: 24, minHeight: 0 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', minHeight: 0, alignSelf: 'start' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 18 }}>
@@ -1129,6 +1127,7 @@ export default function SearchMain() {
                           onPreview={setSelectedListing}
                           lang={lang}
                           t={t}
+                          compact
                           active={String(property.id) === String(activeListing?.id)}
                         />
                       ))
@@ -1185,45 +1184,6 @@ export default function SearchMain() {
                       onHover={setSelectedListing}
                     />
 
-                    {activeListing ? (
-                      <ListingCard
-                        property={activeListing}
-                        onApply={handleApply}
-                        onFavorite={handleFavorite}
-                        isFavorite={isFavorite(activeListing.id)}
-                        favoriteBusy={favoriteBusyId === String(activeListing.id)}
-                        onPreview={setSelectedListing}
-                        compact
-                        lang={lang}
-                        t={t}
-                        active
-                      />
-                    ) : (
-                      <div style={{ borderRadius: 12, padding: 20, backgroundColor: 'rgb(248,246,241)', fontFamily: '"Lexend", sans-serif', color: 'rgba(25,26,32,0.62)', lineHeight: 1.65 }}>
-                        {t.mapEmpty}
-                      </div>
-                    )}
-
-                    {activeListing?.url ? (
-                      <a className="btn-shine on-light"
-                        href={activeListing.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                          alignSelf: 'flex-start',
-                          textDecoration: 'none',
-                          borderRadius: 4,
-                          padding: '11px 14px',
-                          backgroundColor: 'rgb(248,246,241)',
-                          color: 'rgb(25,26,32)',
-                          fontFamily: '"Lexend", sans-serif',
-                          fontSize: 13,
-                          fontWeight: 600,
-                        }}
-                      >
-                        {t.openOriginal}
-                      </a>
-                    ) : null}
                   </div>
                 </div>
               </SearchWorkspaceCard>
