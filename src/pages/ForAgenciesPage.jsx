@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { useFramerAppear } from '../hooks/useFramerAppear.js'
 import SvgSprites from '../components/SvgSprites.jsx'
 import Section0 from '../components/Section0.jsx'
-import Footer from '../components/Footer.jsx'
+import ClubFooter from '../components/ClubFooter.jsx'
 import Variant1 from '../components/Variant1.jsx'
 
 // Partner page for agencies. Same Framer presets as the homepage so type and colours match.
@@ -258,7 +258,7 @@ export default function ForAgenciesPage() {
       <Pack />
       <Questions />
       <Closing />
-      <Footer />
+      <ClubFooter />
       <Variant1 />
     </div>
   )
