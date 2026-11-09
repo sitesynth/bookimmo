@@ -14,7 +14,7 @@ const COPY = {
   en: {
     eyebrow: 'Find a home', heading: 'Where are you moving?',
     sub: 'Search by city, district or street, see every home on the map and apply in a click.',
-    placeholder: 'City or street', searchNow: 'Search', saveSearch: 'Save search',
+    placeholder: 'City, street', searchNow: 'Search', saveSearch: 'Save search',
     members: 'Members', promoTitle: 'Apply to any home in one click.',
     promoText: 'The club writes to the agency for you. First month free, no card needed.', join: 'Join the club',
     yourProfile: 'Your profile', profileDone: 'Complete. The club can apply for you.',
@@ -48,7 +48,7 @@ const COPY = {
   de: {
     eyebrow: 'Wohnung finden', heading: 'Wohin ziehen Sie?',
     sub: 'Suchen Sie nach Stadt, Stadtteil oder Straße, sehen Sie alle Wohnungen auf der Karte und bewerben Sie sich mit einem Klick.',
-    placeholder: 'Stadt oder Straße', searchNow: 'Suchen', saveSearch: 'Suche speichern',
+    placeholder: 'Stadt, Straße', searchNow: 'Suchen', saveSearch: 'Suche speichern',
     members: 'Mitglieder', promoTitle: 'Bewerben Sie sich mit einem Klick.',
     promoText: 'Der Club schreibt die Agentur für Sie an. Erster Monat gratis, ohne Karte.', join: 'Club beitreten',
     yourProfile: 'Ihr Profil', profileDone: 'Vollständig. Der Club kann sich für Sie bewerben.',
@@ -822,8 +822,8 @@ export default function SearchMain() {
                       minWidth: 0,
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 12,
-                      padding: '0 14px',
+                      gap: 8,
+                      padding: '0 12px',
                       height: 56,
                       borderRadius: 8,
                       border: '2px solid rgb(25,26,32)',
@@ -843,6 +843,8 @@ export default function SearchMain() {
                       placeholder={t.placeholder}
                       style={{
                         flex: 1,
+                        minWidth: 0,
+                        width: '100%',
                         border: 'none',
                         background: 'transparent',
                         fontFamily: '"Lexend", sans-serif',

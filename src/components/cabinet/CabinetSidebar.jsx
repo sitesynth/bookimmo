@@ -75,13 +75,23 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
     <aside className="cab-side" style={WRAP}>
       <style>{`
         @media (max-width: 900px) {
-          .cab-side { min-width: 0 !important; max-width: none !important; width: 100%; box-sizing: border-box; padding: 12px 14px !important; gap: 10px !important; border-radius: 16px !important; }
-          .cab-side .cab-brand { padding-bottom: 10px !important; }
-          .cab-side .cab-nav { flex-direction: row !important; overflow-x: auto; gap: 4px !important; scrollbar-width: none; }
-          .cab-side .cab-nav a { flex: 0 0 auto; padding: 10px 12px !important; }
-          .cab-side .cab-foot { flex-direction: row !important; align-items: center; padding-top: 10px !important; }
+          .cab-side { min-width: 0 !important; max-width: none !important; width: 100%; box-sizing: border-box; padding: 14px 16px !important; gap: 14px !important; border-radius: 16px !important; display: grid !important; grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+          .cab-side .cab-brand { grid-column: 1; grid-row: 1; padding: 0 !important; border-bottom: none !important; }
+          .cab-side .cab-foot { grid-column: 2; grid-row: 1; margin: 0 !important; padding: 0 !important; border-top: none !important; flex-direction: row !important; align-items: center; }
           .cab-side .cab-foot-hint { display: none; }
+          .cab-side .cab-foot > div { gap: 8px !important; }
+          .cab-side .cab-foot a, .cab-side .cab-foot button { padding: 9px 14px !important; font-size: 13px !important; white-space: nowrap; flex: 0 0 auto !important; }
+          .cab-side .cab-foot a:first-child { background: transparent !important; color: rgb(25,26,32) !important; border: 1px solid rgba(25,26,32,0.16) !important; }
+          .cab-side .cab-foot a:last-child { background: rgb(255,102,37) !important; color: #fff !important; border: 1px solid rgb(255,102,37) !important; }
+          .cab-side .cab-nav { grid-column: 1 / -1; grid-row: 2; flex-direction: row !important; overflow-x: auto; gap: 4px !important; scrollbar-width: none; padding-top: 12px; border-top: 1px solid rgba(25,26,32,0.08); }
+          .cab-side .cab-nav a { flex: 0 0 auto; padding: 10px 12px !important; }
+        }
+        @media (max-width: 560px) {
+          .cab-side .cab-brand { grid-column: 1 / -1; }
+          .cab-side .cab-foot { grid-column: 1 / -1; grid-row: 2; }
           .cab-side .cab-foot > div { flex: 1; }
+          .cab-side .cab-foot a { flex: 1 1 0 !important; text-align: center; }
+          .cab-side .cab-nav { grid-row: 3; }
         }
       `}</style>
       <div className="cab-brand" style={BRAND}>
