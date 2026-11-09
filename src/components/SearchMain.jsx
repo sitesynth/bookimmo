@@ -14,7 +14,7 @@ const COPY = {
   en: {
     eyebrow: 'Find a home', heading: 'Where are you moving?',
     sub: 'Search by city, district or street, see every home on the map and apply in a click.',
-    placeholder: 'City, district or street', searchNow: 'Search', saveSearch: 'Save search',
+    placeholder: 'City or street', searchNow: 'Search', saveSearch: 'Save search',
     members: 'Members', promoTitle: 'Apply to any home in one click.',
     promoText: 'The club writes to the agency for you. First month free, no card needed.', join: 'Join the club',
     yourProfile: 'Your profile', profileDone: 'Complete. The club can apply for you.',
@@ -48,7 +48,7 @@ const COPY = {
   de: {
     eyebrow: 'Wohnung finden', heading: 'Wohin ziehen Sie?',
     sub: 'Suchen Sie nach Stadt, Stadtteil oder Straße, sehen Sie alle Wohnungen auf der Karte und bewerben Sie sich mit einem Klick.',
-    placeholder: 'Stadt, Stadtteil oder Straße', searchNow: 'Suchen', saveSearch: 'Suche speichern',
+    placeholder: 'Stadt oder Straße', searchNow: 'Suchen', saveSearch: 'Suche speichern',
     members: 'Mitglieder', promoTitle: 'Bewerben Sie sich mit einem Klick.',
     promoText: 'Der Club schreibt die Agentur für Sie an. Erster Monat gratis, ohne Karte.', join: 'Club beitreten',
     yourProfile: 'Ihr Profil', profileDone: 'Vollständig. Der Club kann sich für Sie bewerben.',
@@ -805,7 +805,7 @@ export default function SearchMain() {
               <div
                 style={{
                   boxSizing: 'border-box',
-                  padding: 28,
+                  padding: 16,
                   borderRadius: 12,
                   backgroundColor: 'white',
                   border: '1px solid rgba(25,26,32,0.08)',
@@ -815,11 +815,11 @@ export default function SearchMain() {
                   gap: 12,
                 }}
               >
-                <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                   <div
                     style={{
-                      flex: '1 1 260px',
-                      minWidth: 200,
+                      flex: '1 1 0',
+                      minWidth: 0,
                       display: 'flex',
                       alignItems: 'center',
                       gap: 12,
@@ -830,7 +830,7 @@ export default function SearchMain() {
                       backgroundColor: '#fff',
                     }}
                   >
-                    <span style={{ fontSize: 18, color: 'rgb(255,102,37)' }}>⌕</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgb(255,102,37)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4.5 4.5" /></svg>
                     <input
                       value={locationQuery}
                       onChange={(event) => setLocationQuery(event.target.value)}
@@ -857,11 +857,17 @@ export default function SearchMain() {
                   <button className="btn-shine"
                     type="button"
                     onClick={applyPrimarySearch}
+                    aria-label={t.searchNow}
+                    title={t.searchNow}
                     style={{
                       height: 56,
+                      width: 56,
+                      display: 'grid',
+                      placeItems: 'center',
+                      flexShrink: 0,
                       border: 'none',
                       borderRadius: 4,
-                      padding: '0 26px',
+                      padding: 0,
                       backgroundColor: 'rgb(255,102,37)',
                       color: '#fff',
                       fontFamily: '"Lexend", sans-serif',
@@ -870,17 +876,23 @@ export default function SearchMain() {
                       cursor: 'pointer',
                     }}
                   >
-                    {t.searchNow}
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4.5 4.5" /></svg>
                   </button>
 
                   <button className="btn-shine on-light"
                     type="button"
                     onClick={saveCurrentSearch}
+                    aria-label={t.saveSearch}
+                    title={t.saveSearch}
                     style={{
                       height: 56,
-                      border: '1px solid rgba(25,26,32,0.1)',
+                      width: 56,
+                      display: 'grid',
+                      placeItems: 'center',
+                      flexShrink: 0,
+                      border: '1px solid rgba(25,26,32,0.12)',
                       borderRadius: 4,
-                      padding: '0 18px',
+                      padding: 0,
                       backgroundColor: 'white',
                       color: 'rgb(25,26,32)',
                       fontFamily: '"Lexend", sans-serif',
@@ -889,7 +901,7 @@ export default function SearchMain() {
                       cursor: 'pointer',
                     }}
                   >
-                    {t.saveSearch}
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M6.5 3.5h11a1 1 0 011 1V21l-6.5-4-6.5 4V4.5a1 1 0 011-1z" /></svg>
                   </button>
                 </div>
 
