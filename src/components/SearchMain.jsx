@@ -800,22 +800,14 @@ export default function SearchMain() {
             .sm-top, .sm-main, .sm-split { grid-template-columns: minmax(0, 1fr) !important; }
           }
         `}</style>
-          <div className="sm-top" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) minmax(320px, 0.9fr)', gap: 20, alignItems: 'stretch' }}>
-            <div>
-              <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                {t.eyebrow}
-              </p>
-              <h2 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 30, lineHeight: 1.04, color: 'rgb(25,26,32)', marginTop: 8, maxWidth: 740 }}>
-                {workspaceHeading}
-              </h2>
-              <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 15, lineHeight: 1.7, color: 'rgba(25,26,32,0.68)', marginTop: 14, maxWidth: 760 }}>
-                {t.sub}
-              </p>
-
+          <div className="sm-top" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.8fr) minmax(260px, 0.7fr)', gap: 20, alignItems: 'stretch' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
               <div
                 style={{
-                  marginTop: 18,
-                  padding: 14,
+                  height: '100%',
+                  boxSizing: 'border-box',
+                  justifyContent: 'center',
+                  padding: 20,
                   borderRadius: 12,
                   backgroundColor: 'white',
                   border: '1px solid rgba(25,26,32,0.08)',
@@ -828,8 +820,8 @@ export default function SearchMain() {
                 <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
                   <div
                     style={{
-                      flex: '1 1 420px',
-                      minWidth: 280,
+                      flex: '1 1 260px',
+                      minWidth: 200,
                       display: 'flex',
                       alignItems: 'center',
                       gap: 12,

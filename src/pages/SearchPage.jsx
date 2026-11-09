@@ -1,11 +1,20 @@
 import React, { useLayoutEffect } from 'react'
-import SearchSsrHidden1ox42mn from '../components/SearchSsrHidden1ox42mn.jsx'
+import { useLocation } from 'react-router-dom'
+import CabinetLayout from '../components/cabinet/CabinetLayout.jsx'
 import SearchMain from '../components/SearchMain.jsx'
 import SvgSprites from '../components/SvgSprites.jsx'
 import { useFramerAppear } from '../hooks/useFramerAppear.js'
 
+const TITLES = {
+  de: ['Wohnung finden', 'Suchen Sie nach Stadt, Stadtteil oder Straße und bewerben Sie sich mit einem Klick.'],
+  en: ['Find a home', 'Search by city, district or street and apply in a click.'],
+}
+
 export default function SearchPage() {
   useFramerAppear()
+  const { pathname } = useLocation()
+  const lang = /^\/(de|en|fr|it|nl)(\/|$)/.exec(pathname)?.[1] || 'de'
+  const [title, subtitle] = TITLES[lang] || TITLES.en
 
   useLayoutEffect(() => {
     const html = document.documentElement
@@ -62,48 +71,11 @@ export default function SearchPage() {
   }, [])
 
   return (
-    <div
-      className="framer-F8Qc9 framer-ksssmz"
-      style={{ minHeight: '100vh', width: 'auto', overflow: 'visible', alignItems: 'stretch' }}
-    >
-      <style>
-        {`
-          .framer-F8Qc9.framer-ksssmz {
-            overflow: visible;
-            align-items: stretch;
-          }
-
-          .framer-F8Qc9 .framer-1u9asl6 {
-            min-height: 100vh;
-            height: auto;
-            overflow: visible;
-            align-items: stretch;
-          }
-
-          .framer-F8Qc9 .framer-14hieps {
-            min-height: calc(100vh - 16px);
-            height: auto;
-            align-items: stretch;
-            overflow: visible;
-          }
-
-          html,
-          body,
-          #root {
-            min-height: 100vh;
-            height: auto;
-            overflow: visible !important;
-            overflow-y: auto !important;
-          }
-        `}
-      </style>
+    <div style={{ minHeight: '100vh', width: 'auto' }}>
       <SvgSprites />
-      <SearchSsrHidden1ox42mn />
-      <div className="framer-1u9asl6" style={{ minHeight: '100vh', height: 'auto', overflow: 'visible', alignItems: 'stretch' }}>
-        <div className="framer-14hieps" style={{ minHeight: 'calc(100vh - 16px)', height: 'auto', alignItems: 'stretch', overflow: 'visible' }}>
-          <SearchMain />
-        </div>
-      </div>
+      <CabinetLayout title={title} subtitle={subtitle}>
+        <SearchMain />
+      </CabinetLayout>
     </div>
   )
 }
