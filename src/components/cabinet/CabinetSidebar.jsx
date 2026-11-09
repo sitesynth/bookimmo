@@ -1,5 +1,6 @@
 import React from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
+import BookImmoLogo from '../BookImmoLogo.jsx'
 
 function readLang(pathname) {
   return /^\/(de|en|fr|it|nl)(\/|$)/.exec(pathname)?.[1] || 'de'
@@ -22,14 +23,23 @@ const BRAND = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
-  gap: 10,
+  gap: 14,
+  paddingBottom: 16,
+  borderBottom: '1px solid rgba(25,26,32,0.08)',
 }
 
-const BRAND_LOGO = {
-  display: 'block',
-  width: 170,
-  maxWidth: '100%',
-  height: 'auto',
+const BRAND_TAG = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  padding: '4px 10px',
+  borderRadius: 4,
+  backgroundColor: 'rgba(255,102,37,0.1)',
+  color: 'rgb(214,78,16)',
+  fontFamily: '"Lexend", sans-serif',
+  fontSize: 11,
+  fontWeight: 600,
+  letterSpacing: '0.1em',
+  textTransform: 'uppercase',
 }
 
 const NAV = {
@@ -61,12 +71,10 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
   return (
     <aside style={WRAP}>
       <div style={BRAND}>
-        <div>
-          <img src="/email-logo.png" alt="Bookimmo" style={BRAND_LOGO} />
-          <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.58)' }}>
-            Client cabinet
-          </p>
-        </div>
+        <Link to={`/${lang}`} aria-label="BookImmo" style={{ display: 'inline-block', lineHeight: 0 }}>
+          <BookImmoLogo height={28} />
+        </Link>
+        <span style={BRAND_TAG}>Client cabinet</span>
       </div>
 
       <nav style={NAV}>
