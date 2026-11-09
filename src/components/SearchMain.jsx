@@ -794,26 +794,18 @@ export default function SearchMain() {
   return (
     <>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-        <SearchWorkspaceCard
-          style={{
-            padding: 24,
-            backgroundColor: 'rgb(255, 248, 244)',
-            overflow: 'hidden',
-          }}
-        >
+        <div>
         <style>{`
           @media (max-width: 1100px) {
             .sm-top, .sm-main, .sm-split { grid-template-columns: minmax(0, 1fr) !important; }
           }
         `}</style>
-          <div className="sm-top" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.8fr) minmax(260px, 0.7fr)', gap: 20, alignItems: 'stretch' }}>
+          <div className="sm-top" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: 16 }}>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <div
                 style={{
-                  height: '100%',
                   boxSizing: 'border-box',
-                  justifyContent: 'center',
-                  padding: 20,
+                  padding: 28,
                   borderRadius: 12,
                   backgroundColor: 'white',
                   border: '1px solid rgba(25,26,32,0.08)',
@@ -914,45 +906,41 @@ export default function SearchMain() {
 
             </div>
 
-            <div style={{ display: 'flex' }}>
-              <div style={{ flex: 1, padding: 24, borderRadius: 12, backgroundColor: 'rgb(25,26,32)', color: 'rgb(245,245,245)', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 12 }}>
-                {isAuthenticated ? (
-                  <>
-                    <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 12, opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                      {t.yourProfile}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', padding: '18px 22px', borderRadius: 12, backgroundColor: 'rgba(255,102,37,0.07)', border: '1px solid rgba(255,102,37,0.18)' }}>
+              {isAuthenticated ? (
+                <>
+                  <div>
+                    <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 15, fontWeight: 600, color: 'rgb(25,26,32)' }}>
+                      {t.yourProfile}: {completionPercent}%
                     </p>
-                    <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 44, fontWeight: 700, lineHeight: 1, letterSpacing: '-0.03em' }}>
-                      {completionPercent}%
-                    </p>
-                    <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 14, lineHeight: 1.55, opacity: 0.78 }}>
+                    <p style={{ margin: '4px 0 0', fontFamily: '"Lexend", sans-serif', fontSize: 14, color: 'rgba(25,26,32,0.64)' }}>
                       {completionPercent >= 100 ? t.profileDone : t.profileTodo}
                     </p>
-                    {completionPercent < 100 ? (
-                      <Link to={`/${lang}/account`} className="btn-shine" style={{ alignSelf: 'flex-start', marginTop: 4, display: 'inline-flex', alignItems: 'center', padding: '12px 18px', borderRadius: 4, backgroundColor: 'rgb(255,102,37)', color: '#fff', textDecoration: 'none', fontFamily: '"Lexend", sans-serif', fontSize: 14, fontWeight: 600 }}>
-                        {t.completeProfile}
-                      </Link>
-                    ) : null}
-                  </>
-                ) : (
-                  <>
-                    <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 12, opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                      {t.members}
-                    </p>
-                    <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 26, fontWeight: 600, lineHeight: 1.15, letterSpacing: '-0.02em' }}>
+                  </div>
+                  {completionPercent < 100 ? (
+                    <Link to={`/${lang}/account`} className="btn-shine" style={{ display: 'inline-flex', alignItems: 'center', padding: '12px 20px', borderRadius: 4, backgroundColor: 'rgb(255,102,37)', color: '#fff', textDecoration: 'none', fontFamily: '"Lexend", sans-serif', fontSize: 14, fontWeight: 600 }}>
+                      {t.completeProfile}
+                    </Link>
+                  ) : null}
+                </>
+              ) : (
+                <>
+                  <div>
+                    <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 15, fontWeight: 600, color: 'rgb(25,26,32)' }}>
                       {t.promoTitle}
                     </p>
-                    <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 14, lineHeight: 1.55, opacity: 0.78 }}>
+                    <p style={{ margin: '4px 0 0', fontFamily: '"Lexend", sans-serif', fontSize: 14, color: 'rgba(25,26,32,0.64)' }}>
                       {t.promoText}
                     </p>
-                    <Link to={`/${lang}/sign-up`} className="btn-shine" style={{ alignSelf: 'flex-start', marginTop: 4, display: 'inline-flex', alignItems: 'center', padding: '12px 18px', borderRadius: 4, backgroundColor: 'rgb(255,102,37)', color: '#fff', textDecoration: 'none', fontFamily: '"Lexend", sans-serif', fontSize: 14, fontWeight: 600 }}>
-                      {t.join}
-                    </Link>
-                  </>
-                )}
-              </div>
+                  </div>
+                  <Link to={`/${lang}/sign-up`} className="btn-shine" style={{ display: 'inline-flex', alignItems: 'center', padding: '12px 20px', borderRadius: 4, backgroundColor: 'rgb(255,102,37)', color: '#fff', textDecoration: 'none', fontFamily: '"Lexend", sans-serif', fontSize: 14, fontWeight: 600 }}>
+                    {t.join}
+                  </Link>
+                </>
+              )}
             </div>
           </div>
-        </SearchWorkspaceCard>
+        </div>
 
         <div className="sm-main" style={{ display: 'grid', gridTemplateColumns: '320px minmax(0, 1fr)', gap: 20, alignItems: 'start' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>

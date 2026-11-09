@@ -50,41 +50,26 @@ export default function CabinetLayout({ title, subtitle, children, aside = null 
           minHeight: 'auto',
           overflow: 'visible',
         }}>
-          <section style={{
-            padding: '28px 30px',
-            borderRadius: 28,
-            background: 'linear-gradient(135deg, rgb(25,26,32) 0%, rgb(48,50,61) 100%)',
-            color: 'rgb(245,245,245)',
-            boxShadow: '0 28px 80px rgba(25,26,32,0.22)',
-          }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              gap: 20,
-              alignItems: 'flex-start',
-              flexWrap: 'wrap',
-            }}>
+          <header style={{ padding: '8px 4px 4px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 20, alignItems: 'flex-start', flexWrap: 'wrap' }}>
               <div>
-                <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.5 }}>
-                  Bookimmo
-                </p>
-                <h1 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 'clamp(24px, 3vw, 32px)', lineHeight: 1.12, marginTop: 8, fontWeight: 600 }}>
+                <h1 style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 'clamp(26px, 3vw, 34px)', lineHeight: 1.1, fontWeight: 600, letterSpacing: '-0.02em', color: 'rgb(25,26,32)' }}>
                   {title}
                 </h1>
                 {subtitle ? (
-                  <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 15, lineHeight: 1.6, opacity: 0.76, maxWidth: 680, marginTop: 12 }}>
+                  <p style={{ margin: '10px 0 0', fontFamily: '"Lexend", sans-serif', fontSize: 15, lineHeight: 1.6, color: 'rgba(25,26,32,0.62)', maxWidth: 680 }}>
                     {subtitle}
                   </p>
                 ) : null}
               </div>
 
               {isAuthenticated && !loading ? (
-                <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 13, opacity: 0.6 }}>
+                <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.5)' }}>
                   {user?.email || 'Signed in'}
                 </p>
               ) : null}
             </div>
-          </section>
+          </header>
 
           <div style={{
             display: 'grid',

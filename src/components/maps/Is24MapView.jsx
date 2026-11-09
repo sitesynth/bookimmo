@@ -84,7 +84,14 @@ function buildBounds(mapboxgl, listings) {
   return bounds
 }
 
+const MAP_COPY = {
+  en: { all: 'All homes', selected: 'Selected', overview: 'Overview', unavailable: 'The map is not available right now.' },
+  de: { all: 'Alle Wohnungen', selected: 'Auswahl', overview: 'Übersicht', unavailable: 'Die Karte ist gerade nicht verfügbar.' },
+}
+
 export default function Is24MapView({ listings = [], center, activeId, onSelect, onHover }) {
+  const mapLang = typeof window !== 'undefined' && /^\/de(\/|$)/.test(window.location.pathname) ? 'de' : 'en'
+  const mapText = MAP_COPY[mapLang]
   const mapElementRef = useRef(null)
   const mapRef = useRef(null)
   const popupRef = useRef(null)
@@ -466,7 +473,7 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect,
           lineHeight: 1.6,
         }}
       >
-        Add `VITE_MAPBOX_ACCESS_TOKEN` to enable the production map layer.
+        {mapText.unavailable}
       </div>
     )
   }
@@ -557,9 +564,9 @@ export default function Is24MapView({ listings = [], center, activeId, onSelect,
         }}
       >
         {[
-          { label: 'Results', onClick: fitToResults, disabled: !validPoints.length },
-          { label: 'Selected', onClick: focusSelected, disabled: !activeId || !pointsById.get(String(activeId)) },
-          { label: 'Germany', onClick: resetToGermany, disabled: false },
+          { label: mapText.all, onClick: fitToResults, disabled: !validPoints.length },
+          { label: mapText.selected, onClick: focusSelected, disabled: !activeId || !pointsById.get(String(activeId)) },
+          { label: mapText.overview, onClick: resetToGermany, disabled: false },
         ].map((action) => (
           <button
             key={action.label}

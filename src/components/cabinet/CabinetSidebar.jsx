@@ -72,14 +72,25 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
   ]
 
   return (
-    <aside style={WRAP}>
-      <div style={BRAND}>
+    <aside className="cab-side" style={WRAP}>
+      <style>{`
+        @media (max-width: 900px) {
+          .cab-side { min-width: 0 !important; max-width: none !important; width: 100%; box-sizing: border-box; padding: 12px 14px !important; gap: 10px !important; border-radius: 16px !important; }
+          .cab-side .cab-brand { padding-bottom: 10px !important; }
+          .cab-side .cab-nav { flex-direction: row !important; overflow-x: auto; gap: 4px !important; scrollbar-width: none; }
+          .cab-side .cab-nav a { flex: 0 0 auto; padding: 10px 12px !important; }
+          .cab-side .cab-foot { flex-direction: row !important; align-items: center; padding-top: 10px !important; }
+          .cab-side .cab-foot-hint { display: none; }
+          .cab-side .cab-foot > div { flex: 1; }
+        }
+      `}</style>
+      <div className="cab-brand" style={BRAND}>
         <Link to={`/${lang}`} aria-label="BookImmo" style={{ display: 'inline-block', lineHeight: 0 }}>
           <BookImmoLogo height={28} />
         </Link>
       </div>
 
-      <nav style={NAV}>
+      <nav className="cab-nav" style={NAV}>
         {navItems.map((item) => (
           <NavLink
             key={item.to}
@@ -110,7 +121,7 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
         ))}
       </nav>
 
-      <div style={FOOT}>
+      <div className="cab-foot" style={FOOT}>
         {isAuthenticated ? (
           <>
             <div>
@@ -141,7 +152,7 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
           </>
         ) : (
           <>
-            <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.68)' }}>
+            <p className="cab-foot-hint" style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, color: 'rgba(25,26,32,0.68)' }}>
               {t.hint}
             </p>
             <div style={{ display: 'flex', gap: 8 }}>
