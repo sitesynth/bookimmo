@@ -321,12 +321,12 @@ function ListingCard({
             </p>
           </div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <button
+            <button className="btn-shine on-light"
               type="button"
               onClick={() => onPreview(property)}
               style={{
                 border: '1px solid rgba(25,26,32,0.12)',
-                borderRadius: 14,
+                borderRadius: 4,
                 padding: '11px 14px',
                 backgroundColor: 'white',
                 color: 'rgb(25,26,32)',
@@ -338,11 +338,11 @@ function ListingCard({
             >
               Preview
             </button>
-            <a
+            <a className="btn-shine on-light"
               href={buildListingDetailHref(lang, property)}
               style={{
                 textDecoration: 'none',
-                borderRadius: 14,
+                borderRadius: 4,
                 padding: '11px 14px',
                 border: '1px solid rgba(25,26,32,0.12)',
                 backgroundColor: 'white',
@@ -354,12 +354,12 @@ function ListingCard({
             >
               Details
             </a>
-            <button
+            <button className="btn-shine"
               type="button"
               onClick={() => onApply(property)}
               style={{
                 border: 'none',
-                borderRadius: 14,
+                borderRadius: 4,
                 padding: '11px 14px',
                 backgroundColor: 'rgb(25,26,32)',
                 color: 'rgb(245,245,245)',
@@ -800,13 +800,13 @@ export default function SearchMain() {
                     />
                   </div>
 
-                  <button
+                  <button className="btn-shine"
                     type="button"
                     onClick={applyPrimarySearch}
                     style={{
                       height: 56,
                       border: 'none',
-                      borderRadius: 18,
+                      borderRadius: 4,
                       padding: '0 18px',
                       backgroundColor: 'rgb(25,26,32)',
                       color: 'rgb(245,245,245)',
@@ -819,13 +819,13 @@ export default function SearchMain() {
                     Search now
                   </button>
 
-                  <button
+                  <button className="btn-shine on-light"
                     type="button"
                     onClick={saveCurrentSearch}
                     style={{
                       height: 56,
                       border: '1px solid rgba(25,26,32,0.1)',
-                      borderRadius: 18,
+                      borderRadius: 4,
                       padding: '0 18px',
                       backgroundColor: 'white',
                       color: 'rgb(25,26,32)',
@@ -904,12 +904,12 @@ export default function SearchMain() {
                     Advanced filters
                   </h3>
                 </div>
-                <button
+                <button className="btn-shine"
                   type="button"
                   onClick={saveCurrentSearch}
                   style={{
                     border: 'none',
-                    borderRadius: 14,
+                    borderRadius: 4,
                     padding: '11px 14px',
                     backgroundColor: 'rgb(25,26,32)',
                     color: 'rgb(245,245,245)',
@@ -972,12 +972,12 @@ export default function SearchMain() {
                   </div>
                 </div>
 
-                <button
+                <button className="btn-shine on-light"
                   type="button"
                   onClick={resetFilters}
                   style={{
                     border: '1px solid rgba(25,26,32,0.12)',
-                    borderRadius: 18,
+                    borderRadius: 4,
                     padding: '14px 16px',
                     backgroundColor: 'rgb(248,246,241)',
                     color: 'rgb(25,26,32)',
@@ -1097,14 +1097,14 @@ export default function SearchMain() {
                       ))
                     )}
                     {!loading && !error && pageNumber < numberOfPages ? (
-                      <button
+                      <button className="btn-shine on-light"
                         type="button"
                         disabled={loadingMore}
                         onClick={() => setFilters((current) => ({ ...current, page: pageNumber + 1 }))}
                         style={{
                           alignSelf: 'center',
                           border: 'none',
-                          borderRadius: 14,
+                          borderRadius: 4,
                           padding: '12px 22px',
                           backgroundColor: 'rgb(248,246,241)',
                           color: 'rgb(25,26,32)',
@@ -1175,14 +1175,14 @@ export default function SearchMain() {
                     )}
 
                     {activeListing?.url ? (
-                      <a
+                      <a className="btn-shine on-light"
                         href={activeListing.url}
                         target="_blank"
                         rel="noreferrer"
                         style={{
                           alignSelf: 'flex-start',
                           textDecoration: 'none',
-                          borderRadius: 14,
+                          borderRadius: 4,
                           padding: '11px 14px',
                           backgroundColor: 'rgb(248,246,241)',
                           color: 'rgb(25,26,32)',
