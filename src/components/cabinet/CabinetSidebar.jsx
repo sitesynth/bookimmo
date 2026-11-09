@@ -38,15 +38,10 @@ const BRAND = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
-  gap: 14,
-  paddingBottom: 16,
+  gap: 0,
+  paddingTop: 4,
+  paddingBottom: 18,
   borderBottom: '1px solid rgba(25,26,32,0.08)',
-}
-
-const BRAND_TAG = {
-  fontFamily: '"Lexend", sans-serif',
-  fontSize: 12,
-  color: 'rgba(25,26,32,0.5)',
 }
 
 const NAV = {
@@ -82,7 +77,6 @@ export default function CabinetSidebar({ isAuthenticated, userEmail, onSignOut }
         <Link to={`/${lang}`} aria-label="BookImmo" style={{ display: 'inline-block', lineHeight: 0 }}>
           <BookImmoLogo height={28} />
         </Link>
-        <span style={BRAND_TAG}>{t.tag}</span>
       </div>
 
       <nav style={NAV}>
