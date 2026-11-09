@@ -36,7 +36,7 @@ function Button({ href, children, tone = 'dark' }) {
         justifyContent: 'center',
         minHeight: 52,
         padding: '0 26px',
-        borderRadius: 14,
+        borderRadius: 4,
         backgroundColor: palette.bg,
         color: palette.color,
         boxShadow: palette.shadow,

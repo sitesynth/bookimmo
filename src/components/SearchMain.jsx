@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useFavorites } from '../hooks/useFavorites.js'
 import { useApplications } from '../hooks/useApplications.js'
 import { useIs24Locations } from '../hooks/useIs24Locations.js'
@@ -48,7 +48,7 @@ function sanitizeSavedSearchFilters(filters) {
 function buildSearchLabel(filters, selectedLocations = []) {
   const locationLabel = selectedLocations[0]?.label
     || (filters.text ? filters.text.trim() : '')
-    || 'Germany search'
+    || 'My search'
   const roomsLabel = filters.roomsMin ? `${filters.roomsMin}+ rooms` : 'Any rooms'
   const budgetLabel = filters.priceLabel || 'Flexible budget'
   return `${locationLabel} · ${roomsLabel}`
@@ -59,7 +59,7 @@ function buildSearchLabel(filters, selectedLocations = []) {
 function buildSearchSummary(filters, selectedLocations = []) {
   const locationLabel = selectedLocations.length
     ? selectedLocations.map((item) => item.label).slice(0, 2).join(', ')
-    : (filters.text || 'Selected Germany areas')
+    : (filters.text || 'Selected areas')
   const roomsLabel = filters.roomsMin ? `${filters.roomsMin}+ rooms` : 'Any room count'
   const budgetLabel = filters.priceLabel || 'Any budget'
   return `${locationLabel} · ${roomsLabel} · ${budgetLabel}`
@@ -74,7 +74,7 @@ function buildWorkspaceHeading(filters, selectedLocations = []) {
     return filters.text.trim()
   }
 
-  return 'Start your Germany search'
+  return 'Where are you moving?'
 }
 
 function buildListingPreviewBadges(property) {
@@ -132,17 +132,6 @@ function FilterChip({ active, children, onClick }) {
     >
       {children}
     </button>
-  )
-}
-
-function WorkspaceStat({ label, value, accent = 'rgb(248,246,241)' }) {
-  return (
-    <div style={{ padding: 16, borderRadius: 20, backgroundColor: accent }}>
-      <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.5)' }}>{label}</p>
-      <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 24, fontWeight: 700, color: 'rgb(25,26,32)', marginTop: 4 }}>
-        {value}
-      </p>
-    </div>
   )
 }
 
@@ -559,18 +548,6 @@ export default function SearchMain() {
     }
   }, [enrichedListings, enrichedMapListings.length, locationSeeds.length, selectedLocations.length, totalResults])
 
-  const workspacePrompt = useMemo(() => {
-    const moveIn = profile.moveInDate || 'Flexible move-in'
-    const city = profile.currentCity || 'No location selected yet'
-    const districts = profile.preferredDistricts || 'Any strong district match'
-    const budget = profile.maxBudget ? `Budget up to €${Number(profile.maxBudget).toLocaleString('en-US')}` : 'Budget not set yet'
-    return {
-      city,
-      moveIn,
-      districts,
-      budget,
-    }
-  }, [profile])
 
   const workspaceHeading = useMemo(
     () => buildWorkspaceHeading(filters, selectedLocations),
@@ -677,7 +654,7 @@ export default function SearchMain() {
     if (result.requiresAuth) {
       setGuestHref(`/${lang}/search`)
       setGateOpen(true)
-      setUiNotice('Search saved locally for guest mode. Sign in to sync it across sessions.')
+      setUiNotice('Search saved on this device. Sign in to keep it everywhere.')
       return
     }
 
@@ -719,7 +696,7 @@ export default function SearchMain() {
     if (result.requiresAuth) {
       setGuestHref(`/${lang}/search`)
       setGateOpen(true)
-      setUiNotice(result.isFavorite ? 'Saved locally for guest mode. Sign in to sync favorites.' : 'Removed from guest favorites.')
+      setUiNotice(result.isFavorite ? 'Saved on this device. Sign in to keep your favorites everywhere.' : 'Removed from favorites.')
       return
     }
 
@@ -737,7 +714,7 @@ export default function SearchMain() {
     if (result.requiresAuth) {
       setGuestHref(`/${lang}/search`)
       setGateOpen(true)
-      setUiNotice('Draft stored for guest mode. Sign in to continue your application.')
+      setUiNotice('Sign in to continue your application.')
       return
     }
 
@@ -755,16 +732,21 @@ export default function SearchMain() {
             overflow: 'hidden',
           }}
         >
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) minmax(320px, 0.9fr)', gap: 20, alignItems: 'stretch' }}>
+        <style>{`
+          @media (max-width: 1100px) {
+            .sm-top, .sm-main, .sm-split { grid-template-columns: minmax(0, 1fr) !important; }
+          }
+        `}</style>
+          <div className="sm-top" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) minmax(320px, 0.9fr)', gap: 20, alignItems: 'stretch' }}>
             <div>
               <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                Search overview
+                Find a home
               </p>
               <h2 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 30, lineHeight: 1.04, color: 'rgb(25,26,32)', marginTop: 8, maxWidth: 740 }}>
                 {workspaceHeading}
               </h2>
               <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 15, lineHeight: 1.7, color: 'rgba(25,26,32,0.68)', marginTop: 14, maxWidth: 760 }}>
-                Live provider search with synchronized map, saved searches, favorites and application drafts.
+                Search by city, district or street, see every home on the map and apply in a click.
               </p>
 
               <div
@@ -805,7 +787,7 @@ export default function SearchMain() {
                           applyPrimarySearch()
                         }
                       }}
-                      placeholder="Search by city, district, street or IS24 geocode"
+                      placeholder="City, district or street"
                       style={{
                         flex: 1,
                         border: 'none',
@@ -865,51 +847,52 @@ export default function SearchMain() {
                   ))}
                 </div>
 
-                <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.52)', lineHeight: 1.5 }}>
-                  Start with a city, district, street or provider geocode here. Detailed room, budget and keyword refinement stays in the filter panel below.
-                </p>
               </div>
 
-              <div style={{ marginTop: 18, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                <span style={{ borderRadius: 999, padding: '10px 14px', backgroundColor: 'white', fontFamily: '"Lexend", sans-serif', fontSize: 13 }}>
-                  {summary.results} results
-                </span>
-                <span style={{ borderRadius: 999, padding: '10px 14px', backgroundColor: 'white', fontFamily: '"Lexend", sans-serif', fontSize: 13 }}>
-                  {summary.mapped} mapped
-                </span>
-                <span style={{ borderRadius: 999, padding: '10px 14px', backgroundColor: 'white', fontFamily: '"Lexend", sans-serif', fontSize: 13 }}>
-                  {workspacePrompt.city}
-                </span>
-                <span style={{ borderRadius: 999, padding: '10px 14px', backgroundColor: 'white', fontFamily: '"Lexend", sans-serif', fontSize: 13 }}>
-                  {workspacePrompt.budget}
-                </span>
-                <span style={{ borderRadius: 999, padding: '10px 14px', backgroundColor: 'white', fontFamily: '"Lexend", sans-serif', fontSize: 13 }}>
-                  {workspacePrompt.moveIn}
-                </span>
-              </div>
+
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12, alignContent: 'start' }}>
-              <WorkspaceStat label="Live results" value={summary.results} />
-              <WorkspaceStat label="Mapped pins" value={summary.mapped} />
-              <WorkspaceStat label="Saved searches" value={savedSearches.length} />
-              <WorkspaceStat label="Draft apps" value={draftCount || applicationCount} accent="rgba(25,26,32,0.06)" />
-              <div style={{ gridColumn: '1 / -1', padding: 18, borderRadius: 22, backgroundColor: 'rgb(25,26,32)', color: 'rgb(245,245,245)' }}>
-                <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, opacity: 0.68, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                  Profile readiness
-                </p>
-                <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 30, fontWeight: 700, marginTop: 8 }}>
-                  {completionPercent}%
-                </p>
-                <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 13, lineHeight: 1.6, opacity: 0.76, marginTop: 8 }}>
-                  Profile data is already used to prefill the search context and future applications.
-                </p>
+            <div style={{ display: 'flex' }}>
+              <div style={{ flex: 1, padding: 24, borderRadius: 22, backgroundColor: 'rgb(25,26,32)', color: 'rgb(245,245,245)', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 12 }}>
+                {isAuthenticated ? (
+                  <>
+                    <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 12, opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                      Your profile
+                    </p>
+                    <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 44, fontWeight: 700, lineHeight: 1, letterSpacing: '-0.03em' }}>
+                      {completionPercent}%
+                    </p>
+                    <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 14, lineHeight: 1.55, opacity: 0.78 }}>
+                      {completionPercent >= 100 ? 'Complete. The club can apply for you.' : 'Complete it so the club can apply for you.'}
+                    </p>
+                    {completionPercent < 100 ? (
+                      <Link to={`/${lang}/account`} className="btn-shine" style={{ alignSelf: 'flex-start', marginTop: 4, display: 'inline-flex', alignItems: 'center', padding: '12px 18px', borderRadius: 4, backgroundColor: 'rgb(255,102,37)', color: '#fff', textDecoration: 'none', fontFamily: '"Lexend", sans-serif', fontSize: 14, fontWeight: 600 }}>
+                        Complete profile
+                      </Link>
+                    ) : null}
+                  </>
+                ) : (
+                  <>
+                    <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 12, opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                      Members
+                    </p>
+                    <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 26, fontWeight: 600, lineHeight: 1.15, letterSpacing: '-0.02em' }}>
+                      Apply to any home in one click.
+                    </p>
+                    <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 14, lineHeight: 1.55, opacity: 0.78 }}>
+                      The club writes to the agency for you. First month free, no card needed.
+                    </p>
+                    <Link to={`/${lang}/sign-up`} className="btn-shine" style={{ alignSelf: 'flex-start', marginTop: 4, display: 'inline-flex', alignItems: 'center', padding: '12px 18px', borderRadius: 4, backgroundColor: 'rgb(255,102,37)', color: '#fff', textDecoration: 'none', fontFamily: '"Lexend", sans-serif', fontSize: 14, fontWeight: 600 }}>
+                      Join the club
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
         </SearchWorkspaceCard>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '320px minmax(0, 1fr)', gap: 20, alignItems: 'start' }}>
+        <div className="sm-main" style={{ display: 'grid', gridTemplateColumns: '320px minmax(0, 1fr)', gap: 20, alignItems: 'start' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             <SearchWorkspaceCard style={{ position: 'sticky', top: 24 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center' }}>
@@ -1041,37 +1024,23 @@ export default function SearchMain() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             <SearchWorkspaceCard>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 20, flexWrap: 'wrap' }}>
-                <div>
-                  <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.52)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                    Search results
-                  </p>
-                  <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 26, color: 'rgb(25,26,32)', marginTop: 8 }}>
-                    Map and list
-                  </h3>
-                  <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 14, lineHeight: 1.65, color: 'rgba(25,26,32,0.68)', marginTop: 12, maxWidth: 760 }}>
-                    Pins, cards, favorites and application drafts all reference the same live listing data.
-                  </p>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(120px, 1fr))', gap: 12, minWidth: 'min(100%, 360px)', flex: '1 1 360px' }}>
-                  <WorkspaceStat label="Results" value={summary.results} />
-                  <WorkspaceStat label="On map" value={summary.mapped} />
-                  <WorkspaceStat label="Areas" value={summary.areas} />
-                </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 16, flexWrap: 'wrap' }}>
+                <h3 style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 26, color: 'rgb(25,26,32)' }}>
+                  Homes
+                </h3>
+                <p style={{ margin: 0, fontFamily: '"Lexend", sans-serif', fontSize: 14, color: 'rgba(25,26,32,0.6)' }}>
+                  {summary.results} found · {summary.mapped} on the map
+                </p>
               </div>
             </SearchWorkspaceCard>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(420px, 1.12fr) minmax(360px, 0.88fr)', gap: 20, alignItems: 'start' }}>
+            <div className="sm-split" style={{ display: 'grid', gridTemplateColumns: 'minmax(420px, 1.12fr) minmax(360px, 0.88fr)', gap: 20, alignItems: 'start' }}>
               <SearchWorkspaceCard style={{ padding: 24, minHeight: 0 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', minHeight: 0, alignSelf: 'start' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 18 }}>
                     <div>
-                      <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.52)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                        Listing feed
-                      </p>
-                      <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 22, color: 'rgb(25,26,32)', marginTop: 8 }}>
-                        Live Germany results
+                      <h3 style={{ fontFamily: '"Lexend", sans-serif', fontSize: 22, color: 'rgb(25,26,32)', margin: 0 }}>
+                        Latest homes
                       </h3>
                     </div>
                     {uiNotice ? (
@@ -1102,15 +1071,15 @@ export default function SearchMain() {
                   }}>
                     {loading ? (
                       <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 14, color: 'rgba(25,26,32,0.54)', padding: '20px 0' }}>
-                        Loading live listings…
+                        Loading homes…
                       </p>
                     ) : error ? (
                       <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 14, color: 'rgba(25,26,32,0.54)', padding: '20px 0' }}>
-                        Could not load provider results right now.
+                        Could not load homes right now. Please try again in a moment.
                       </p>
                     ) : listings.length === 0 ? (
                       <div style={{ borderRadius: 24, padding: 20, backgroundColor: 'rgb(248,246,241)', fontFamily: '"Lexend", sans-serif', color: 'rgba(25,26,32,0.62)', lineHeight: 1.65 }}>
-                        No properties match the current filters. Try broadening the location or budget range.
+                        No homes match this search yet. Try a nearby area or a wider budget. Moving somewhere we do not cover? Tell us at hello@book.immo and we will add it.
                       </div>
                     ) : (
                       enrichedListings.map((property) => (
@@ -1201,19 +1170,17 @@ export default function SearchMain() {
                       />
                     ) : (
                       <div style={{ borderRadius: 24, padding: 20, backgroundColor: 'rgb(248,246,241)', fontFamily: '"Lexend", sans-serif', color: 'rgba(25,26,32,0.62)', lineHeight: 1.65 }}>
-                        Listings with coordinates appear here as pins. Listings without coordinates stay available in the feed.
+                        Homes appear here as pins. Some listings have no exact address and show in the list only.
                       </div>
                     )}
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
-                      <p style={{ fontFamily: '"Lexend", sans-serif', fontSize: 12, color: 'rgba(25,26,32,0.48)' }}>
-                        {locationsLoading ? 'Updating location suggestions…' : 'Location suggestions are based on the project geocode layer plus manual geocode entry.'}
-                      </p>
+                    {activeListing?.url ? (
                       <a
-                        href={activeListing?.url || 'https://www.immobilienscout24.de/'}
+                        href={activeListing.url}
                         target="_blank"
                         rel="noreferrer"
                         style={{
+                          alignSelf: 'flex-start',
                           textDecoration: 'none',
                           borderRadius: 14,
                           padding: '11px 14px',
@@ -1224,9 +1191,9 @@ export default function SearchMain() {
                           fontWeight: 600,
                         }}
                       >
-                        Open on provider
+                        Open original listing
                       </a>
-                    </div>
+                    ) : null}
                   </div>
                 </div>
               </SearchWorkspaceCard>

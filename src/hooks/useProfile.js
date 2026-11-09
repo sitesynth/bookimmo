@@ -176,11 +176,12 @@ export function useProfile() {
   }, [profile.documents])
 
   const completionPercent = useMemo(() => {
+    // Only fields the person actually has to fill in. Language, household size, pets and
+    // shared-flat have defaults, so counting them made an empty profile read as 22%.
     const fields = [
       profile.firstName,
       profile.lastName,
       profile.phone,
-      profile.preferredLanguage,
       profile.currentCity,
       profile.currentAddress,
       profile.moveInDate,
@@ -189,10 +190,6 @@ export function useProfile() {
       profile.occupation,
       profile.employmentStatus,
       profile.monthlyNetIncome,
-      profile.adultsCount,
-      profile.childrenCount,
-      profile.pets,
-      profile.sharedApartment,
       profile.nationality,
       profile.preferredDistricts,
       profile.coverLetterTemplate,

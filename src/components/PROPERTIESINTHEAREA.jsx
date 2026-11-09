@@ -14,7 +14,7 @@ export default function PROPERTIESINTHEAREA() {
                 padding: '14px 32px',
                 background: 'rgb(255,102,37)',
                 border: 'none',
-                borderRadius: 10,
+                borderRadius: 4,
                 cursor: 'pointer',
                 fontFamily: '"Lexend", sans-serif',
                 fontSize: 15, fontWeight: 600,

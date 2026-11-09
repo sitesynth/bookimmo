@@ -366,7 +366,7 @@ export default function HomeSearchForm() {
               )}
 
               <button type="submit" className="btn-shine" style={{
-                width:'100%', height:54, borderRadius:14, border:'none', cursor:'pointer',
+                width:'100%', height:54, borderRadius:4, border:'none', cursor:'pointer',
                 backgroundColor:'rgb(255,102,37)', color:'white',
                 boxShadow:'0 10px 24px rgba(255,102,37,0.28)',
                 fontFamily:'"Lexend",sans-serif', fontSize:15, fontWeight:600,
@@ -420,7 +420,7 @@ export default function HomeSearchForm() {
                   margin:'12px 0 12px 14px', padding:'0 44px',
                   backgroundColor:'rgb(255,102,37)', border:'none', cursor:'pointer',
                   fontFamily:'"Lexend",sans-serif', fontSize:16, fontWeight:600, color:'white',
-                  flexShrink:0, borderRadius:16, transition:'background-color 0.2s, box-shadow 0.2s',
+                  flexShrink:0, borderRadius:4, transition:'background-color 0.2s, box-shadow 0.2s',
                   boxShadow:'0 10px 24px rgba(255,102,37,0.28)',
                 }}
                   onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgb(232,84,22)'}
