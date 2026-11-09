@@ -1,33 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
-import WaitlistModal from './WaitlistModal.jsx'
-
-function RocketIcon() {
-  return (
-    <svg
-      width="15"
-      height="15"
-      viewBox="0 0 280.291 280.291"
-      aria-hidden="true"
-      style={{ display: 'inline-block', verticalAlign: '-2px', marginRight: 6, flexShrink: 0 }}
-    >
-      <g>
-        <path fill="#EFC75E" d="M84.373,195.442c13.083,13.03,17.02,34.461,3.947,47.5c-13.083,13.03-52.514,27.548-65.596,14.518 c-13.074-13.03,1.505-52.321,14.579-65.351C50.384,179.078,71.299,182.403,84.373,195.442z" />
-        <path fill="#E2574C" d="M205.178,166.468c19.698,40.84-28.37,135.901-50.597,109.001 c-9.013-10.904-8.418-28.3-31.949-50.702c-0.035,0.14,8.567,1.523,18.639-7.596C164.513,199.266,205.178,166.617,205.178,166.468z" />
-        <path fill="#E2574C" d="M122.404,75.004C78.256,54.999-23.998,102.753,5.143,125.216 c11.814,9.11,30.558,8.611,54.842,32.369c-0.149,0.035-1.68-8.611,8.103-18.683C87.243,115.643,122.238,75.004,122.404,75.004z" />
-        <path fill="#CF5349" d="M102.96,70.471l-1.908-0.096c-9.687,11.831-33.358,40.998-47.788,59.453 c-5.916,6.423-7.517,12.26-7.858,15.708c2.827,1.943,5.741,4.183,8.751,6.756c0.735-3.483,2.669-8.34,7.508-13.599 c18.421-23.575,52.05-64.791,52.208-64.783C110.573,72.335,106.862,71.259,102.96,70.471z" />
-        <path fill="#CF5349" d="M205.45,167.115c-5.758,4.848-42.249,34.767-63.934,51.84c-7.167,6.633-13.529,7.876-16.705,7.998 c3.115,3.133,5.811,6.169,8.103,9.101c2.853,0.044,9.722-0.858,17.475-8.025c18.149-14.299,46.572-37.497,58.762-47.57 C208.495,175.63,207.287,171.123,205.45,167.115z" />
-        <path fill="#D7B354" d="M53.412,184.232c1.82,8.156,7.412,17.878,16.119,26.568c8.663,8.646,18.351,14.211,26.498,16.067 c1.383-10.956-3.15-22.953-11.656-31.424C75.911,187.006,64.185,182.736,53.412,184.232z" />
-        <path fill="#EBEBEB" d="M278.528,1.532c6.581,6.222-3.107,98.596-66.244,161.313c-39.09,38.836-65.019,53.87-71.223,59.252 c-17.16,7.78-28.545,11.962-62.551-21.833c-33.927-33.708-27.399-43.054-19.873-59.2c5.583-6.266,21.046-32.299,60.145-71.144 C181.892,7.211,271.641-4.576,278.528,1.532z" />
-        <path fill="#324D5B" d="M199.604,80.316c13.608,13.634,13.608,35.738,0,49.381c-13.616,13.634-35.677,13.634-49.294,0 c-13.608-13.643-13.608-35.747,0-49.381C163.927,66.673,185.988,66.673,199.604,80.316z" />
-        <path fill="#CCD0D2" d="M187.397,92.689c6.861,6.817,6.861,17.869,0,24.686c-6.852,6.817-17.983,6.817-24.852,0 c-6.852-6.817-6.852-17.869,0-24.686C169.422,85.872,180.545,85.872,187.397,92.689z" />
-      </g>
-    </svg>
-  )
-}
 
 export default function AnnouncementBar() {
   const [visible, setVisible] = useState(true)
-  const [modalOpen, setModalOpen] = useState(false)
   const [barHeight, setBarHeight] = useState(41)
   const innerRef = useRef(null)
 
@@ -69,45 +43,38 @@ export default function AnnouncementBar() {
       <div ref={innerRef} className="bar-inner" style={{
         width: '100%',
         backgroundColor: 'rgb(25, 26, 32)',
-        borderBottom: '1px solid rgba(255,102,37,0.3)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '10px 48px',
-        gap: 12,
+        padding: '9px 48px',
         position: 'relative',
       }}>
-        <span className="bar-dot" style={{
-          width: 8, height: 8,
-          borderRadius: '50%',
-          background: 'rgb(255,102,37)',
-          flexShrink: 0,
-          boxShadow: '0 0 6px rgba(255,102,37,0.7)',
-          animation: 'barDotPulse 1.4s ease-in-out infinite',
-        }} />
-
         <p style={{
           margin: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexWrap: 'nowrap',
+          gap: '4px 12px',
           fontFamily: '"Lexend", sans-serif',
           fontSize: 13,
-          fontWeight: 400,
+          lineHeight: 1.4,
           color: 'rgba(245,245,245,0.9)',
           textAlign: 'center',
-          lineHeight: 1.5,
         }}>
-          {/* Desktop */}
-          <span className="bar-text-desktop">
-            <RocketIcon /><strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Founding members wanted.</strong>
-            {' '}<strong style={{ color: '#fff', fontWeight: 600 }}>First month free</strong>, no card needed —{' '}
-            <button onClick={() => setModalOpen(true)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'rgb(255,102,37)', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: 3 }}>join now</button>.
+          <span className="bar-tag" style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgb(255,102,37)', padding: '3px 9px', borderRadius: 999, backgroundColor: 'rgba(255,102,37,0.14)' }}>
+            Founding members
           </span>
-          {/* Mobile — one line */}
-          <span className="bar-text-mobile">
-            <RocketIcon /><strong style={{ color: 'rgb(255,102,37)', fontWeight: 600 }}>Founding members:</strong>
-            {' '}<strong style={{ color: '#fff', fontWeight: 600 }}>first month free</strong> —{' '}
-            <button onClick={() => setModalOpen(true)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'rgb(255,102,37)', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: 3 }}>join now</button>.
-          </span>
+          <span><span className="bar-long">First month free, no card needed</span><span className="bar-short">First month free</span></span>
+          <a href="./sign-up" style={{ color: '#fff', fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap' }}>
+            Join the club <span aria-hidden="true">→</span>
+          </a>
         </p>
+
+        <style>{`
+          .bar-short { display: none; }
+          @media (max-width: 640px) { .bar-tag { display: none; } .bar-long { display: none; } .bar-short { display: inline; } .bar-inner { padding: 9px 40px !important; } }
+        `}</style>
 
         <button
           onClick={() => setVisible(false)}
@@ -132,7 +99,6 @@ export default function AnnouncementBar() {
       </div>
       </div>
 
-      {modalOpen && <WaitlistModal onClose={() => setModalOpen(false)} />}
     </>
   )
 }

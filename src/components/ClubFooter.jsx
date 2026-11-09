@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import LanguageToggle from './LanguageToggle.jsx'
+import BookImmoLogo from './BookImmoLogo.jsx'
 
 const FONT = '"Lexend", sans-serif'
 const INK = 'rgb(25,26,32)'
@@ -24,8 +25,8 @@ export default function ClubFooter() {
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <div className="club-foot-grid" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr', gap: 'clamp(24px, 4vw, 48px)' }}>
           <div>
-            <Link to={home} style={{ fontFamily: FONT, fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em', color: '#fff', textDecoration: 'none' }}>
-              book<span style={{ color: ORANGE }}>.</span>immo
+            <Link to={home} aria-label="BookImmo" style={{ display: 'inline-block', lineHeight: 0 }}>
+              <BookImmoLogo height={30} wordColor="#FFFFFF" />
             </Link>
             <p style={{ margin: '14px 0 0', maxWidth: 280, fontFamily: FONT, fontSize: 14, lineHeight: 1.6, color: 'rgba(255,255,255,0.6)' }}>
               The housing club for expats. We find it, we apply, you move in.

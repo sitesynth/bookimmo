@@ -153,13 +153,16 @@ function RailCard({ listing, lang, compact = false }) {
           flex: 1,
         }}
       >
-        <div style={{ position: 'relative', aspectRatio: compact ? '1.14 / 1' : '1.3 / 1', backgroundColor: 'rgb(244,239,231)' }}>
+        <div style={{ position: 'relative', overflow: 'hidden', aspectRatio: compact ? '1.14 / 1' : '1.3 / 1', backgroundColor: 'rgb(244,239,231)' }}>
           {listing?.imageUrl ? (
             <img
               src={listing.imageUrl}
               alt={listing?.title || 'Listing'}
               loading="lazy"
+              decoding="async"
               style={{
+                position: 'absolute',
+                inset: 0,
                 display: 'block',
                 width: '100%',
                 height: '100%',
@@ -483,7 +486,7 @@ export default function LiveListingFeed({
           fontSize: 13,
           color: 'rgb(25,26,32)',
         }}>
-          {loading ? 'Loading properties…' : 'Verified listings'}
+          {loading ? 'Loading properties…' : sourceMode === 'database-cache' ? 'Live from the portals' : 'Verified listings'}
         </span>
         <span style={{
           padding: '10px 14px',
@@ -494,7 +497,7 @@ export default function LiveListingFeed({
           fontSize: 13,
           color: 'rgb(25,26,32)',
         }}>
-          {loading ? 'Checking locations…' : sourceMode === 'database-cache' ? 'Across Germany' : locationSummary}
+          {loading ? 'Checking locations…' : sourceMode === 'database-cache' ? 'New ones first' : locationSummary}
         </span>
         <span style={{
           padding: '10px 14px',
@@ -505,7 +508,7 @@ export default function LiveListingFeed({
           fontSize: 13,
           color: 'rgb(25,26,32)',
         }}>
-          {loading ? 'Updating listings…' : sourceMode === 'database-cache' ? 'Updated regularly' : 'Live availability'}
+          {loading ? 'Updating listings…' : sourceMode === 'database-cache' ? 'Checked every 10 minutes' : 'Live availability'}
         </span>
       </div>
 

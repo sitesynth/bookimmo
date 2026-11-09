@@ -9,7 +9,7 @@ import Explore from '../components/Explore.jsx'
 import NewListing from '../components/NewListing.jsx'
 import ClubSections from '../components/ClubSections.jsx'
 import FAQ from '../components/FAQ.jsx'
-import ClubNewsletter from '../components/ClubNewsletter.jsx'
+import ClubFinalCta from '../components/ClubFinalCta.jsx'
 import ClubFooter from '../components/ClubFooter.jsx'
 import Variant1 from '../components/Variant1.jsx'
 import AuthGateModal from '../components/AuthGateModal.jsx'
@@ -46,7 +46,7 @@ export default function HomePage() {
       <NewListing />
       <ClubSections />
       <FAQ />
-      <ClubNewsletter />
+      <ClubFinalCta />
       <ClubFooter />
       <Variant1 />
 
